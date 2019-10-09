@@ -43,7 +43,7 @@ struct Background
 
 struct LevelConfig
 {
-    int id{};
+    int id;
     std::string tilemap;  // TODO optional // TODO currently not parsed for whole world
     std::string levelSelectIcon;
     std::string title;

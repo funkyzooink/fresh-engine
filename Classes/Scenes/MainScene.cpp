@@ -94,10 +94,14 @@ bool MainScene::init()
     _levelSelectView->setVisible(false);
     addChild(_levelSelectView);
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) ||                            \
+    (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
     // keyboard events
+    // Currently Desktop only
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+#endif
 
     scheduleUpdate();
 

@@ -385,27 +385,12 @@ void Enemy::belowCollisionCallback(const CollisionTile& tile, const cocos2d::Rec
 
 void Enemy::prepareToShoot()  // TODO
 {
-    if (_ammoVector.size() > 1)
-    {
-        HeadingStateEnum direction = RIGHT_HEADING;
-        auto result =
-            std::find_if_not(_ammoVector.begin(), _ammoVector.end(), [&](const auto& v) { return v->isVisible(); });
-        if (result != _ammoVector.end())
-        {
+    HeadingStateEnum direction = getHeadingState();
+    for(auto & ammo : _ammoVector) {
+        if(!ammo->isVisible()) {
             _counter = Utility::randomValueBetween(300, 350);  // TODO put in config shooter(275, 325)
-            shootBullet(*result, direction);
-            direction = direction == RIGHT_HEADING ? LEFT_HEADING : RIGHT_HEADING;
-        }
-    }
-    else
-    {
-        auto result =
-            std::find_if_not(_ammoVector.begin(), _ammoVector.end(), [&](const auto& v) { return v->isVisible(); });
-        if (result != _ammoVector.end())
-        {
-            _counter = Utility::randomValueBetween(300, 350);  // TODO put in config shooter(275, 325)
-            shootBullet(*result, getHeadingState());
-            return;  // TODO check if works for static shooter2
+            shootBullet(ammo, direction);
+            direction = direction == LEFT_HEADING ? RIGHT_HEADING : LEFT_HEADING;
         }
     }
 }

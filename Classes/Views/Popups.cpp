@@ -55,9 +55,15 @@ cocos2d::Menu* Popup::addMenu()
     _menu = cocos2d::Menu::create();
     _menu->setPosition(cocos2d::Vec2::ZERO);
     addChild(_menu);
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) ||                            \
+    (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+    // keyboard events
+    // Currently Desktop only
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = CC_CALLBACK_2(Popup::onKeyPressed, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+#endif
 
     return _menu;
 }
@@ -193,7 +199,11 @@ PausePopup::PausePopup(GameScene* gameScene, int world, int level) : Popup(gameS
     auto node1 = Utility::addLabelButton(Localization::getLocalizedString("resume_button"),
                                          cocos2d::Vec2(visibleSize.width * 0.5F, visibleSize.height * 0.55F),
                                          CC_CALLBACK_1(PausePopup::resumeGameCallback, this));
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) ||                            \
+    (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+    // Currently Desktop only
     node1->selected();
+#endif
     _menuItems.push_back(node1);
     _menu->addChild(node1);
     auto node2 = Utility::addLabelButton(Localization::getLocalizedString("restart_button"),

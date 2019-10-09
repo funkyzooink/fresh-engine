@@ -57,7 +57,7 @@ class Enemy : public GameObject
     // MARK: variables
   private:
     CC_SYNTHESIZE_READONLY(bool, _canMove, CanMove)
-    CC_SYNTHESIZE_READONLY(bool, _canFly, CanFly)  // TODO a lot of those are only called once
+    CC_SYNTHESIZE_READONLY(bool, _canFly, CanFly)
     CC_SYNTHESIZE(bool, _isFriend, IsFriend)
 
   private:

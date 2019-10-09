@@ -204,12 +204,15 @@ bool GameScene::init()
     listener->onTouchesEnded = CC_CALLBACK_2(GameScene::onTouchesEnded, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) ||                            \
+    (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
     // keyboard events
+    // Currently Desktop only
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
     keyboardListener->onKeyReleased = CC_CALLBACK_2(GameScene::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
-
+#endif
     // accelerometer events
     //    auto accelerometer1 = GAMECONFIG.getControlConfig(CONSTANTS.accelerometer1).type;
     //    auto accelerometer2 = GAMECONFIG.getControlConfig(CONSTANTS.accelerometer2).type;
@@ -574,8 +577,6 @@ void GameScene::gameOverCallback(bool gameWon)
     }
 
     GAMEDATA.setPlayerId(_player->getId());
-
-    _player->setVisible(false);  // TODO remove
 
     if (gameWon)
     {

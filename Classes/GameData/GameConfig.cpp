@@ -385,12 +385,12 @@ void GameConfig::parsePlayerJSON()
         for (rapidjson::Value::ConstMemberIterator levelItr = animations.MemberBegin();
              levelItr != animations.MemberEnd(); ++levelItr)
         {
-            auto animation = levelItr->value.GetArray();
+            auto animations = levelItr->value.GetArray();
 
             std::vector<std::string> animationVector;
-            for (rapidjson::SizeType i = 0; i < animation.Size(); i++)  // TODO
+            for (auto &animation : animations)  // TODO std
             {
-                animationVector.push_back(animation[i].GetString());
+                animationVector.push_back(animation.GetString());
             }
             animationMap[levelItr->name.GetString()] = animationVector;
         }
@@ -878,7 +878,7 @@ void GameConfig::parseGameConfigJSON()
                     _sharingVector.push_back(config);
                 }
             }
-            else if (jsonObject.HasMember(configDefaultName.c_str()))
+            else if (jsonObject.HasMember(configDefaultName.c_str()))  // TODO duplicate code
             {
                 auto configObject = jsonObject[configDefaultName.c_str()].GetObject();
                 for (rapidjson::Value::ConstMemberIterator i = configObject.MemberBegin();
