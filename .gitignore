@@ -9,14 +9,10 @@ CMakeLists.txt
 # Div
 .DS_Store
 
-## Build generated
-DerivedData/
-
-## Build tool
-bin/build_tool
-node_modules
-archive/
+## Build 
 build/
+bin/
+.build/
 linux-build/
 vendor/
 .idea/
@@ -36,32 +32,8 @@ xcuserdata/
 *.moved-aside
 *.xcuserstate
 
-## Obj-C/Swift specific
-*.hmap
-*.ipa
-*.dSYM.zip
-*.dSYM
-
-## Playgrounds
-timeline.xctimeline
-playground.xcworkspace
-
-# Swift Package Manager
-#
-# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
-# Packages/
-.build/
-
-## CocoaPods
-/Pods
-
-## Fastlane
-/fastlane/logs/
-/fastlane/screenshots/
-/fastlane/metadata/
-/fastlane/test_output/
-/fastlane/report.xml
-bin
-
 #vscode
 /Classes/.vscode/*
+
+# Ignore generated Doxygen
+doxygen/Docs/html/*
