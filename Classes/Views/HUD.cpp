@@ -66,7 +66,7 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
     for (int j = 1; j < _lifeCounter; ++j)
     {
         cocos2d::Sprite* redHeart = cocos2d::Sprite::createWithSpriteFrameName(CONSTANTS.hudIconHeart);
-        redHeart->setPosition(_timerLabel->getPosition().x - (1 + _lifeCounter - j) * redHeart->getContentSize().width,
+        redHeart->setPosition(_timerLabel->getPosition().x - (_lifeCounter - j) * redHeart->getContentSize().width,
                               _timerLabel->getPosition().y + redHeart->getContentSize().height * 0.5);
         redHeart->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
         redHeart->setScale(_iconScaleFactor);
@@ -84,7 +84,7 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
 
     _enemySprite = cocos2d::Sprite::createWithSpriteFrameName(CONSTANTS.hudIconEnemy);
     _enemySprite->setPosition(_enemyLabel->getPosition().x - _enemySprite->getContentSize().width * _iconScaleFactor,
-                              _timerLabel->getPosition().y + _enemySprite->getContentSize().height * 0.5);
+                              _timerLabel->getPosition().y + _enemySprite->getContentSize().height * 0.5 * _iconScaleFactor);
     _enemySprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     _enemySprite->setScale(_iconScaleFactor);
     addChild(_enemySprite);
@@ -99,7 +99,7 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
 
     _cashSprite = cocos2d::Sprite::createWithSpriteFrameName(CONSTANTS.hudIconCoin);
     _cashSprite->setPosition(_moneyLabel->getPosition().x - _cashSprite->getContentSize().width * _iconScaleFactor,
-                             _timerLabel->getPosition().y + _cashSprite->getContentSize().height * 0.5);
+                             _timerLabel->getPosition().y + _cashSprite->getContentSize().height * 0.5 * _iconScaleFactor);
     _cashSprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     _cashSprite->setScale(_iconScaleFactor);
     addChild(_cashSprite);
