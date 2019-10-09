@@ -139,7 +139,7 @@ cocos2d::MenuItemSprite* Utility::addFxButton(const cocos2d::ccMenuCallback& cal
 cocos2d::Sprite* Utility::createCrashCloud()
 {
     auto cloudIndex = Utility::randomValueBetween(1, 4);
-    std::string file = CONSTANTS.iconCrashCloud + Utility::numberToString(cloudIndex) + ".png";
+    std::string file = CONSTANTS.iconCrashCloud + Utility::numberToString(cloudIndex);
     cocos2d::Sprite* cloud = cocos2d::Sprite::createWithSpriteFrameName(file);
 
     cloud->setLocalZOrder(CONSTANTS.LocalZOrderEnum::CONTROLS_Z_ORDER);
