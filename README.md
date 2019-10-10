@@ -12,7 +12,7 @@ fresh engine is a platformer engine build on top of cocos2dx
         $ cd fresh-engine
         fresh-engine $ git submodule update --init
 
-3. Setup cocos2dx 
+3. Setup [cocos2dx](https://github.com/cocos2d/cocos2d-x) , for more details check their [github](https://github.com/cocos2d/cocos2d-x)
 
         fresh-engine $ cd cocos2d
         fresh-engine/cocos2d $ python2 download-deps.py
@@ -31,9 +31,11 @@ fresh engine is a platformer engine build on top of cocos2dx
 
         fresh-engine $ python2 build.py -n ../the-dragon-kid/
 
-6. compile 
+6a. compile using commandline
 
         fresh-engine $ python2 build.py -p android
+
+6b. or open project files in android / xcode
 
 
 # Contributing to the Project
