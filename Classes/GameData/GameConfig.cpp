@@ -309,8 +309,8 @@ rapidjson::Document GameConfig::parseJSON(const std::string& filename)
 
 void GameConfig::parseFiles()
 {
-    parseLocalizationJSON();
     parseGameConfigJSON();
+    parseLocalizationJSON();
 }
 
 void GameConfig::parseGameObjects()
