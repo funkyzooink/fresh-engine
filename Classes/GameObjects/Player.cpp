@@ -238,7 +238,6 @@ void Player::defaultCollisionCallback(const CollisionTile& tile, const cocos2d::
 {
     auto tiledMap = _gameScene->getTileMap();
     auto mapTileSize = tiledMap->getTileSize();
-    const auto& mapSize = tiledMap->getMapSize();
 
     if (intersection.size.width > intersection.size.height && intersection.size.width > mapTileSize.width / 2)
     {
