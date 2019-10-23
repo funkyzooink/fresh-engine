@@ -221,5 +221,8 @@ void MainScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
         case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
             // TODO ask if wants to quit
             cocos2d::Director::getInstance()->end();
+            break;
+        default:
+            break;
     }
 }

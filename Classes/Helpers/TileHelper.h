@@ -19,7 +19,7 @@ class TMXLayer;
 
 struct CollisionTile
 {
-    int tileIdx;
+    ssize_t tileIdx;
     int GID;
     cocos2d::Rect tileRect;
     float tilePositionX;
