@@ -723,10 +723,10 @@ void GameConfig::parseUpgradeJSON()
         {
             money = jsonActions[KEY_GAMEOBJECT_MONEY].GetInt();
         }
-        int player = -20;  // TODO default value!
+        std::string player;  // TODO optional
         if (jsonActions.HasMember(KEY_GAMEOBJECT_PLAYER))
         {
-            player = jsonActions[KEY_GAMEOBJECT_PLAYER].GetInt();
+            player = jsonActions[KEY_GAMEOBJECT_PLAYER].GetString();
         }
 
         bool gameOver = false;

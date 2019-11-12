@@ -28,7 +28,7 @@ struct UpgradeActions
 {
     int life{};
     int money{};
-    int playerId{};
+    std::string playerName{};
     bool gameOver{};
     std::string audio;
 };

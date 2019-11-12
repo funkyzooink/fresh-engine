@@ -140,6 +140,10 @@ class GameScene : public cocos2d::Layer
      * disable a game object - needed for a delayed actions
      */
     void disableGameobject(bool dis, GameObject* p);
+
+    void upgradePlayer(Player* player, const cocos2d::Point& pPosition);
+    void upgradePlayerForId(int playerId);
+
     // MARK: variables
   private:
     HUD* _hudLayer;
@@ -164,7 +168,6 @@ class GameScene : public cocos2d::Layer
     CC_SYNTHESIZE_READONLY(int, _levelID, LevelID)
 
   public:  // TODO for new collision
-    void upgradePlayer(int playerId);
     void upgradePlayerForKey(const std::string& playerId);
 
     void showCrashCloud();

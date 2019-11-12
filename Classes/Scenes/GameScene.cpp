@@ -129,34 +129,36 @@ void GameScene::initTmxObjects()
 
         if (GAMECONFIG.isPlayerEntry(name))  // TODO remove
         {
-            // TODO use upgradePlayer
+            // TODO use upgradePlayerForId
             if (_player == nullptr)
             {
-                _player = GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId())->clone(this);
-                for (auto const& ammo : _player->getAmmoVector())
-                {
-                    _cameraFollowNode->addChild(ammo);
-                }
+                upgradePlayer(GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId()), position);
+                // _player = GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId())->clone(this);
+                // for (auto const& ammo : _player->getAmmoVector())
+                // {
+                //     _cameraFollowNode->addChild(ammo);
+                // }
 
-                _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-                _player->setPosition(position + _player->getContentSize() / 2);
-                _cameraFollowNode->addChild(_player);
+                // _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
+                // _player->setPosition(position + _player->getContentSize() / 2);
+                // _cameraFollowNode->addChild(_player);
             }
         }
         else if (GAMECONFIG.isPlayerType(name))  // TODO remove
         {
-            // TODO use upgradePlayer
+            // TODO use upgradePlayerForId
             if (_player == nullptr)
             {
-                _player = GAMECONFIG.getPlayerObjectForKey(name)->clone(this);
-                for (auto const& ammo : _player->getAmmoVector())
-                {
-                    _cameraFollowNode->addChild(ammo);
-                }
+                upgradePlayer(GAMECONFIG.getPlayerObjectForKey(name), position);
+                // _player = GAMECONFIG.getPlayerObjectForKey(name)->clone(this);
+                // for (auto const& ammo : _player->getAmmoVector())
+                // {
+                //     _cameraFollowNode->addChild(ammo);
+                // }
 
-                _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-                _player->setPosition(position + _player->getContentSize() / 2);
-                _cameraFollowNode->addChild(_player);
+                // _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
+                // _player->setPosition(position + _player->getContentSize() / 2);
+                // _cameraFollowNode->addChild(_player);
             }
             _allowedPlayerTypes.push_back(name);
         }
@@ -621,7 +623,7 @@ void GameScene::playerHitByEnemyCallback()  // TODO move to player class
 
         if (!GAMECONFIG.getPlayerObject(_player->getId())->_upgrade.empty())  // player has an upgrade -> loose upgrad
         {
-            upgradePlayer(0);  // TODO 0!
+            upgradePlayerForId(0);  // TODO 0!
         }
         else
         {
@@ -706,14 +708,33 @@ void GameScene::updateTutorial()
     }
 }
 void GameScene::upgradePlayerForKey(const std::string& playerKey)
-{  // TODO is there a better way?
-    cocos2d::Point pPosition = _player->getPosition();
+{
+    cocos2d::Point pPosition = _player->getPosition() - _player->getContentSize() / 2; // TODO remove this workaround
     _cameraFollowNode->removeChild(_player);
 
-    auto playerConfig = GAMECONFIG.getPlayerObjectForKey(playerKey);
     _player->setDisabled(true);
-    _player = playerConfig->clone(this);
-    _player->setPosition(pPosition);
+
+    auto player = GAMECONFIG.getPlayerObjectForKey(playerKey);
+    upgradePlayer(player, pPosition);
+}
+
+void GameScene::upgradePlayerForId(int playerId)
+{
+    cocos2d::Point pPosition = _player->getPosition() - _player->getContentSize() / 2; // TODO remove this workaround
+    _cameraFollowNode->removeChild(_player);
+
+    _player->setDisabled(true);
+
+    auto player = GAMECONFIG.getPlayerObject(playerId);
+    upgradePlayer(player, pPosition);
+}
+
+void GameScene::upgradePlayer(Player* player, const cocos2d::Point& pPosition)
+{
+    // TODO is there a better way
+
+    _player = player->clone(this);
+    _player->setPosition(pPosition + _player->getContentSize() / 2);
     _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     for (auto const& ammo : _player->getAmmoVector())
     {
@@ -728,32 +749,6 @@ void GameScene::upgradePlayerForKey(const std::string& playerKey)
     _hudLayer->setCustomButton1(_player->getCustomButton1());
     _hudLayer->setCustomButton2(_player->getCustomButton2());
 }
-
-// TODO remove
-void GameScene::upgradePlayer(int playerId)
-{  // TODO is there a better way?
-    cocos2d::Point pPosition = _player->getPosition();
-    _cameraFollowNode->removeChild(_player);
-
-    auto playerConfig = GAMECONFIG.getPlayerObject(playerId);
-    _player->setDisabled(true);
-    _player = playerConfig->clone(this);
-    _player->setPosition(pPosition);
-    _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-    for (auto const& ammo : _player->getAmmoVector())
-    {
-        _cameraFollowNode->addChild(ammo);
-    }
-    _cameraFollowNode->addChild(_player);
-    _cameraFollowNode->stopAllActions();
-    _cameraFollowNode->runAction(Shake::create(0.05F, 4.0F, 4.0F));
-    _cameraFollowNode->runAction(cocos2d::Follow::create(_player, _tiledMap->getBoundingBox()));
-    _player->runAction(AnimationHelper::blinkAnimation());
-
-    _hudLayer->setCustomButton1(_player->getCustomButton1());
-    _hudLayer->setCustomButton2(_player->getCustomButton2());
-}
-
 // TODO new collision
 void GameScene::showCrashCloud()
 {

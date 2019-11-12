@@ -109,9 +109,9 @@ bool Upgrade::playerCollision()
             _gameScene->gameOverCallback(true);
             return true;
         }
-        else if (_actions.playerId > 0)  // classic upgrade // TODO default value?
+        else if (!_actions.playerName.empty())  // classic upgrade // TODO default value?
         {
-            if (player->getId() == _actions.playerId)  // skip if player already has this
+            if (player->getName() == _actions.playerName)  // skip if player already has this
             {
                 return true;
             }
@@ -120,7 +120,7 @@ bool Upgrade::playerCollision()
             runAction(cocos2d::Sequence::create(cocos2d::ScaleTo::create(0.3F, 2.0F), nullptr));
             runAction(cocos2d::Sequence::create(cocos2d::FadeOut::create(0.3F), cocos2d::Hide::create(), nullptr));
 
-            _gameScene->upgradePlayer(_actions.playerId);
+            _gameScene->upgradePlayerForKey(_actions.playerName);
 
             AudioPlayer::playFx(_actions.audio);
             return true;
