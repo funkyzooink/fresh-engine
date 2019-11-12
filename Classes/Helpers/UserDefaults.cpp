@@ -85,6 +85,7 @@ int UserDefaults::getTotalCashFromUserdefaults(int defaultValue)
 {
     return cocos2d::UserDefault::getInstance()->getIntegerForKey(CONSTANTS.userDefaultPlayerCash.c_str(), defaultValue);
 }
+
 int UserDefaults::getPlayerIdFromUserdefaults(int defaultValue)
 {
     return cocos2d::UserDefault::getInstance()->getIntegerForKey(CONSTANTS.userDefaultPlayerId.c_str(), defaultValue);

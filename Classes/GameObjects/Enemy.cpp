@@ -272,10 +272,14 @@ bool Enemy::playerCollision()
 
         if ((intersection.size.width * 3.0F) > intersection.size.height &&
             playerBb.origin.y - playerBb.size.height / 10 > gameObjectDestinationBb.origin.y && player->getHit() < 1 &&
-            player->getCanKillByJump())
+            player->getCanKill() == "jump")  // TODO 4f
         {
             _gameScene->destroyGameObject(this);
             player->jumpFromObject();
+        }
+        else if (player->getCanKill() == "touch")
+        {
+            _gameScene->destroyGameObject(this);
         }
         else
         {
@@ -386,8 +390,10 @@ void Enemy::belowCollisionCallback(const CollisionTile& tile, const cocos2d::Rec
 void Enemy::prepareToShoot()  // TODO
 {
     HeadingStateEnum direction = getHeadingState();
-    for(auto & ammo : _ammoVector) {
-        if(!ammo->isVisible()) {
+    for (auto& ammo : _ammoVector)
+    {
+        if (!ammo->isVisible())
+        {
             _counter = Utility::randomValueBetween(300, 350);  // TODO put in config shooter(275, 325)
             shootBullet(ammo, direction);
             direction = direction == LEFT_HEADING ? RIGHT_HEADING : LEFT_HEADING;

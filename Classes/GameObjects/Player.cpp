@@ -21,19 +21,21 @@ funkyzooink@gmail.com
 
 // MARK: - create
 
-Player::Player() : _canKillByJump(false), _attackTime(-10), _hit(0), _id(0), _shoot(0)
+Player::Player() : _canKill("no"), _attackTime(-10), _hit(0), _id(0), _shoot(0)
 {
     _sleeping = false;
     setHeadingState(RIGHT_HEADING);
 }
 
-Player* Player::create(const std::string& idleIcon, int id, float xSpeed, float ySpeed, bool canKillByJump,
-                       std::string additionalButton, std::vector<std::string> bulletTypes, bool flipAnimationX,
-                       std::string upgrade, std::map<AnimationHelper::AnimationTagEnum, std::string> animationEnumMap)
+Player* Player::create(const std::string& name, const std::string& idleIcon, int id, float xSpeed, float ySpeed,
+                       const std::string& canKill, const std::string& customButton1, const std::string& customButton2,
+                       std::vector<std::string> bulletTypes, bool flipAnimationX, std::string upgrade,
+                       std::map<AnimationHelper::AnimationTagEnum, std::string> animationEnumMap)
 {
     Player* sprite = createWithSpriteFrameName(idleIcon);
     sprite->_animationEnumMap = std::move(animationEnumMap);
 
+    sprite->_name = name;
     sprite->_idleIcon = idleIcon;
     sprite->_id = id;  // TODO remove
     sprite->_upgrade = std::move(upgrade);
@@ -45,19 +47,20 @@ Player* Player::create(const std::string& idleIcon, int id, float xSpeed, float 
 
     sprite->_ammoVector.clear();
 
-    sprite->_canKillByJump = canKillByJump;
+    sprite->_canKill = canKill;
     sprite->_flipAnimationX = flipAnimationX;
     sprite->setLife(GAMECONFIG.getGameplayConfig().playerMaxLife);
 
-    sprite->_additionalButton = std::move(additionalButton);
+    sprite->_customButton1 = std::move(customButton1);
+    sprite->_customButton2 = std::move(customButton2);
 
     sprite->_bulletTypes = std::move(bulletTypes);
     return sprite;
 }
 Player* Player::clone(GameScene* gameScene) const
 {
-    auto player = Player::create(_idleIcon, _id, _xSpeed, _ySpeed, _canKillByJump, _additionalButton, _bulletTypes,
-                                 _flipAnimationX, _upgrade, _animationEnumMap);
+    auto player = Player::create(_name, _idleIcon, _id, _xSpeed, _ySpeed, _canKill, _customButton1, _customButton2,
+                                 _bulletTypes, _flipAnimationX, _upgrade, _animationEnumMap);
     for (auto& bulletName : _bulletTypes)
     {
         player->addAmmo(bulletName, gameScene, true);
@@ -408,7 +411,7 @@ void Player::restore()
 
 bool Player::canBreakFloor()
 {
-    return _additionalButton == CONSTANTS.buttonTypeDown;
+    return _customButton1 == CONSTANTS.buttonTypeDown || _customButton2 == CONSTANTS.buttonTypeDown;
 }
 
 bool Player::canShoot()

@@ -101,8 +101,7 @@ class GameScene : public cocos2d::Layer
     void menuPauseCallback(cocos2d::Ref* pSender);  // Pause Button Callback
     void actionLeft();
     void actionRight();
-    void actionDown(bool move);
-    void actionUp(bool move);
+    void actionCustom(bool move, const std::string& customAction);
     void handleTouchArea(const std::string& touchType, bool move);
     void handleTouch(cocos2d::Touch* touch, bool move);
 
@@ -160,11 +159,13 @@ class GameScene : public cocos2d::Layer
     int _moneyCounter;
     int _moneyMaxCounter;
     int _tutorialInfoLabelIndex;
+    std::vector<std::string> _allowedPlayerTypes;
 
     CC_SYNTHESIZE_READONLY(int, _levelID, LevelID)
 
   public:  // TODO for new collision
     void upgradePlayer(int playerId);
+    void upgradePlayerForKey(const std::string& playerId);
 
     void showCrashCloud();
 

@@ -71,6 +71,8 @@ Constants::Constants()
   , buttonTypeAttack("attack")
   , buttonTypeShoot("shoot")
   , buttonTypeDown("down")
+  , buttonTypeJump("jump")
+  , buttonTypeSwitch("switch")
 
   , tilemapTileLayer("tileLayer")
   , tilemapHazardLayer("hazardLayer")

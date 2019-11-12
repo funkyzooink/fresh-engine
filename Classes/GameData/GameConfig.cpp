@@ -25,9 +25,10 @@ static const char* GAMECONFIG_JSON_PATH = "json/gameconfig.json";
 
 static const char* KEY_GAMEOBJECT_UPGRADE = "upgrade";
 static const char* KEY_GAMEOBJECT_BULLETTYPE = "bullet_type";
-static const char* KEY_GAMEOBJECT_CANKILL = "can_kill_by_jump";
+static const char* KEY_GAMEOBJECT_CANKILL = "can_kill";
 static const char* KEY_GAMEOBJECT_FLIPX = "flip_animation_x";
-static const char* KEY_GAMEOBJECT_ADDITIONALBUTTON = "additional_button";
+static const char* KEY_GAMEOBJECT_CUSTOMBUTTON1 = "custom_action_1";
+static const char* KEY_GAMEOBJECT_CUSTOMBUTTON2 = "custom_action_2";
 static const char* KEY_GAMEOBJECT_ANIMATIONS = "animations";
 static const char* KEY_GAMEOBJECT_ANIMATION_IDLE = "idle_right";
 static const char* KEY_GAMEOBJECT_ID = "id";
@@ -112,40 +113,47 @@ Player* GameConfig::getPlayerObject(int id)
     return _playerGameObjectVector.at(id);
 }
 
-Enemy* GameConfig::getEnemyObject(const std::string& value)
-{
-#if COCOS2D_DEBUG > 0
-    auto message = "Config does not exist: " + value;
-    CCASSERT(_enemyGameObjectMap.count(value) > 0, message.c_str());
-#endif
-    return _enemyGameObjectMap[value];
+Player* GameConfig::getPlayerObjectForKey(const std::string& key)
+{  // TODO nullpntr handling
+    auto result = std::find_if(_playerGameObjectVector.begin(), _playerGameObjectVector.end(),
+                               [&](const auto& v) { return v->getName() == key; });
+    return *result;
 }
 
-Upgrade* GameConfig::getUpgradeObject(const std::string& value)
+Enemy* GameConfig::getEnemyObject(const std::string& key)
 {
 #if COCOS2D_DEBUG > 0
-    auto message = "Config does not exist: " + value;
-    CCASSERT(_upgradeGameObjectMap.count(value) > 0, message.c_str());
+    auto message = "Config does not exist: " + key;
+    CCASSERT(_enemyGameObjectMap.count(key) > 0, message.c_str());
 #endif
-    return _upgradeGameObjectMap[value];
+    return _enemyGameObjectMap[key];
 }
 
-Block* GameConfig::getBlockObject(const std::string& value)
+Upgrade* GameConfig::getUpgradeObject(const std::string& key)
 {
 #if COCOS2D_DEBUG > 0
-    auto message = "Config does not exist: " + value;
-    CCASSERT(_blockGameObjectMap.count(value) > 0, message.c_str());
+    auto message = "Config does not exist: " + key;
+    CCASSERT(_upgradeGameObjectMap.count(key) > 0, message.c_str());
 #endif
-    return _blockGameObjectMap[value];
+    return _upgradeGameObjectMap[key];
 }
 
-Bullet* GameConfig::getBulletObject(const std::string& value)
+Block* GameConfig::getBlockObject(const std::string& key)
 {
 #if COCOS2D_DEBUG > 0
-    auto message = "Config does not exist: " + value;
-    CCASSERT(_bulletGameObjectMap.count(value) > 0, message.c_str());
+    auto message = "Config does not exist: " + key;
+    CCASSERT(_blockGameObjectMap.count(key) > 0, message.c_str());
 #endif
-    return _bulletGameObjectMap[value];
+    return _blockGameObjectMap[key];
+}
+
+Bullet* GameConfig::getBulletObject(const std::string& key)
+{
+#if COCOS2D_DEBUG > 0
+    auto message = "Config does not exist: " + key;
+    CCASSERT(_bulletGameObjectMap.count(key) > 0, message.c_str());
+#endif
+    return _bulletGameObjectMap[key];
 }
 
 std::map<int, WorldConfig> GameConfig::getWorldOverview()
@@ -227,24 +235,31 @@ std::string GameConfig::getTextColor()
     return _textColor;
 }
 
-bool GameConfig::isEnemyType(const std::string& value)
+bool GameConfig::isEnemyType(const std::string& key)
 {
-    return _enemyGameObjectMap.count(value) > 0;
+    return _enemyGameObjectMap.count(key) > 0;
 }
 
-bool GameConfig::isBlockType(const std::string& value)
+bool GameConfig::isBlockType(const std::string& key)
 {
-    return _blockGameObjectMap.count(value) > 0;
+    return _blockGameObjectMap.count(key) > 0;
 }
 
-bool GameConfig::isPlayerType(const std::string& value)
+bool GameConfig::isPlayerType(const std::string& key)
 {
-    return value == KEY_GAMEOBJECT_PLAYER;
+    auto result = std::find_if(_playerGameObjectVector.begin(), _playerGameObjectVector.end(),
+                               [&](const auto& v) { return v->getName() == key; });
+    return (result != _playerGameObjectVector.end());
 }
 
-bool GameConfig::isUpgradeType(const std::string& value)
+bool GameConfig::isPlayerEntry(const std::string& key)  // TODO remove
 {
-    return _upgradeGameObjectMap.count(value) > 0;
+    return key == KEY_GAMEOBJECT_PLAYER;
+}
+
+bool GameConfig::isUpgradeType(const std::string& key)
+{
+    return _upgradeGameObjectMap.count(key) > 0;
 }
 
 SceneConfig* GameConfig::getMainSceneConfig()
@@ -361,10 +376,10 @@ void GameConfig::parsePlayerJSON()
             std::transform(bulletArray.begin(), bulletArray.end(), std::back_inserter(bullets),
                            [&](const auto& v) { return v.GetString(); });
         }
-        bool canKillByJump = false;
+        std::string canKill;  // TODO optional
         if (jsonObject.HasMember(KEY_GAMEOBJECT_CANKILL))
         {
-            canKillByJump = jsonObject[KEY_GAMEOBJECT_CANKILL].GetBool();
+            canKill = jsonObject[KEY_GAMEOBJECT_CANKILL].GetString();
         }
         bool flipAnimationX = false;
         if (jsonObject.HasMember(KEY_GAMEOBJECT_FLIPX))
@@ -372,10 +387,16 @@ void GameConfig::parsePlayerJSON()
             flipAnimationX = jsonObject[KEY_GAMEOBJECT_FLIPX].GetBool();
         }
 
-        std::string additionalButton;  // TODO optional
-        if (jsonObject.HasMember(KEY_GAMEOBJECT_ADDITIONALBUTTON))
+        std::string customButton1;  // TODO optional
+        if (jsonObject.HasMember(KEY_GAMEOBJECT_CUSTOMBUTTON1))
         {
-            additionalButton = jsonObject[KEY_GAMEOBJECT_ADDITIONALBUTTON].GetString();
+            customButton1 = jsonObject[KEY_GAMEOBJECT_CUSTOMBUTTON1].GetString();
+        }
+
+        std::string customButton2;  // TODO optional
+        if (jsonObject.HasMember(KEY_GAMEOBJECT_CUSTOMBUTTON2))
+        {
+            customButton2 = jsonObject[KEY_GAMEOBJECT_CUSTOMBUTTON2].GetString();
         }
 
         // animations
@@ -388,7 +409,7 @@ void GameConfig::parsePlayerJSON()
             auto animations = levelItr->value.GetArray();
 
             std::vector<std::string> animationVector;
-            for (auto &animation : animations)  // TODO std
+            for (auto& animation : animations)  // TODO std
             {
                 animationVector.push_back(animation.GetString());
             }
@@ -406,9 +427,9 @@ void GameConfig::parsePlayerJSON()
         auto animationEnum = AnimationHelper::initAnimations(filepath, animationMap);
 
         auto player =
-            Player::create(idleIcon, jsonObject[KEY_GAMEOBJECT_ID].GetInt(),
+            Player::create(itr->name.GetString(), idleIcon, jsonObject[KEY_GAMEOBJECT_ID].GetInt(),
                            jsonObject[KEY_GAMEOBJECT_SPEEDX].GetFloat(), jsonObject[KEY_GAMEOBJECT_SPEEDY].GetFloat(),
-                           canKillByJump, additionalButton, bullets, flipAnimationX, upgrade, animationEnum);
+                           canKill, customButton1, customButton2, bullets, flipAnimationX, upgrade, animationEnum);
         player->retain();
         _playerGameObjectVector.push_back(player);
     }

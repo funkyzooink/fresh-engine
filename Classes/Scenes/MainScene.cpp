@@ -132,7 +132,7 @@ cocos2d::Node* MainScene::createTiledBackground(const std::string& tiledMapPath)
         position.y = properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor();
 
         std::string name = properties.at("name").asString();
-        if (GAMECONFIG.isPlayerType(name))
+        if (GAMECONFIG.isPlayerEntry(name))
         {
             auto player = GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId())->clone(nullptr);  // TODO nullptr check
             player->setPosition(position + player->getContentSize() / 2);
@@ -156,15 +156,13 @@ void MainScene::menuExitCallback(Ref* pSender)
     {
         case MAINSCENE:
             break;
-        case SETTINGS:
-        {
+        case SETTINGS: {
             _settingsScenetype = MAINSCENE;
             _exitButton->setVisible(false);
             AnimationHelper::fadeOut(_settingsView, _mainView);
             break;
         }
-        case LEVELSELECT:
-        {
+        case LEVELSELECT: {
             _pageId = _levelSelectView->getPage();
             if (_pageId == LevelSelectView::_worldViewId)
             {
@@ -186,23 +184,20 @@ void MainScene::showPage(MainSceneType type)
     _settingsScenetype = type;
     switch (type)
     {
-        case MAINSCENE:
-        {
+        case MAINSCENE: {
             AudioPlayer::playMenuMusic();
             AnimationHelper::fadeIn(nullptr, _mainView);
             _exitButton->setVisible(false);
             break;
         }
-        case SETTINGS:
-        {
+        case SETTINGS: {
             _levelSelectView->setVisible(false);
             AnimationHelper::fadeIn(_mainView, _settingsView);
             _settingsView->showPage();
             _exitButton->setVisible(true);
             break;
         }
-        case LEVELSELECT:
-        {
+        case LEVELSELECT: {
             _settingsView->setVisible(false);
             _exitButton->setVisible(true);
             _levelSelectView->showPage(_pageId);

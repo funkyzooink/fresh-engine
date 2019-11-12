@@ -112,6 +112,8 @@ class Constants
     const std::string buttonTypeAttack;
     const std::string buttonTypeShoot;
     const std::string buttonTypeDown;
+    const std::string buttonTypeJump;
+    const std::string buttonTypeSwitch;
 
     // MARK: Tile map
     const std::string tilemapTileLayer;               // tmx layer with normal tiles

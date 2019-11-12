@@ -30,7 +30,8 @@ class HUD : public cocos2d::Layer
     void setLife(const int life);
     void initControls();  // init arrow up/down signs
 
-    void setAdditionalButton(const std::string& additionalButton);
+    void setCustomButton1(const std::string& customButton);
+    void setCustomButton2(const std::string& customButton);
 
   private:
     HUD();
@@ -47,6 +48,7 @@ class HUD : public cocos2d::Layer
 
     // Touch control
     cocos2d::Sprite* _touchArea3Sprite;
+    cocos2d::Sprite* _touchArea4Sprite;
 
     std::vector<cocos2d::Sprite*> _heartList;
     int _lifeCounter;

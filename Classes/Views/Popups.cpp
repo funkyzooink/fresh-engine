@@ -76,8 +76,7 @@ void Popup::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event
     switch (keyCode)
     {
         case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_S:
-        {
+        case cocos2d::EventKeyboard::KeyCode::KEY_S: {
             if (_selectedMenuItem <= _menuItems.size() - 1)
             {
                 _selectedMenuItem++;
@@ -91,8 +90,7 @@ void Popup::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_W:
-        {
+        case cocos2d::EventKeyboard::KeyCode::KEY_W: {
             if (_selectedMenuItem >= 1)
             {
                 _selectedMenuItem--;
@@ -107,8 +105,7 @@ void Popup::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
         case cocos2d::EventKeyboard::KeyCode::KEY_RETURN:
-        case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
-        {
+        case cocos2d::EventKeyboard::KeyCode::KEY_ENTER: {
             auto selected = _menuItems.at(_selectedMenuItem);
             selected->activate();
             break;

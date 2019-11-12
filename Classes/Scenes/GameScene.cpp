@@ -127,18 +127,38 @@ void GameScene::initTmxObjects()
 
         std::string name = properties.at("name").asString();
 
-        if (GAMECONFIG.isPlayerType(name))
+        if (GAMECONFIG.isPlayerEntry(name))  // TODO remove
         {
             // TODO use upgradePlayer
-            _player = GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId())->clone(this);
-            for (auto const& ammo : _player->getAmmoVector())
+            if (_player == nullptr)
             {
-                _cameraFollowNode->addChild(ammo);
-            }
+                _player = GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId())->clone(this);
+                for (auto const& ammo : _player->getAmmoVector())
+                {
+                    _cameraFollowNode->addChild(ammo);
+                }
 
-            _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-            _player->setPosition(position + _player->getContentSize() / 2);
-            _cameraFollowNode->addChild(_player);
+                _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
+                _player->setPosition(position + _player->getContentSize() / 2);
+                _cameraFollowNode->addChild(_player);
+            }
+        }
+        else if (GAMECONFIG.isPlayerType(name))  // TODO remove
+        {
+            // TODO use upgradePlayer
+            if (_player == nullptr)
+            {
+                _player = GAMECONFIG.getPlayerObjectForKey(name)->clone(this);
+                for (auto const& ammo : _player->getAmmoVector())
+                {
+                    _cameraFollowNode->addChild(ammo);
+                }
+
+                _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
+                _player->setPosition(position + _player->getContentSize() / 2);
+                _cameraFollowNode->addChild(_player);
+            }
+            _allowedPlayerTypes.push_back(name);
         }
         else if (GAMECONFIG.isEnemyType(name))
         {
@@ -175,7 +195,8 @@ void GameScene::initTmxObjects()
     _hudLayer->setLocalZOrder(CONSTANTS.LocalZOrderEnum::CONTROLS_Z_ORDER);
     addChild(_hudLayer);
 
-    _hudLayer->setAdditionalButton(_player->getAdditionalButton());
+    _hudLayer->setCustomButton1(_player->getCustomButton1());
+    _hudLayer->setCustomButton2(_player->getCustomButton2());
 }
 
 void GameScene::initParallaxBackground()
@@ -337,33 +358,28 @@ void GameScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 
     switch (keyCode)
     {
-        case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
-        {
+        case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE: {
             menuPauseCallback(this);
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_A:
-        {
+        case cocos2d::EventKeyboard::KeyCode::KEY_A: {
             actionLeft();
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_D:
-        {
+        case cocos2d::EventKeyboard::KeyCode::KEY_D: {
             actionRight();
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_S:
-        {
-            actionDown(false);
+        case cocos2d::EventKeyboard::KeyCode::KEY_S: {
+            actionCustom(false, _player->getCustomButton1());
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_W:
-        {
-            actionUp(false);
+        case cocos2d::EventKeyboard::KeyCode::KEY_W: {
+            actionCustom(false, _player->getCustomButton2());
             break;
         }
         default:
@@ -426,12 +442,11 @@ void GameScene::actionRight()
     _player->setMovementState(GameObject::MovementStateEnum::WALK_MOVEMENT);
 }
 
-void GameScene::actionDown(bool move)
+void GameScene::actionCustom(bool move, const std::string& additionalButton)
 {
     if (move)  // only run this action on touch down
         return;
 
-    auto additionalButton = _player->getAdditionalButton();
     if (additionalButton == CONSTANTS.buttonTypeAttack)
     {
         _player->attack();
@@ -444,30 +459,37 @@ void GameScene::actionDown(bool move)
     {
         _player->setJumpState(GameObject::JumpStateEnum::FALLING_DOWN_JUMP);
     }
-    else
+    else if (additionalButton == CONSTANTS.buttonTypeJump)
     {
+        if (_player->getJumpState() == GameObject::JumpStateEnum::NO_JUMP)  // normal jump
+        {
+            _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_JUMP);
+            AudioPlayer::playFx(CONSTANTS.audioJump);
+        }
+        else if (_player->getJumpState() == GameObject::JumpStateEnum::JUMP)  // dbl jump
+        {
+            _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_DOUBLE_JUMP);
+            AudioPlayer::playFx(CONSTANTS.audioJump);
+
+            _crashCloudSprite->setPosition(_player->getPosition());
+            _crashCloudSprite->setVisible(true);
+            _crashCloudSprite->runAction(
+                cocos2d::Sequence::create(cocos2d::FadeIn::create(0.15F), cocos2d::FadeOut::create(0.15F), nullptr));
+        }
     }
-}
-
-void GameScene::actionUp(bool move)
-{
-    if (move)  // only run this action on touch down
-        return;
-
-    if (_player->getJumpState() == GameObject::JumpStateEnum::NO_JUMP)  // normal jump
-    {
-        _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_JUMP);
-        AudioPlayer::playFx(CONSTANTS.audioJump);
-    }
-    else if (_player->getJumpState() == GameObject::JumpStateEnum::JUMP)  // dbl jump
-    {
-        _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_DOUBLE_JUMP);
-        AudioPlayer::playFx(CONSTANTS.audioJump);
-
-        _crashCloudSprite->setPosition(_player->getPosition());
-        _crashCloudSprite->setVisible(true);
-        _crashCloudSprite->runAction(
-            cocos2d::Sequence::create(cocos2d::FadeIn::create(0.15F), cocos2d::FadeOut::create(0.15F), nullptr));
+    else if (additionalButton == CONSTANTS.buttonTypeSwitch && _allowedPlayerTypes.size() > 0)
+    {  // TODO error handling
+        auto result = std::find_if(_allowedPlayerTypes.begin(), _allowedPlayerTypes.end(),
+                                   [&](const auto& v) { return v == _player->getName(); });
+        auto next = std::next(result, 1);
+        if (next != _allowedPlayerTypes.end())
+        {
+            upgradePlayerForKey(*next);
+        }
+        else
+        {
+            upgradePlayerForKey(*_allowedPlayerTypes.begin());
+        }
     }
 }
 
@@ -481,13 +503,13 @@ void GameScene::handleTouchArea(const std::string& touchType, bool move)
     {
         actionRight();
     }
-    else if (touchType == "additional")
+    else if (touchType == "custom1")
     {
-        actionDown(move);
+        actionCustom(move, _player->getCustomButton1());
     }
-    else if (touchType == "jump")
+    else if (touchType == "custom2")
     {
-        actionUp(move);
+        actionCustom(move, _player->getCustomButton2());
     }
 }
 
@@ -683,7 +705,31 @@ void GameScene::updateTutorial()
         }
     }
 }
+void GameScene::upgradePlayerForKey(const std::string& playerKey)
+{  // TODO is there a better way?
+    cocos2d::Point pPosition = _player->getPosition();
+    _cameraFollowNode->removeChild(_player);
 
+    auto playerConfig = GAMECONFIG.getPlayerObjectForKey(playerKey);
+    _player->setDisabled(true);
+    _player = playerConfig->clone(this);
+    _player->setPosition(pPosition);
+    _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
+    for (auto const& ammo : _player->getAmmoVector())
+    {
+        _cameraFollowNode->addChild(ammo);
+    }
+    _cameraFollowNode->addChild(_player);
+    _cameraFollowNode->stopAllActions();
+    _cameraFollowNode->runAction(Shake::create(0.05F, 4.0F, 4.0F));
+    _cameraFollowNode->runAction(cocos2d::Follow::create(_player, _tiledMap->getBoundingBox()));
+    _player->runAction(AnimationHelper::blinkAnimation());
+
+    _hudLayer->setCustomButton1(_player->getCustomButton1());
+    _hudLayer->setCustomButton2(_player->getCustomButton2());
+}
+
+// TODO remove
 void GameScene::upgradePlayer(int playerId)
 {  // TODO is there a better way?
     cocos2d::Point pPosition = _player->getPosition();
@@ -704,7 +750,8 @@ void GameScene::upgradePlayer(int playerId)
     _cameraFollowNode->runAction(cocos2d::Follow::create(_player, _tiledMap->getBoundingBox()));
     _player->runAction(AnimationHelper::blinkAnimation());
 
-    _hudLayer->setAdditionalButton(_player->getAdditionalButton());
+    _hudLayer->setCustomButton1(_player->getCustomButton1());
+    _hudLayer->setCustomButton2(_player->getCustomButton2());
 }
 
 // TODO new collision

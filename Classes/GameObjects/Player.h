@@ -14,8 +14,9 @@ class Player : public GameObject
 {
   public:
     // MARK: cocos2dx inherited
-    static Player* create(const std::string& filepath, int id, float xSpeed, float ySpeed, bool canKillByJump,
-                          std::string additionalButton, std::vector<std::string> bulletTypes, bool flipAnimationX,
+    static Player* create(const std::string& name, const std::string& filepath, int id, float xSpeed, float ySpeed,
+                          const std::string& canKill, const std::string& customButton1,
+                          const std::string& customButton2, std::vector<std::string> bulletTypes, bool flipAnimationX,
                           std::string upgrade, std::map<AnimationHelper::AnimationTagEnum, std::string> animationMap);
     static Player* createWithSpriteFrameName(const std::string& spriteFrameName);
     virtual Player* clone(GameScene* gameScene) const override;
@@ -91,8 +92,9 @@ class Player : public GameObject
     // MARK: variables
   private:
     Player();
-    CC_SYNTHESIZE(std::string, _additionalButton, AdditionalButton)
-    CC_SYNTHESIZE_READONLY(bool, _canKillByJump, CanKillByJump)
+    CC_SYNTHESIZE(std::string, _customButton1, CustomButton1)
+    CC_SYNTHESIZE(std::string, _customButton2, CustomButton2)
+    CC_SYNTHESIZE_READONLY(std::string, _canKill, CanKill)
     CC_SYNTHESIZE(int, _hit, Hit)
 
     int _attackTime;

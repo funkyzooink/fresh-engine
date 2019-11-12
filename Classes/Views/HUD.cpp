@@ -21,6 +21,7 @@ HUD::HUD()
   , _cashSprite(nullptr)
   , _enemySprite(nullptr)
   , _touchArea3Sprite(nullptr)
+  , _touchArea4Sprite(nullptr)
   , _lifeCounter(0)
   , _iconScaleFactor(0.0)
 {
@@ -84,7 +85,8 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
 
     _enemySprite = cocos2d::Sprite::createWithSpriteFrameName(CONSTANTS.hudIconEnemy);
     _enemySprite->setPosition(_enemyLabel->getPosition().x - _enemySprite->getContentSize().width * _iconScaleFactor,
-                              _timerLabel->getPosition().y + _enemySprite->getContentSize().height * 0.5 * _iconScaleFactor);
+                              _timerLabel->getPosition().y +
+                                  _enemySprite->getContentSize().height * 0.5 * _iconScaleFactor);
     _enemySprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     _enemySprite->setScale(_iconScaleFactor);
     addChild(_enemySprite);
@@ -99,7 +101,8 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
 
     _cashSprite = cocos2d::Sprite::createWithSpriteFrameName(CONSTANTS.hudIconCoin);
     _cashSprite->setPosition(_moneyLabel->getPosition().x - _cashSprite->getContentSize().width * _iconScaleFactor,
-                             _timerLabel->getPosition().y + _cashSprite->getContentSize().height * 0.5 * _iconScaleFactor);
+                             _timerLabel->getPosition().y +
+                                 _cashSprite->getContentSize().height * 0.5 * _iconScaleFactor);
     _cashSprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     _cashSprite->setScale(_iconScaleFactor);
     addChild(_cashSprite);
@@ -171,23 +174,23 @@ void HUD::setLife(const int life)
                                                        cocos2d::ScaleTo::create(0.05F, _iconScaleFactor), nullptr));
     }
 }
-void HUD::setAdditionalButton(const std::string& additionalButton)
+void HUD::setCustomButton1(const std::string&)
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
 
     // TODO get from json
-    if (additionalButton == CONSTANTS.buttonTypeAttack)
+    if (== CONSTANTS.buttonTypeAttack)
     {
         _touchArea3Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
         _touchArea3Sprite->setVisible(true);
     }
-    else if (additionalButton == CONSTANTS.buttonTypeShoot)
+    else if (== CONSTANTS.buttonTypeShoot)
     {
         _touchArea3Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
         _touchArea3Sprite->setVisible(true);
     }
-    else if (additionalButton == CONSTANTS.buttonTypeDown)
+    else if (== CONSTANTS.buttonTypeDown)
     {
         _touchArea3Sprite->setSpriteFrame(CONSTANTS.iconArrow);
         _touchArea3Sprite->setVisible(true);
@@ -198,6 +201,35 @@ void HUD::setAdditionalButton(const std::string& additionalButton)
     }
 #endif
 }
+
+void HUD::setCustomButton2(const std::string& customButton)
+{
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
+    (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
+
+    // TODO get from json
+    if (== CONSTANTS.buttonTypeAttack)
+    {
+        _touchArea4Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
+        _touchArea4Sprite->setVisible(true);
+    }
+    else if (== CONSTANTS.buttonTypeShoot)
+    {
+        _touchArea4Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
+        _touchArea4Sprite->setVisible(true);
+    }
+    else if (== CONSTANTS.buttonTypeDown)
+    {
+        _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow);
+        _touchArea4Sprite->setVisible(true);
+    }
+    else
+    {
+        _touchArea4Sprite->setVisible(false);
+    }
+#endif
+}
+
 void HUD::initControls()
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
@@ -228,7 +260,7 @@ void HUD::initControls()
         addChild(_touchArea2Sprite);
     }
 
-    // TODO currently touch Area 3 is reserved for Additional button - and it must be created
+    // TODO currently touch Area 3 and 4 are reserved for Custom buttons - and must be created
     _touchArea3Sprite = cocos2d::Sprite::create();
     _touchArea3Sprite->setPosition(visibleSize.width * CONSTANTS.touchArea3 - CONSTANTS.getOffset() / 2,
                                    CONSTANTS.getOffset() / 2);
@@ -236,16 +268,12 @@ void HUD::initControls()
     _touchArea3Sprite->setOpacity(128);
     addChild(_touchArea3Sprite);
 
-    auto touchArea4 = GAMECONFIG.getControlConfig(CONSTANTS.touch4).sprite;
-    if (!touchArea4.empty())
-    {
-        auto _touchArea4Sprite = cocos2d::Sprite::createWithSpriteFrameName(touchArea4);
-        _touchArea4Sprite->setPosition(visibleSize.width * CONSTANTS.touchArea4 - CONSTANTS.getOffset() / 2,
-                                       CONSTANTS.getOffset() / 2);
-        _touchArea4Sprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-        _touchArea4Sprite->setOpacity(128);
-        addChild(_touchArea4Sprite);
-    }
+    _touchArea4Sprite = cocos2d::Sprite::create();
+    _touchArea4Sprite->setPosition(visibleSize.width * CONSTANTS.touchArea4 - CONSTANTS.getOffset() / 2,
+                                   CONSTANTS.getOffset() / 2);
+    _touchArea4Sprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
+    _touchArea4Sprite->setOpacity(128);
+    addChild(_touchArea4Sprite);
 
 #endif
 }
