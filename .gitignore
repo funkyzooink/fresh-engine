@@ -5,6 +5,7 @@ proj.android/
 proj.linux/
 Resources/
 CMakeLists.txt
+CMakeLists.txt.user
 
 # Div
 .DS_Store
