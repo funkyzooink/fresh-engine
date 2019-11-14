@@ -125,6 +125,7 @@ class Constants
     const std::string tilemapInteractionObjectDestroy;
     const std::string tilemapInteractionObjectJump;
     const std::string tilemapInteractionObjectClimb;
+    const std::string tilemapInteractionObjectWalk;
 
     CC_SYNTHESIZE(std::string, _tileSizeIdentifier, TileSizeIdentifier);
 

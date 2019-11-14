@@ -82,6 +82,7 @@ Constants::Constants()
   , tilemapInteractionObjectDestroy("destroy")
   , tilemapInteractionObjectJump("jump")
   , tilemapInteractionObjectClimb("climb")
+  , tilemapInteractionObjectWalk("walk")
 
   // Button Size in according resolution
   , buttonSizeSD(32)

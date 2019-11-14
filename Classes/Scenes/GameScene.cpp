@@ -603,7 +603,8 @@ void GameScene::playerHitByEnemyCallback()  // TODO move to player class
     {
         _player->setHit(55);
 
-        if (!GAMECONFIG.getPlayerObjectForKey(_player->getName())->_upgrade.empty())  // player has an upgrade -> loose upgrad
+        if (!GAMECONFIG.getPlayerObjectForKey(_player->getName())->_upgrade.empty())  // player has an upgrade -> loose
+                                                                                      // upgrad
         {
             upgradePlayerForId(0);  // TODO 0!
         }
@@ -691,7 +692,7 @@ void GameScene::updateTutorial()
 }
 void GameScene::upgradePlayerForKey(const std::string& playerKey)
 {
-    cocos2d::Point pPosition = _player->getPosition() - _player->getContentSize() / 2; // TODO remove this workaround
+    cocos2d::Point pPosition = _player->getPosition() - _player->getContentSize() / 2;  // TODO remove this workaround
     _cameraFollowNode->removeChild(_player);
 
     _player->setDisabled(true);
@@ -702,7 +703,7 @@ void GameScene::upgradePlayerForKey(const std::string& playerKey)
 
 void GameScene::upgradePlayerForId(int playerId)
 {
-    cocos2d::Point pPosition = _player->getPosition() - _player->getContentSize() / 2; // TODO remove this workaround
+    cocos2d::Point pPosition = _player->getPosition() - _player->getContentSize() / 2;  // TODO remove this workaround
     _cameraFollowNode->removeChild(_player);
 
     _player->setDisabled(true);
