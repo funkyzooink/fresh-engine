@@ -141,7 +141,7 @@ class GameScene : public cocos2d::Layer
      */
     void disableGameobject(bool dis, GameObject* p);
 
-    void upgradePlayer(Player* player, const cocos2d::Point& pPosition);
+    void initPlayer(Player* player, const cocos2d::Point& pPosition);
     void upgradePlayerForId(int playerId);
 
     // MARK: variables

@@ -132,33 +132,15 @@ void GameScene::initTmxObjects()
             // TODO use upgradePlayerForId
             if (_player == nullptr)
             {
-                upgradePlayer(GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId()), position);
-                // _player = GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId())->clone(this);
-                // for (auto const& ammo : _player->getAmmoVector())
-                // {
-                //     _cameraFollowNode->addChild(ammo);
-                // }
-
-                // _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-                // _player->setPosition(position + _player->getContentSize() / 2);
-                // _cameraFollowNode->addChild(_player);
+                initPlayer(GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId()), position);
             }
         }
-        else if (GAMECONFIG.isPlayerType(name))  // TODO remove
+        else if (GAMECONFIG.isPlayerType(name))
         {
             // TODO use upgradePlayerForId
             if (_player == nullptr)
             {
-                upgradePlayer(GAMECONFIG.getPlayerObjectForKey(name), position);
-                // _player = GAMECONFIG.getPlayerObjectForKey(name)->clone(this);
-                // for (auto const& ammo : _player->getAmmoVector())
-                // {
-                //     _cameraFollowNode->addChild(ammo);
-                // }
-
-                // _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-                // _player->setPosition(position + _player->getContentSize() / 2);
-                // _cameraFollowNode->addChild(_player);
+                initPlayer(GAMECONFIG.getPlayerObjectForKey(name), position);
             }
             _allowedPlayerTypes.push_back(name);
         }
@@ -621,7 +603,7 @@ void GameScene::playerHitByEnemyCallback()  // TODO move to player class
     {
         _player->setHit(55);
 
-        if (!GAMECONFIG.getPlayerObject(_player->getId())->_upgrade.empty())  // player has an upgrade -> loose upgrad
+        if (!GAMECONFIG.getPlayerObjectForKey(_player->getName())->_upgrade.empty())  // player has an upgrade -> loose upgrad
         {
             upgradePlayerForId(0);  // TODO 0!
         }
@@ -715,7 +697,7 @@ void GameScene::upgradePlayerForKey(const std::string& playerKey)
     _player->setDisabled(true);
 
     auto player = GAMECONFIG.getPlayerObjectForKey(playerKey);
-    upgradePlayer(player, pPosition);
+    initPlayer(player, pPosition);
 }
 
 void GameScene::upgradePlayerForId(int playerId)
@@ -726,10 +708,10 @@ void GameScene::upgradePlayerForId(int playerId)
     _player->setDisabled(true);
 
     auto player = GAMECONFIG.getPlayerObject(playerId);
-    upgradePlayer(player, pPosition);
+    initPlayer(player, pPosition);
 }
 
-void GameScene::upgradePlayer(Player* player, const cocos2d::Point& pPosition)
+void GameScene::initPlayer(Player* player, const cocos2d::Point& pPosition)
 {
     // TODO is there a better way
 
