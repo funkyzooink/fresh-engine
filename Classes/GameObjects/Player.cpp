@@ -188,15 +188,15 @@ void Player::collisionHazardTiles()
 
 void Player::aboveCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection)
 {
-    auto collisionSource = tile.tileRect.origin;
-    float tileX = tile.tilePositionX;
-    float tileY = tile.tilePositionY;
-    auto tileCoordinate = cocos2d::Point(tileX, tileY);
+    auto collisionSource = tile.tileRect;
 
-    auto interaction = checkInteractionObjectCollision(collisionSource, tileCoordinate);
+    auto interaction = checkInteractionObjectCollision(collisionSource);
     if (interaction == InteractionCollisionEnum::DESTROY)
     {
-        destroyBlock(collisionSource, tileCoordinate);
+            float tileX = tile.tilePositionX;
+    float tileY = tile.tilePositionY;
+    auto tileCoordinate = cocos2d::Point(tileX, tileY);
+        destroyBlock(collisionSource.origin, tileCoordinate);
     }
     else if (interaction == InteractionCollisionEnum::NO_INTERACTION)  // nothing
     {
@@ -214,25 +214,22 @@ void Player::belowCollisionCallback(const CollisionTile& tile, const cocos2d::Re
     {
         _gameScene->showCrashCloud();
 
-        auto collisionSource = tile.tileRect.origin;
-        float tileX = tile.tilePositionX;
-        float tileY = tile.tilePositionY;
-        auto tileCoordinate = cocos2d::Point(tileX, tileY);
-        auto interaction = checkInteractionObjectCollision(collisionSource, tileCoordinate);
+        auto collisionSource = tile.tileRect;
+        auto interaction = checkInteractionObjectCollision(collisionSource);
         // TODO ladder down
         if (interaction == InteractionCollisionEnum::DESTROY && canBreakFloor())  // break though
         {
-            destroyBlock(collisionSource, tileCoordinate);
+                    float tileX = tile.tilePositionX;
+        float tileY = tile.tilePositionY;
+        auto tileCoordinate = cocos2d::Point(tileX, tileY);
+            destroyBlock(collisionSource.origin, tileCoordinate);
         }
     }
     else if (getDesiredPosition().y < getPosition().y)  // TODO test if this
                                                         // always works
     {
-        auto collisionSource = tile.tileRect.origin;
-        float tileX = tile.tilePositionX;
-        float tileY = tile.tilePositionY;
-        auto tileCoordinate = cocos2d::Point(tileX, tileY);
-        auto interaction = checkInteractionObjectCollision(collisionSource, tileCoordinate);
+        auto collisionSource = tile.tileRect;
+        auto interaction = checkInteractionObjectCollision(collisionSource);
 
         if (interaction == InteractionCollisionEnum::CLIMB || interaction == InteractionCollisionEnum::NO_INTERACTION ||
             interaction == InteractionCollisionEnum::JUMP)  // in case of jump through do not fall down again
@@ -256,11 +253,8 @@ void Player::belowCollisionCallback(const CollisionTile& tile, const cocos2d::Re
 }
 void Player::leftCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection)
 {  // if movableobject walks left stop him
-    auto collisionSource = tile.tileRect.origin;
-    float tileX = tile.tilePositionX;
-    float tileY = tile.tilePositionY;
-    auto tileCoordinate = cocos2d::Point(tileX, tileY);
-    auto interaction = checkInteractionObjectCollision(collisionSource, tileCoordinate);
+    auto collisionSource = tile.tileRect;
+    auto interaction = checkInteractionObjectCollision(collisionSource);
     if (interaction != InteractionCollisionEnum::WALK)
     {
         setObstacle(GameObject::ObstacleStateEnum::LEFT_OBSTACLE);
@@ -271,11 +265,8 @@ void Player::leftCollisionCallback(const CollisionTile& tile, const cocos2d::Rec
 
 void Player::rightCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection)
 {  // if movableobject walks right stop him
-    auto collisionSource = tile.tileRect.origin;
-    float tileX = tile.tilePositionX;
-    float tileY = tile.tilePositionY;
-    auto tileCoordinate = cocos2d::Point(tileX, tileY);
-    auto interaction = checkInteractionObjectCollision(collisionSource, tileCoordinate);
+    auto collisionSource = tile.tileRect;
+    auto interaction = checkInteractionObjectCollision(collisionSource);
     if (interaction != InteractionCollisionEnum::WALK)  // TODO climb animation
     {
         setObstacle(GameObject::ObstacleStateEnum::RIGHT_OBSTACLE);
@@ -340,25 +331,28 @@ void Player::destroyBlock(const cocos2d::Point& screenCoordinate, const cocos2d:
     _gameScene->explodeGameObject(bullet);
 }
 
-Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const cocos2d::Point& screenCoordinate,
-                                                                         const cocos2d::Point& tileCoordinate)
+Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const cocos2d::Rect& screenCoordinate)
 {
     auto tiledMap = _gameScene->getTileMap();
     cocos2d::TMXLayer* layer = tiledMap->getLayer(CONSTANTS.tilemapTileLayer);
-    auto tile = layer->getTileAt(tileCoordinate);
+    // auto tile = layer->getTileAt(tileCoordinate);
     cocos2d::TMXObjectGroup* grp = tiledMap->getObjectGroup(CONSTANTS.tilemapInteractionObjectGroup);
 
-    if (tile != nullptr && grp != nullptr)
+    if (//tile != nullptr && 
+    grp != nullptr)
     {
         auto objects = grp->getObjects();
         for (auto& object : objects)
         {
-            auto properties = object.asValueMap();
-            auto position =
-                cocos2d::Point(properties.at("x").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
-                               properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor());
 
-            if (position == screenCoordinate)
+            auto properties = object.asValueMap(); // TODO paint this rectangle for debbuging
+            auto position =
+                cocos2d::Rect(properties.at("x").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                               properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                               properties.at("width").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                               properties.at("height").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor());
+
+            if (position.intersectsRect(screenCoordinate))
             {
                 std::string name = properties.at("name").asString();
                 if (name == CONSTANTS.tilemapInteractionObjectDestroy)
@@ -375,6 +369,12 @@ Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const c
                 }
                 else if (name == CONSTANTS.tilemapInteractionObjectWalk)
                 {
+
+                    if (_debugNode == nullptr) {
+                            _debugNode = cocos2d::DrawNode::create();
+                            _debugNode->drawSolidRect(position.origin, position.size, cocos2d::Color4F::RED);
+                            _gameScene->addChild(_debugNode);
+                    }
                     return InteractionCollisionEnum::WALK;
                 }
                 return InteractionCollisionEnum::NO_INTERACTION;

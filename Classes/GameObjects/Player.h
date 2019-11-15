@@ -78,8 +78,7 @@ class Player : public GameObject
      * @param Point screenCoordinate  coordinate in screenspace
      * @param Point tileCoordinate  coordinate of tile
      */
-    InteractionCollisionEnum checkInteractionObjectCollision(const cocos2d::Point& screenCoordinate,
-                                                             const cocos2d::Point& tileCoordinate);
+    InteractionCollisionEnum checkInteractionObjectCollision(const cocos2d::Rect& screenCoordinate);
     /**
      * attack
      *
@@ -120,6 +119,8 @@ class Player : public GameObject
     int _attackTime;
     int _id;
     int _shoot;
+
+    cocos2d::DrawNode* _debugNode;
 };
 
 #endif  // GAMEOBJECTS_PLAYER_H_
