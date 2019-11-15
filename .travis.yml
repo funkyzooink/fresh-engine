@@ -1,54 +1,52 @@
 language: android
-
 git:
-    submodules: true
-
+  submodules: true
 android:
   components:
   - tools
   - platform-tools
-  - tools # tools twice on purpose
+  - tools
   - build-tools-28.0.3
   - android-28
 
 before_install:
-   # - echo yes | sdkmanager --licenses && yes | sdkmanager --update
-   - echo y | sdkmanager "ndk-bundle"
-   - echo y | sdkmanager "cmake;3.10.2.4988404"
-
+- openssl aes-256-cbc -K $encrypted_e0e99809c00b_key -iv $encrypted_e0e99809c00b_iv
+  -in fz.keystore.enc -out fz.keystore -d
+- echo y | sdkmanager "ndk-bundle"
+- echo y | sdkmanager "cmake;3.10.2.4988404"
 install:
-# NDK configuration
-    - printenv
-    - echo `pwd`
-    - wget http://dl.google.com/android/ndk/android-ndk-r10d-linux-x86_64.bin
-    - chmod a+x android-ndk-r10d-linux-x86_64.bin
-    - ./android-ndk-r10d-linux-x86_64.bin -y | grep -v Extracting # because log will be too long!
-    - export NDK_ROOT=`pwd`/android-ndk-r10d
-    - echo $NDK_ROOT
-    - export PATH=$PATH:$NDK_ROOT
-    - echo $PATH
+- printenv
+- echo `pwd`
+- echo $NDK_ROOT
+- export PATH=$PATH:$NDK_ROOT
+- echo $PATH
+- export NDK_ROOT=/usr/local/android-sdk/ndk-bundle
+- export PATH=$PATH:$NDK_ROOT
+- export ANDROID_SDK_ROOT=/usr/local/android-sdk
+- export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
+- cd cocos2d
+- python download-deps.py --remove-download=yes
+- python ./setup.py
+- export COCOS_CONSOLE_ROOT=`pwd`/tools/cocos2d-console/bin
+- export PATH=$PATH:$COCOS_CONSOLE_ROOT
+- export COCOS_TEMPLATES_ROOT=`pwd`/templates
+- export PATH=$PATH:$COCOS_TEMPLATES_ROOT
+- export ANT_ROOT=/usr/share/ant/bin
+- export PATH=$PATH:$ANT_ROOT
+- printenv
+- cd ..
+- python build.py -n examples/little-ninja/
+- cocos compile -p android  -j 8 --agreement n
+- python build.py -c
+- python build.py -n examples/the-dragon-kid/
+- cocos compile -p android  -j 8 --agreement n
 
-# Android SDK configuration
-    - export NDK_ROOT=/usr/local/android-sdk/ndk-bundle
-    - export PATH=$PATH:$NDK_ROOT
-    - export ANDROID_SDK_ROOT=/usr/local/android-sdk
-    - export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
-
-# cocos setup 
-    - cd cocos2d
-    - python download-deps.py --remove-download=yes
-    - python ./setup.py
-    - export COCOS_CONSOLE_ROOT=`pwd`/tools/cocos2d-console/bin
-    - export PATH=$PATH:$COCOS_CONSOLE_ROOT
-    - export COCOS_TEMPLATES_ROOT=`pwd`/templates
-    - export PATH=$PATH:$COCOS_TEMPLATES_ROOT
-    - export ANT_ROOT=/usr/share/ant/bin
-    - export PATH=$PATH:$ANT_ROOT
-    - printenv
-    - cd ..
-
-# create project files
-    - python build.py -n examples/little-ninja/
-
-script:
-    - cocos compile -p android -j 8 --agreement n
+deploy:
+  provider: releases
+  skip_cleanup: true
+  draft: true
+  api_key:
+    secure: "j+tIAJ//pdtLpzbo88KXydkUZ1sLSHvB3bA9+o2N3fyPVaXYDXhC1z7092F4NOTiH/2P6jCzorF/2xUOee/ugFwAqabqC2Hvf2GjkD+pKVbXIN82jsgfBzQsooHTKYrJ7ZZ4MovZTOYCo9vSisFeUcjfvZC4fl7+ppphOGYY7SFXJ8rXt/PvxJrAOUFa1YUVbtOlE5bg+enhz4uu2mNW3Crteo7qi/5LkgU6zBHpQWdYx3LLq90aL+gwVfOSrfb4klfMIO5FodGJi/YnXHdm2YP0kox7G/N346M3ivFYc2fkdiPmmo3znx2rVvswbfP2Om0enJsU/LnxEcAa/wtfVKShiMUuuOQjHK1ILL50MLNjJarHkKmGa9s/ouUu9KrS6ma1Hxm5C3cmojQjf6jdQNVXKiKR+dADV+2uViV0PV9TGrdo0ejKyIts5DxAkeHihRVYiewi8ANAJnxRRk3ukfrGbDzUJBGudbt6vzHKMAIZETlulA0rgTJOGdN/7+XQxdggXmCq/X1PdI83UbwTLLkRQGAF/R/LHXu7fl3qS5+xujTS2YFlZwudr2iMwgOLjhjIeoi/6M4EKxguJbvIJXOEo5IrA23J5/zQBpKdzCdypTzvewAQQyErQKpXtNcvAKvFsAnYRkcJAWVuaYlOMMgSNmUmRVgsC3LZ/5uLFmU=" 
+  file_glob: true
+  file: bin/release/android/*
+    

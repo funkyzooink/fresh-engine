@@ -176,11 +176,6 @@ def clean_folders():
         shutil.rmtree(dest)
         terminal_output('Removed %s' % dest)
 
-    dest = 'bin'
-    if os.path.isdir(dest): 
-        shutil.rmtree(dest)
-        terminal_output('Removed %s' % dest)
-
 def main(argv):
     platform = ''
     build_type = 'release'
