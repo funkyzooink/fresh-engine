@@ -1,3 +1,12 @@
 [submodule "cocos2d"]
 	path = cocos2d
 	url = https://github.com/cocos2d/cocos2d-x.git
+[submodule "examples/little-ninja"]
+	path = examples/little-ninja
+	url = https://github.com/funkyzooink/little-ninja.git
+[submodule "examples/the-dragon-kid"]
+	path = examples/the-dragon-kid
+	url = https://github.com/funkyzooink/the-dragon-kid.git
+[submodule "examples/little-robot-adventure"]
+	path = examples/little-robot-adventure
+	url = https://github.com/funkyzooink/little-robot-adventure.git

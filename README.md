@@ -18,24 +18,22 @@ fresh engine is a platformer engine build on top of cocos2dx
         fresh-engine/cocos2d $ python2 download-deps.py
         fresh-engine/cocos2d $ git submodule update --init
 
-4. clone a demo project in the same source folder
 
-`project\fresh engine`
+4. create project files for one of the examples
 
-`project\`[little-ninja](https://github.com/funkyzooink/little-ninja)
+`fresh-engine\examples\`[little-ninja](https://github.com/funkyzooink/little-ninja)
 
-`project\`[the-dragon-kid](https://github.com/funkyzooink/the-dragon-kid)
+`fresh-engine\examples\`[little-robot-adventure](https://github.com/funkyzooink/little-robot-adventure)
 
+`fresh-engine\examples\`[the-dragon-kid](https://github.com/funkyzooink/the-dragon-kid)
 
-5. create project files
+        fresh-engine $ python2 build.py -n examples/little-ninja/
 
-        fresh-engine $ python2 build.py -n ../the-dragon-kid/
-
-6a. compile using commandline
+5a. compile using commandline
 
         fresh-engine $ python2 build.py -p android
 
-6b. or open project files in android / xcode
+5b. or open project files in android studio / xcode / qt creator (linux)
 
 
 # Contributing to the Project

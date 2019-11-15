@@ -2,15 +2,26 @@ import org.gradle.internal.os.OperatingSystem
 
 apply plugin: 'com.android.application'
 
+static def generateVersionCode() {
+    def result = "git rev-list HEAD --count".execute().text.trim() //unix
+    if(result.empty) result = "PowerShell -Command git rev-list HEAD --count".execute().text.trim() //windows
+    if(result.empty) throw new RuntimeException("Could not generate versioncode on this platform? Cmd output: ${result.text}")
+    return result.toInteger()
+}
+
+def majorVersion = replace
+
 android {
     compileSdkVersion PROP_COMPILE_SDK_VERSION.toInteger()
+
+    def gitCommitCount = "git rev-list --all --count".execute().text.trim()
 
     defaultConfig {
         applicationId "org.cocos2dx.hellocpp"
         minSdkVersion PROP_MIN_SDK_VERSION
         targetSdkVersion PROP_TARGET_SDK_VERSION
-        versionCode 1
-        versionName "1.0"
+        versionCode generateVersionCode()
+        versionName "${majorVersion}.${generateVersionCode()}"
 
         externalNativeBuild {
             if (PROP_BUILD_TYPE == 'ndk-build') {
@@ -67,15 +78,7 @@ android {
     }
 
     signingConfigs {
-
-       release {
-            if (project.hasProperty("RELEASE_STORE_FILE")) {
-                storeFile file(RELEASE_STORE_FILE)
-                storePassword RELEASE_STORE_PASSWORD
-                keyAlias RELEASE_KEY_ALIAS
-                keyPassword RELEASE_KEY_PASSWORD
-            }
-        }
+       release 
     }
 
     buildTypes {
@@ -86,9 +89,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfig signingConfigs.release
-            }
+            signingConfig signingConfigs.release
 
             externalNativeBuild {
                 ndkBuild {
@@ -107,6 +108,17 @@ android {
                 }
             }
         }
+    }
+
+
+    def isRunningOnTravis = System.getenv("CI") == "true"
+
+    if (isRunningOnTravis) {
+        // configure keystore
+        signingConfigs.release.storeFile = file("../../fz.keystore")
+        signingConfigs.release.storePassword = System.getenv("keystore_password")
+        signingConfigs.release.keyAlias = System.getenv("keystore_alias")
+        signingConfigs.release.keyPassword = System.getenv("keystore_alias_password")
     }
 }
 
