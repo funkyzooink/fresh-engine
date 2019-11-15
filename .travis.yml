@@ -37,7 +37,7 @@ install:
 - python build.py --travis
 - cd proj.android
 script:
-- travis_wait 30 gradlew assembleRelease
+- gradlew assembleRelease
 #cocos compile -p android -m release -j 8 --agreement n
 deploy:
   provider: releases
