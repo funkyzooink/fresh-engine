@@ -67,14 +67,14 @@ def copy_templates():
         sys.exit(2)
     copy_files(src, dest)
 
-def prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_code, version_name):
+def prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name):
     src = 'templates/proj.ios_mac'
     dest = 'proj.ios_mac'
     set_ios_values(dest, app_name, ios_bundle_id) # TODO version number
 
     src = 'templates/proj.android'
     dest = 'proj.android'
-    set_android_values(dest, app_name, android_bundle_id, version_code, version_name)
+    set_android_values(dest, app_name, android_bundle_id, version_name)
 
     # rename android folders
     app_name = app_name.replace(" ", "")
@@ -100,7 +100,7 @@ def copy_files(src, dest):
 
     terminal_output('Files copied to: %s' % dest)
 
-def set_android_values(path, app_name, bundle_id, version_code, version_name):
+def set_android_values(path, app_name, bundle_id, version_name):
     manifestpath = path + '/app/AndroidManifest.xml'
     replace_in_file(manifestpath, bundle_id, 'org.cocos2dx.hellocpp')
     terminal_output('App bundleid set to: %s in folder: %s ' % (bundle_id, manifestpath))
@@ -114,9 +114,11 @@ def set_android_values(path, app_name, bundle_id, version_code, version_name):
 
     gradlepath = path + '/app/build.gradle'
     replace_in_file(gradlepath, bundle_id, 'org.cocos2dx.hellocpp')
-    code = 'versionCode ' + str(version_code)
+
+    code = 'majorVersion = ' + str(version_name)
+    replace_in_file(gradlepath, code , 'majorVersion = replace')
+
     name = 'versionName \"' + version_name + '\"'
-    replace_in_file(gradlepath, code , 'versionCode 1')
     replace_in_file(gradlepath, name, 'versionName \"1.0\"')
 
     mkpath = path + '/app/jni/Android.mk'
@@ -218,10 +220,9 @@ def main(argv):
         bundle_id_name = android_platform +  '_bundle_id'
         android_bundle_id = config[bundle_id_name]
         ios_bundle_id = config['ios_bundle_id']
-        version_code = config['version_code']
         version_name = config['version_name']
         copy_templates()
-        prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_code, version_name)
+        prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name)
         copy_resources(config_file_path, android_platform)
     else :  
         terminal_output('Missing Arguments: platform: %s, build_type %s, config_file_path %s' % (platform, build_type, config_file_path))
