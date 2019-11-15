@@ -52,10 +52,3 @@ install:
 
 script:
     - cocos compile -p android -j 8 --agreement n
-
-after_success:
-    - echo $TRAVIS_BRANCH
-    - echo $TRAVIS_PULL_REQUEST
-    - echo $TRAVIS_COMMIT_MESSAGE
-    - LATEST_COMMIT_LOG=`git log -1 --oneline`
- 
