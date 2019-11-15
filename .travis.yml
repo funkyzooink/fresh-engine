@@ -1,0 +1,56 @@
+language: android
+
+# Handle git submodules yourself
+git:
+    submodules: false
+
+env:
+  global:
+    secure: "TeSR8JLJd2Z0erCxcgLinC+me5SfwpgcCNwiTsqXn09erOgos2+mUbVQaSyo7Bw4OF4TmNpejX+jETd/lL4fTiWRDw6NW/cqEelk57fXJ5mmf5ey+tB1EkMFwd8x7Fw2vBe4xtO8KeohI6D1Gtu1qTYU9t9x4bhAd4qL15Y5osE="
+
+install:
+# NDK configuration
+    - printenv
+    - echo `pwd`
+    - wget http://dl.google.com/android/ndk/android-ndk-r10d-linux-x86_64.bin
+    - chmod a+x android-ndk-r10d-linux-x86_64.bin
+    - ./android-ndk-r10d-linux-x86_64.bin -y | grep -v Extracting # because log will be too long!
+    - export NDK_ROOT=`pwd`/android-ndk-r10d
+    - echo $NDK_ROOT
+    - export PATH=$PATH:$NDK_ROOT
+    - echo $PATH
+
+# Android SDK configuration
+    - export ANDROID_SDK_ROOT=/usr/local/android-sdk
+    - export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
+
+# git submodule
+# Use sed to replace the SSH URL with the public URL, then initialize submodules
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - git submodule update --init --recursive
+
+# cocos setup 
+    - cd ./src/cocos2d
+    - python download-deps.py --remove-download=yes
+    - python ./setup.py
+    - export COCOS_CONSOLE_ROOT=`pwd`/tools/cocos2d-console/bin
+    - export PATH=$PATH:$COCOS_CONSOLE_ROOT
+    - export COCOS_TEMPLATES_ROOT=`pwd`/templates
+    - export PATH=$PATH:$COCOS_TEMPLATES_ROOT
+    - export ANT_ROOT=/usr/share/ant/bin
+    - export PATH=$PATH:$ANT_ROOT
+    - printenv
+    - cd ..
+
+# create project files
+    - python build.py -n examples/little-ninja/
+
+script:
+    - cocos compile -p android -j 8
+
+after_success:
+    - echo $TRAVIS_BRANCH
+    - echo $TRAVIS_PULL_REQUEST
+    - echo $TRAVIS_COMMIT_MESSAGE
+    - LATEST_COMMIT_LOG=`git log -1 --oneline`
+ 
