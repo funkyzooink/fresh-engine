@@ -35,8 +35,8 @@ install:
 - printenv
 - cd ..
 - python build.py --travis
-script:
 - cd proj.android
+script:
 - travis_wait 30 gradlew assembleRelease
 #cocos compile -p android -m release -j 8 --agreement n
 deploy:
