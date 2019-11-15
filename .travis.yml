@@ -1,9 +1,19 @@
 language: android
 
-# Handle git submodules yourself
 git:
-    submodules: false
+    submodules: true
 
+android:
+  components:
+  - tools
+  - platform-tools
+  - build-tools-28.0.3
+  - android-28
+
+before_install:
+   - echo y | sdkmanager "ndk-bundle"
+   - echo y | sdkmanager "cmake;3.6.4111459"
+   
 install:
 # NDK configuration
     - printenv
@@ -17,13 +27,10 @@ install:
     - echo $PATH
 
 # Android SDK configuration
+    - export NDK_ROOT=/usr/local/android-sdk/ndk-bundle
+    - export PATH=$PATH:$NDK_ROOT
     - export ANDROID_SDK_ROOT=/usr/local/android-sdk
     - export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
-
-# git submodule
-# Use sed to replace the SSH URL with the public URL, then initialize submodules
-    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-    - git submodule update --init --recursive
 
 # cocos setup 
     - cd cocos2d
