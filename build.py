@@ -175,11 +175,31 @@ def clean_folders():
     if os.path.isdir(dest): 
         shutil.rmtree(dest)
         terminal_output('Removed %s' % dest)
+def ci_build():
+    project_path = "examples/little-ninja/"
 
-    dest = 'bin'
-    if os.path.isdir(dest): 
-        shutil.rmtree(dest)
-        terminal_output('Removed %s' % dest)
+    if os.environ.get('TRAVIS_TAG'):
+        tagname = os.environ["TRAVIS_TAG"]
+
+        if "little-ninja" in tagname:
+            project_path = "examples/little-ninja/"
+        elif "the-dragon-kid" in tagname:
+            project_path = "examples/the-dragon-kid/"
+        elif "4friends" in tagname:
+            project_path = "examples/4friends/"
+
+    project_copy_helper(project_path, 'play')
+
+def project_copy_helper(config_file_path, android_platform):
+    config = json.loads(open(config_file_path + "/config.json").read())
+    app_name = config['app_name']
+    bundle_id_name = android_platform +  '_bundle_id'
+    android_bundle_id = config[bundle_id_name]
+    ios_bundle_id = config['ios_bundle_id']
+    version_name = config['version_name']
+    copy_templates()
+    prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name)
+    copy_resources(config_file_path, android_platform)
 
 def main(argv):
     platform = ''
@@ -188,15 +208,18 @@ def main(argv):
     config_file_path = ''
 
     try:
-      opts, args = getopt.getopt(argv,"p:a:m:n:tc",["platform=", "android-platform=", "build_type=", "config_file_path=", "template", "clean"])
+      opts, args = getopt.getopt(argv,"p:a:m:n:tcr",["platform=", "android-platform=", "build_type=", "config_file_path=", "template", "clean", "travis"])
     except getopt.GetoptError:
       terminal_output("Wrong argument specified")
       sys.exit(2)
 
-    android_platform = "play"
+    android_platform = "play" #todo can be removed when underground will be removed
 
     for opt, arg in opts:
-        if opt in ("-p", "--platform"):
+        if opt in ("-r", "--travis"):
+            ci_build()
+            sys.exit(0)
+        elif opt in ("-p", "--platform"):
             platform = arg
         elif opt in ("-a", "--android-platform"):
             android_platform = arg
@@ -215,15 +238,7 @@ def main(argv):
     if platform != "":           
         build(platform, build_type)
     elif config_file_path != "":
-        config = json.loads(open(config_file_path + "/config.json").read())
-        app_name = config['app_name']
-        bundle_id_name = android_platform +  '_bundle_id'
-        android_bundle_id = config[bundle_id_name]
-        ios_bundle_id = config['ios_bundle_id']
-        version_name = config['version_name']
-        copy_templates()
-        prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name)
-        copy_resources(config_file_path, android_platform)
+        project_copy_helper(config_file_path, android_platform)
     else :  
         terminal_output('Missing Arguments: platform: %s, build_type %s, config_file_path %s' % (platform, build_type, config_file_path))
 
