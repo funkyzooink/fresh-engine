@@ -3,11 +3,7 @@ language: android
 # Handle git submodules yourself
 git:
     submodules: false
-
-env:
-  global:
-    secure: "TeSR8JLJd2Z0erCxcgLinC+me5SfwpgcCNwiTsqXn09erOgos2+mUbVQaSyo7Bw4OF4TmNpejX+jETd/lL4fTiWRDw6NW/cqEelk57fXJ5mmf5ey+tB1EkMFwd8x7Fw2vBe4xtO8KeohI6D1Gtu1qTYU9t9x4bhAd4qL15Y5osE="
-
+    
 install:
 # NDK configuration
     - printenv
@@ -30,7 +26,7 @@ install:
     - git submodule update --init --recursive
 
 # cocos setup 
-    - cd ./src/cocos2d
+    - cd cocos2d
     - python download-deps.py --remove-download=yes
     - python ./setup.py
     - export COCOS_CONSOLE_ROOT=`pwd`/tools/cocos2d-console/bin
