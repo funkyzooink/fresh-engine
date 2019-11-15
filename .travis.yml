@@ -12,9 +12,9 @@ android:
   - android-28
 
 before_install:
+   - echo yes | sdkmanager --licenses && yes | sdkmanager --update
    - echo y | sdkmanager "ndk-bundle"
    - echo y | sdkmanager "cmake;3.6.4111459"
-   - echo yes | sdkmanager --licenses && yes | sdkmanager --update
 
 install:
 # NDK configuration
