@@ -3,7 +3,7 @@ language: android
 # Handle git submodules yourself
 git:
     submodules: false
-    
+
 install:
 # NDK configuration
     - printenv
@@ -42,7 +42,7 @@ install:
     - python build.py -n examples/little-ninja/
 
 script:
-    - cocos compile -p android -j 8
+    - cocos compile -p android -j 8 --agreement n
 
 after_success:
     - echo $TRAVIS_BRANCH
