@@ -34,8 +34,7 @@ install:
 - export PATH=$PATH:$ANT_ROOT
 - printenv
 - cd ..
-- python .travis/tag.py
-- python build.py -n $SUBMODULE_PATH
+- python build.py --travis
 script:
 - travis_wait 30 cocos compile -p android -m release -j 8 --agreement n
 deploy:
