@@ -34,7 +34,8 @@ install:
 - export PATH=$PATH:$ANT_ROOT
 - printenv
 - cd ..
-- python build.py -n examples/little-ninja/ #$SUBMODULE_PATH
+- python .travis/tag.py
+- python build.py -n $SUBMODULE_PATH
 script:
 - cocos compile -p android -m release -j 8 --agreement n
 deploy:
@@ -44,7 +45,8 @@ deploy:
     secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
   file_glob: true
   file: bin/release/android/*
-  
+  on:
+    tags: true
 env:
   global:
   - secure: GyZ4pIpjHErVb4zASS2/+Xxqzc39mfNT9Zdk9cMGEYQAO1s9BYUmyvNdtQeiVR5gpj7m9gnPUgCw6cFZ83pTfqWeCcXiCddAxnYiGIzP6eclPONpKdT84q44FMrgA8l/+yOYjwwTSpUP5fUroOHVk7krLcjMB8MWStHlAAPX26gY11ZW6dLFbLXKxGQJvRaU1YGDrgPmbRzwUg0OeEFxx6wPDrEF8puZ5T+ez6J90F/YgdGnuDtV/DAXSjdAIyuFsxJvKyI6zeBKZ96/r5a+b97vl/qXQ9JUhZFaRWFSEIUUPDfYzTWeIhBdQCI3hictfFhJCiRlSd6QVhrjywws94pdFOv+5XrE26rL34sC1yQ/oxudO8s9+onnAYAo6vYVrhYsznHiM4HpU2wkk8b52Tchz5J4nRxBN+AZTXh8WjITEsGcpaCgN0hTG4Y9O2wTok7QFfr8THzEnYz1fYD/Q8on+O66HLF0KqUtqpvFpoyVgLquwtQG0PVc5Ri48vUF8xfJx7YQDsMmw8LS3MnWKGI9+JN5E3JHdGCuPGxOzKLeBnzl0SUHUZH597nocaHKC33Wtd+t8ubkiEBoSfg/kjycoywQ7IUvmsWLNBHZ2lVNJy5i+Dtlio9/hs+araFweiNfO8bVmdraTAxRO7EljjGwrc0j9dPgOUUzXVK/SwA=

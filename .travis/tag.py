@@ -2,6 +2,9 @@
 
 import os
 
+#set default value for non release CI builds
+os.environ["SUBMODULE_PATH"] = "examples/little-ninja/"
+
 if os.environ.get('TRAVIS_TAG'):
     tagname = os.environ["TRAVIS_TAG"]
 
