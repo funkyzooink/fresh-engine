@@ -37,7 +37,7 @@ install:
 - python .travis/tag.py
 - python build.py -n $SUBMODULE_PATH
 script:
-- cocos compile -p android -m release -j 8 --agreement n
+- travis_wait 30 cocos compile -p android -m release -j 8 --agreement n
 deploy:
   provider: releases
   skip_cleanup: true
