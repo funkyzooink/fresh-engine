@@ -208,17 +208,17 @@ void HUD::setCustomButton2(const std::string& customButton)
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
 
     // TODO get from json
-    if (== CONSTANTS.buttonTypeAttack)
+    if (customButton == CONSTANTS.buttonTypeAttack)
     {
         _touchArea4Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
         _touchArea4Sprite->setVisible(true);
     }
-    else if (== CONSTANTS.buttonTypeShoot)
+    else if (customButton == CONSTANTS.buttonTypeShoot)
     {
         _touchArea4Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
         _touchArea4Sprite->setVisible(true);
     }
-    else if (== CONSTANTS.buttonTypeDown)
+    else if (customButton == CONSTANTS.buttonTypeDown)
     {
         _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow);
         _touchArea4Sprite->setVisible(true);
