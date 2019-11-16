@@ -65,7 +65,7 @@ matrix:
         - secure: EiIkieFohSX3tyIRbzb337ddgaeYp55eqZh2S6OghxEvYSGNMbFNeDCi16mYLN0LGaqoNhwf4FH1rzwoR9MQ0IgjbzFMpmADRE0CVyIvhTZCXr1GZKN9dgsyThppGbx0dpKv6XhFbA/LWSoF2IUp7QgYxaA+3oxZqq11aVQMH9Uo8C8W0hb6dchB7u/x7UN0ZVdtqzfXxIo+/HnWzhHPp8V+XNWrJgHSlqqeF/sdy6Tk1bDVObVImwvYDj7R33KbVFFOewGWMGyXiWDfGJwbjomVpyIwoDc7qnWE1Y8m7tG43SPX4yeQZkb8v5C+0NUSzUDYJA10lv7vfKw8Ynj89Sk04kJafVL4oa1zfxYAbk1wEfsSuC44VPdl/+G7817nqrPzttrWvzXqxhHRbvdoUQPT1lDtgLvBwopHjzHOUweDSo9dvCZux64TFFOQ0m4O3KMonQEWNe0KtLLkIb4bGkm1aVw2b8eE+ECwRg4/gdQTbKxD3Rt0lYpbjtE+4S2M1WBo3OR2+MhiNbGY9/h+3EayIUrcJqXkSqZ7kTCfMHDX13fMBTMYp4WVsNXqGkWSgI29FANSk9S3ipYMoU8gWOEguWirXydm7mH/asyiFBwDGAGF3ig9iLf3kVfvauQa72H2Tz8FYMSKSm5edP0sKXZx2lE5cuw6E9JupdrZFZ8=
         # linux
     - os: linux
-      dist: xenial
+      dist: trusty
       sudo: required
       language: cpp
       compiler: clang
