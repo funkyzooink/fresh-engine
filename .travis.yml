@@ -79,13 +79,16 @@ matrix:
         - printenv
         - cd ..
         - cd ..
+        - cd scripts/
+        - ./install-deps-linux.sh
+        - cd ..
         - python build.py --travis
         - mkdir build
         - cd build
         - cmake -DCMAKE_BUILD_TYPE=Release ..
         - cd ..
       script:
-        - make -j 8
+        - make -j 16
 
       before_deploy:
         - cd build/bin/
