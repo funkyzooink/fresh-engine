@@ -10,3 +10,6 @@
 [submodule "examples/little-robot-adventure"]
 	path = examples/little-robot-adventure
 	url = https://github.com/funkyzooink/little-robot-adventure.git
+[submodule "examples/4friends"]
+	path = examples/4friends
+	url = https://github.com/funkyzooink/4friends.git
