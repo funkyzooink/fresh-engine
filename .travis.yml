@@ -66,6 +66,7 @@ matrix:
         # linux
     - os: linux
       dist: xenial
+      sudo: required
       language: cpp
       compiler: clang
       git:
@@ -73,7 +74,10 @@ matrix:
       install:
         - cd cocos2d
         - python download-deps.py --remove-download=yes
+        - cd build
+        - echo y ./install-deps-linux.sh
         - printenv
+        - cd ..
         - cd ..
         - python build.py --travis
         - mkdir build
