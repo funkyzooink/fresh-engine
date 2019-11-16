@@ -41,7 +41,11 @@ script:
 #cocos compile -p android -m release -j 8 --agreement n
 
 before_deploy:
+  - echo `pwd`
   - cd app/build/outputs/apk
+  - echo `ls -al`
+  - cd release/
+  - echo `ls -al`
   - export RELEASE_APK_FILE=$(ls *.apk)
   - echo "deploying $RELEASE_APK_FILE to GitHub releases"
 
