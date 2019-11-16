@@ -175,8 +175,9 @@ def clean_folders():
     if os.path.isdir(dest): 
         shutil.rmtree(dest)
         terminal_output('Removed %s' % dest)
+
 def ci_build():
-    project_path = "examples/little-ninja/"
+    project_path = "examples/4friends/" # if not on tag use this as fallback CI build
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]

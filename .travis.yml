@@ -38,7 +38,6 @@ install:
 - cd proj.android
 script:
 - gradlew assembleRelease
-#cocos compile -p android -m release -j 8 --agreement n
 
 before_deploy:
   - echo `pwd`
