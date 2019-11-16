@@ -39,13 +39,19 @@ install:
 script:
 - gradlew assembleRelease
 #cocos compile -p android -m release -j 8 --agreement n
+
+before_deploy:
+  - cd app/build/outputs/apk
+  - export RELEASE_APK_FILE=$(ls *.apk)
+  - echo "deploying $RELEASE_APK_FILE to GitHub releases"
+
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
     secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
   file_glob: true
-  file: app/build/outputs/apk/**
+  file: "${RELEASE_APK_FILE}"
   on:
     tags: true 
 env:
