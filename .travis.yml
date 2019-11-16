@@ -73,6 +73,7 @@ matrix:
       install:
         - cd cocos2d
         - python download-deps.py --remove-download=yes
+        - printenv
         - cd ..
         - python build.py --travis
         - mkdir build
