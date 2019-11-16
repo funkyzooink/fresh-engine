@@ -38,14 +38,9 @@ install:
 - cd proj.android
 script:
 - gradlew assembleRelease
-#cocos compile -p android -m release -j 8 --agreement n
 
 before_deploy:
-  - echo `pwd`
-  - cd app/build/outputs/apk
-  - echo `ls -al`
-  - cd release/
-  - echo `ls -al`
+  - cd app/build/outputs/apk/release
   - export RELEASE_APK_FILE=$(ls *.apk)
   - echo "deploying $RELEASE_APK_FILE to GitHub releases"
 
