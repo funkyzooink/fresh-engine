@@ -174,7 +174,7 @@ void HUD::setLife(const int life)
                                                        cocos2d::ScaleTo::create(0.05F, _iconScaleFactor), nullptr));
     }
 }
-void HUD::setCustomButton1(const std::string&)
+void HUD::setCustomButton1(const std::string& customButton)
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
