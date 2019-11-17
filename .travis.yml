@@ -91,11 +91,10 @@ matrix:
             - libgtk-3-dev
             - binutils
             - clang-6.0 #c++17
-            - cmake #c++17
             - libstdc++6
       sudo: required
       language: cpp
-      compiler: gcc
+      compiler: clang
       git:
         submodules: true
       install:
@@ -110,15 +109,11 @@ matrix:
         # Install a recent CMake
         ############################################################################
         - |
-          if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-            CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.tar.gz"
-            mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
-            export PATH=${DEPS_DIR}/cmake/bin:${PATH}
-          else
-            brew install cmake || brew upgrade cmake
-          fi
-        - cmake --version
-        - cmake -DCMAKE_BUILD_TYPE=Release ..
+          CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.tar.gz"
+          mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+
+        - cmake/bin/cmake --version
+        - cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release ..
         - cd ..
       script:
         - make -j 16
