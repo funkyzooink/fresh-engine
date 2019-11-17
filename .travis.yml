@@ -90,6 +90,7 @@ matrix:
             - binutils
             - clang-7 #c++17
             - cmake #c++17
+            - libstdc++7
       sudo: required
       language: cpp
       compiler: gcc
