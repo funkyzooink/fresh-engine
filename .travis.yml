@@ -72,8 +72,8 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-7
-            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-7.0 main'
+            - llvm-toolchain-trusty-6
+            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-6.0 main'
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages: #copy from cocos2d/build/install-deps-linux.sh # somehow broken when using shell script
             - libx11-dev
@@ -90,9 +90,9 @@ matrix:
             - libssl-dev
             - libgtk-3-dev
             - binutils
-            - clang-7 #c++17
+            - clang-6 #c++17
             - cmake #c++17
-            - libstdc++7
+            - libstdc++6
       sudo: required
       language: cpp
       compiler: gcc
