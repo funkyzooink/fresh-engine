@@ -90,7 +90,7 @@ matrix:
             - libssl-dev
             - libgtk-3-dev
             - binutils
-            - clang-6 #c++17
+            - clang-6.0 #c++17
             - cmake #c++17
             - libstdc++6
       sudo: required
