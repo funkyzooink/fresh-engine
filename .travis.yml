@@ -71,6 +71,7 @@ matrix:
       addons:
         apt:
           sources:
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-7
           packages: #copy from cocos2d/build/install-deps-linux.sh # somehow broken when using shell script
             - libx11-dev
