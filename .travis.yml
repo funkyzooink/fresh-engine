@@ -72,6 +72,9 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-6
+            - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-6.0 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages: #copy from cocos2d/build/install-deps-linux.sh # somehow broken when using shell script
             - libx11-dev
             - libxmu-dev
