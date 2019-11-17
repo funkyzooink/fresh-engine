@@ -175,6 +175,7 @@ def clean_folders():
     if os.path.isdir(dest): 
         shutil.rmtree(dest)
         terminal_output('Removed %s' % dest)
+
 def ci_build():
     project_path = "examples/little-ninja/"
 
@@ -189,6 +190,18 @@ def ci_build():
             project_path = "examples/4friends/"
 
     project_copy_helper(project_path, 'play')
+
+def ci_deploy():
+
+    if os.environ.get('TRAVIS_TAG'):
+        tagname = os.environ["TRAVIS_TAG"]
+
+        if "little-ninja" in tagname:
+            project_path = "examples/little-ninja/"
+        elif "the-dragon-kid" in tagname:
+            project_path = "examples/the-dragon-kid/"
+        elif "4friends" in tagname:
+            project_path = "examples/4friends/"
 
 def project_copy_helper(config_file_path, android_platform):
     config = json.loads(open(config_file_path + "/config.json").read())
@@ -208,7 +221,7 @@ def main(argv):
     config_file_path = ''
 
     try:
-      opts, args = getopt.getopt(argv,"p:a:m:n:tcr",["platform=", "android-platform=", "build_type=", "config_file_path=", "template", "clean", "travis"])
+      opts, args = getopt.getopt(argv,"p:a:m:n:tcrd",["platform=", "android-platform=", "build_type=", "config_file_path=", "template", "clean", "travis", "deploy"])
     except getopt.GetoptError:
       terminal_output("Wrong argument specified")
       sys.exit(2)
@@ -218,6 +231,9 @@ def main(argv):
     for opt, arg in opts:
         if opt in ("-r", "--travis"):
             ci_build()
+            sys.exit(0)
+        elif opt in ("-d", "--deploy"):
+            ci_deploy()
             sys.exit(0)
         elif opt in ("-p", "--platform"):
             platform = arg
