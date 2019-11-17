@@ -114,12 +114,11 @@ matrix:
 
         - cmake/bin/cmake --version
         - cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release ..
-        - cd ..
       script:
         - make -j 16
 
       before_deploy:
-        - cd build/bin/
+        - cd bin/
         - tar -zcf ${TRAVIS_TAG}-linux.tar.gz .
         - echo "deploying ${TRAVIS_TAG}-linux.tar.gz to GitHub releases"
 
