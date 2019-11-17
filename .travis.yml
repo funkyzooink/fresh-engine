@@ -70,6 +70,8 @@ matrix:
       dist: trusty
       addons:
         apt:
+          sources:
+            - llvm-toolchain-trusty-7
           packages: #copy from cocos2d/build/install-deps-linux.sh # somehow broken when using shell script
             - libx11-dev
             - libxmu-dev
@@ -85,6 +87,8 @@ matrix:
             - libssl-dev
             - libgtk-3-dev
             - binutils
+            - clang-7 #c++17
+            - cmake #c++17
       sudo: required
       language: cpp
       compiler: gcc
