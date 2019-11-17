@@ -66,41 +66,44 @@ matrix:
         - secure: diRCr9NX2wz9NQm8YpSElvqG3Z7zM4Jv01gCFvm/jo2u17lPwWm0P+Yd5Yp7JjB5b6KzUUF9MaVbD30AAN/BM4ZihAtv4Vmcu5eBZjXkbmy1T7QIbQFdF4X2GizgaOIBtt5oq/qLMehNVY/2dPWuOu1laaOdFwMMxMnGbOT4ZLnc/+GMw2BhVAP2M+pIDtKD/nPB4pU4dVU+6H/C7LXL717fX7z26nQBD6i+zvx4B/l10Nl9j/j4tjgYLEDGqGH8lNj313Ti6g6BjYUtbWjuDOREE4g5k5V+BfWrWkflKVy71gxb4tL0fSDdMRAu3sXDcxSK4G86X7Z673iTd9jQDqaDU8ug4BdmI4U4Wa/PeRjgF5YTKh0CFsrYgH/DIcN5ma95Ur6pg+Pk6oaieAPLZRcdjmoCVoNM+FuOGrUdHygAQQ7SyI26jR6A1bEW9VeOd0488KESoRkE+5/ckKdmWnRB9+EdstdWYwKHAt39tsN5LLURdgsOkxQqhbKNILDdMvlVyoq5uRJlSYeI3ALukQU11RsQLq3wqGouChoss5JLHAVibsAuWnyN5R4TZYIWiTcUgJOEyfpf86l+Gk6skrMH8C+xFN0b2B/DtxHqUya7Ka8ANSD/a8BwJyZPXG8FTF2Q64qd3u56FGJHviACW8UTH0uGTizejymsazH7eig=
         - secure: EiIkieFohSX3tyIRbzb337ddgaeYp55eqZh2S6OghxEvYSGNMbFNeDCi16mYLN0LGaqoNhwf4FH1rzwoR9MQ0IgjbzFMpmADRE0CVyIvhTZCXr1GZKN9dgsyThppGbx0dpKv6XhFbA/LWSoF2IUp7QgYxaA+3oxZqq11aVQMH9Uo8C8W0hb6dchB7u/x7UN0ZVdtqzfXxIo+/HnWzhHPp8V+XNWrJgHSlqqeF/sdy6Tk1bDVObVImwvYDj7R33KbVFFOewGWMGyXiWDfGJwbjomVpyIwoDc7qnWE1Y8m7tG43SPX4yeQZkb8v5C+0NUSzUDYJA10lv7vfKw8Ynj89Sk04kJafVL4oa1zfxYAbk1wEfsSuC44VPdl/+G7817nqrPzttrWvzXqxhHRbvdoUQPT1lDtgLvBwopHjzHOUweDSo9dvCZux64TFFOQ0m4O3KMonQEWNe0KtLLkIb4bGkm1aVw2b8eE+ECwRg4/gdQTbKxD3Rt0lYpbjtE+4S2M1WBo3OR2+MhiNbGY9/h+3EayIUrcJqXkSqZ7kTCfMHDX13fMBTMYp4WVsNXqGkWSgI29FANSk9S3ipYMoU8gWOEguWirXydm7mH/asyiFBwDGAGF3ig9iLf3kVfvauQa72H2Tz8FYMSKSm5edP0sKXZx2lE5cuw6E9JupdrZFZ8=
         # linux
-    # - os: linux
-    #   dist: bionic
-    #   sudo: required
-    #   language: cpp
-    #   compiler: gcc
-    #   git:
-    #     submodules: true
-    #   install:
-    #     - cd cocos2d
-    #     - python download-deps.py --remove-download=yes
-    #     - cd build
-    #     - echo y ./install-deps-linux.sh
-    #     - printenv
-    #     - cd ..
-    #     - cd ..
-    #     - python build.py --travis
-    #     - mkdir build
-    #     - cd build
-    #     - cmake -DCMAKE_BUILD_TYPE=Release ..
-    #     - cd ..
-    #   script:
-    #     - make -j 16
+    - os: linux
+      dist: bionic
+      sudo: required
+      language: cpp
+      compiler: gcc
+      addons:
+        apt:
+          - libgtk-3-dev
+      git:
+        submodules: true
+      install:
+        - cd cocos2d
+        - python download-deps.py --remove-download=yes
+        - cd build
+        - echo y ./install-deps-linux.sh
+        - printenv
+        - cd ..
+        - cd ..
+        - python build.py --travis
+        - mkdir build
+        - cd build
+        - cmake -DCMAKE_BUILD_TYPE=Release ..
+        - cd ..
+      script:
+        - make -j 16
 
-    #   before_deploy:
-    #     - cd build/bin/
-    #     - tar -zcf ${TRAVIS_TAG}-linux.tar.gz .
-    #     - echo "deploying ${TRAVIS_TAG}-linux.tar.gz to GitHub releases"
+      before_deploy:
+        - cd build/bin/
+        - tar -zcf ${TRAVIS_TAG}-linux.tar.gz .
+        - echo "deploying ${TRAVIS_TAG}-linux.tar.gz to GitHub releases"
 
-    #   deploy:
-    #     provider: releases
-    #     skip_cleanup: true
-    #     api_key:
-    #       secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
-    #     file_glob: true
-    #     file: "${TRAVIS_TAG}-linux.tar.gz"
-    #     on:
-    #       tags: true 
+      deploy:
+        provider: releases
+        skip_cleanup: true
+        api_key:
+          secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
+        file_glob: true
+        file: "${TRAVIS_TAG}-linux.tar.gz"
+        on:
+          tags: true 
 
