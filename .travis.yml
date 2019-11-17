@@ -68,12 +68,13 @@ matrix:
         # linux
     - os: linux
       dist: bionic
+      addons:
+        apt:
+          packages:
+            - libgtk-3-dev
       sudo: required
       language: cpp
       compiler: gcc
-      addons:
-        apt:
-          - libgtk-3-dev
       git:
         submodules: true
       install:
