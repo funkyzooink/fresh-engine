@@ -192,6 +192,8 @@ def ci_build():
 
         if "little-ninja" in tagname:
             project_path = "examples/little-ninja/"
+        elif "little-robot-adventure" in tagname:
+            project_path = "examples/little-robot-adventure/"
         elif "the-dragon-kid" in tagname:
             project_path = "examples/the-dragon-kid/"
         elif "4friends" in tagname:
@@ -199,13 +201,15 @@ def ci_build():
 
     project_copy_helper(project_path, 'play')
 
-def ci_deploy():
+def ci_deploy(): # TODO for fastlane
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
 
         if "little-ninja" in tagname:
             project_path = "examples/little-ninja/"
+        elif "little-robot-adventure" in tagname:
+            project_path = "examples/little-robot-adventure/"
         elif "the-dragon-kid" in tagname:
             project_path = "examples/the-dragon-kid/"
         elif "4friends" in tagname:
