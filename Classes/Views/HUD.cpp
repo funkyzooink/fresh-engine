@@ -29,10 +29,10 @@ HUD::HUD()
 
 HUD::~HUD() = default;
 
-HUD* HUD::createLayer(std::string coins, std::string enemies)
+HUD* HUD::createLayer()
 {
     HUD* hud = HUD::create();
-    hud->addLabels(std::move(coins), std::move(enemies));
+    hud->addLabels();
     hud->setColor(cocos2d::Color3B(0, 0, 0));
 
     hud->setContentSize(cocos2d::Size(800, 40));
@@ -49,7 +49,7 @@ bool HUD::init()
     return true;
 }
 
-void HUD::addLabels(const std::string& coins, const std::string& enemies)
+void HUD::addLabels()
 {
     auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
@@ -76,7 +76,7 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
     }
 
     // txt
-    _enemyLabel = Utility::addLabel(enemies, CONSTANTS.fontHud, CONSTANTS.getOffset() / 4, GAMECONFIG.getTextColor());
+    _enemyLabel = Utility::addLabel("00000", CONSTANTS.fontHud, CONSTANTS.getOffset() / 4, GAMECONFIG.getTextColor());
     _enemyLabel->setPosition(_heartList.at(0)->getPosition().x - _heartList.at(0)->getContentSize().width -
                                  _enemyLabel->getContentSize().width,
                              _timerLabel->getPosition().y);
@@ -92,7 +92,7 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
     addChild(_enemySprite);
 
     // money sign
-    _moneyLabel = Utility::addLabel(coins, CONSTANTS.fontHud, CONSTANTS.getOffset() / 4, GAMECONFIG.getTextColor());
+    _moneyLabel = Utility::addLabel("00000", CONSTANTS.fontHud, CONSTANTS.getOffset() / 4, GAMECONFIG.getTextColor());
     _moneyLabel->setPosition(_enemySprite->getPosition().x - _enemySprite->getContentSize().width -
                                  _moneyLabel->getContentSize().width,
                              _timerLabel->getPosition().y);
@@ -195,6 +195,16 @@ void HUD::setCustomButton1(const std::string& customButton)
         _touchArea3Sprite->setSpriteFrame(CONSTANTS.iconArrow);
         _touchArea3Sprite->setVisible(true);
     }
+    else if (customButton == CONSTANTS.buttonTypeJump)
+    {
+        _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow);
+        _touchArea4Sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeSwitch)
+    {
+        _touchArea3Sprite->setSpriteFrame(CONSTANTS.iconArrow); //TODO
+        _touchArea3Sprite->setVisible(true);
+    }
     else
     {
         _touchArea3Sprite->setVisible(false);
@@ -202,7 +212,7 @@ void HUD::setCustomButton1(const std::string& customButton)
 #endif
 }
 
-void HUD::setCustomButton2(const std::string& customButton)
+void HUD::setCustomButton2(const std::string& customButton) // TODO same as above
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
@@ -221,6 +231,16 @@ void HUD::setCustomButton2(const std::string& customButton)
     else if (customButton == CONSTANTS.buttonTypeDown)
     {
         _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow);
+        _touchArea4Sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeJump)
+    {
+        _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow);
+        _touchArea4Sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeSwitch)
+    {
+        _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow); //TODO
         _touchArea4Sprite->setVisible(true);
     }
     else
