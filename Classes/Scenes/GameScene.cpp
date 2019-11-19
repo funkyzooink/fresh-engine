@@ -83,6 +83,10 @@ void GameScene::loadMap()
         }
     }
 
+    _hudLayer = HUD::createLayer();
+    _hudLayer->setLocalZOrder(CONSTANTS.LocalZOrderEnum::CONTROLS_Z_ORDER);
+    addChild(_hudLayer);
+
     initParallaxBackground();
 
     initTiledMap();
@@ -174,13 +178,8 @@ void GameScene::initTmxObjects()
     // hud
     auto enemies = Utility::numberToString(_enemyCounter) + "/" + Utility::numberToString(_enemyMaxCounter);
     auto money = Utility::numberToString(_moneyCounter) + "/" + Utility::numberToString(_moneyMaxCounter);
-
-    _hudLayer = HUD::createLayer(money, enemies);
-    _hudLayer->setLocalZOrder(CONSTANTS.LocalZOrderEnum::CONTROLS_Z_ORDER);
-    addChild(_hudLayer);
-
-    _hudLayer->setCustomButton1(_player->getCustomButton1());
-    _hudLayer->setCustomButton2(_player->getCustomButton2());
+    _hudLayer->setEnemies(enemies);
+    _hudLayer->setCoins(money);
 }
 
 void GameScene::initParallaxBackground()

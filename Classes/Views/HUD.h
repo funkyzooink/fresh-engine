@@ -21,7 +21,7 @@ class HUD : public cocos2d::Layer
     virtual ~HUD() override;
 
     virtual bool init() override;  // init
-    static HUD* createLayer(std::string coins, std::string enemies);
+    static HUD* createLayer();
 
     // set Labels
     void setEnemies(const std::string& message);
@@ -36,7 +36,7 @@ class HUD : public cocos2d::Layer
   private:
     HUD();
     CREATE_FUNC(HUD);
-    void addLabels(const std::string& coins, const std::string& enemies);
+    void addLabels();
 
     // Labels
     cocos2d::Label* _moneyLabel;
