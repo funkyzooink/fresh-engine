@@ -10,6 +10,14 @@ import sys
 def terminal_output(text):
     print text
 
+def copy_color_plugin(config_file_path):
+    # TODO this is only for LRA - refactor
+    src = config_file_path + '/code'
+    if os.path.isdir(src): 
+        terminal_output('copy color plugin')
+        shutil.copyfile(src + '/ColorPlugin.h', 'Classes/Helpers/ColorPlugin.h')
+        shutil.copyfile(src + '/ColorPlugin.cpp', 'Classes/Helpers/ColorPlugin.cpp')
+
 def copy_resources(config_file_path, android_platform):
     src = config_file_path + '/Resources' #todo
     dest = 'Resources'
@@ -184,6 +192,8 @@ def ci_build():
 
         if "little-ninja" in tagname:
             project_path = "examples/little-ninja/"
+        elif "little-robot-adventure" in tagname:
+            project_path = "examples/little-robot-adventure/"
         elif "the-dragon-kid" in tagname:
             project_path = "examples/the-dragon-kid/"
         elif "4friends" in tagname:
@@ -191,13 +201,15 @@ def ci_build():
 
     project_copy_helper(project_path, 'play')
 
-def ci_deploy():
+def ci_deploy(): # TODO for fastlane
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
 
         if "little-ninja" in tagname:
             project_path = "examples/little-ninja/"
+        elif "little-robot-adventure" in tagname:
+            project_path = "examples/little-robot-adventure/"
         elif "the-dragon-kid" in tagname:
             project_path = "examples/the-dragon-kid/"
         elif "4friends" in tagname:
@@ -213,6 +225,7 @@ def project_copy_helper(config_file_path, android_platform):
     copy_templates()
     prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name)
     copy_resources(config_file_path, android_platform)
+    copy_color_plugin(config_file_path)
 
 def main(argv):
     platform = ''
