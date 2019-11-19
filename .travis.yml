@@ -95,7 +95,8 @@ matrix:
     - make -j 16
     before_deploy:
     - cd bin/
-    - tar -cf ${TRAVIS_TAG}-linux.tar.gz .
+    - touch ${TRAVIS_TAG}-linux.tar.gz .
+    - tar --exclude=${TRAVIS_TAG}-linux.tar.gz -zcvf ${TRAVIS_TAG}-linux.tar.gz .
     - echo "deploying ${TRAVIS_TAG}-linux.tar.gz to GitHub releases"
     deploy:
       provider: releases
