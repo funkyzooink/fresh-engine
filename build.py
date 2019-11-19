@@ -10,6 +10,14 @@ import sys
 def terminal_output(text):
     print text
 
+def copy_color_plugin(config_file_path):
+    # TODO this is only for LRA - refactor
+    src = config_file_path + '/code'
+    if os.path.isdir(src): 
+        terminal_output('copy color plugin')
+        shutil.copyfile(src + '/ColorPlugin.h', 'Classes/Helpers/ColorPlugin.h')
+        shutil.copyfile(src + '/ColorPlugin.cpp', 'Classes/Helpers/ColorPlugin.cpp')
+
 def copy_resources(config_file_path, android_platform):
     src = config_file_path + '/Resources' #todo
     dest = 'Resources'
@@ -184,12 +192,28 @@ def ci_build():
 
         if "little-ninja" in tagname:
             project_path = "examples/little-ninja/"
+        elif "little-robot-adventure" in tagname:
+            project_path = "examples/little-robot-adventure/"
         elif "the-dragon-kid" in tagname:
             project_path = "examples/the-dragon-kid/"
         elif "4friends" in tagname:
             project_path = "examples/4friends/"
 
     project_copy_helper(project_path, 'play')
+
+def ci_deploy(): # TODO for fastlane
+
+    if os.environ.get('TRAVIS_TAG'):
+        tagname = os.environ["TRAVIS_TAG"]
+
+        if "little-ninja" in tagname:
+            project_path = "examples/little-ninja/"
+        elif "little-robot-adventure" in tagname:
+            project_path = "examples/little-robot-adventure/"
+        elif "the-dragon-kid" in tagname:
+            project_path = "examples/the-dragon-kid/"
+        elif "4friends" in tagname:
+            project_path = "examples/4friends/"
 
 def project_copy_helper(config_file_path, android_platform):
     config = json.loads(open(config_file_path + "/config.json").read())
@@ -201,6 +225,7 @@ def project_copy_helper(config_file_path, android_platform):
     copy_templates()
     prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name)
     copy_resources(config_file_path, android_platform)
+    copy_color_plugin(config_file_path)
 
 def main(argv):
     platform = ''
@@ -209,7 +234,7 @@ def main(argv):
     config_file_path = ''
 
     try:
-      opts, args = getopt.getopt(argv,"p:a:m:n:tcr",["platform=", "android-platform=", "build_type=", "config_file_path=", "template", "clean", "travis"])
+      opts, args = getopt.getopt(argv,"p:a:m:n:tcrd",["platform=", "android-platform=", "build_type=", "config_file_path=", "template", "clean", "travis", "deploy"])
     except getopt.GetoptError:
       terminal_output("Wrong argument specified")
       sys.exit(2)
@@ -219,6 +244,9 @@ def main(argv):
     for opt, arg in opts:
         if opt in ("-r", "--travis"):
             ci_build()
+            sys.exit(0)
+        elif opt in ("-d", "--deploy"):
+            ci_deploy()
             sys.exit(0)
         elif opt in ("-p", "--platform"):
             platform = arg
