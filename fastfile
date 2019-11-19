@@ -1,0 +1,12 @@
+lane :release_beta do |options|
+    setup_travis
+    supply(
+      track: "beta",
+      apk: options[:apk],
+      json_key: "/tmp/key.json",
+      package_name: options[:package_name],
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
