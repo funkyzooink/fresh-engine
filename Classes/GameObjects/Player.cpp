@@ -344,6 +344,15 @@ Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const c
         auto objects = grp->getObjects();
         for (auto& object : objects)
         {
+            // 512 128
+            // 576 128
+            // 512 192
+            // 576 192
+
+            // 448 64
+            // 512 64
+            // 448 128
+            // 512 128
 
             auto properties = object.asValueMap(); // TODO paint this rectangle for debbuging
             auto position =
@@ -351,6 +360,12 @@ Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const c
                                properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
                                properties.at("width").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
                                properties.at("height").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor());
+
+            // make rectangle a little smaller so that tiles touching are not counted
+            position.origin.x = position.origin.x + (CONSTANTS.getOffset() / 100);
+            position.origin.y = position.origin.y + (CONSTANTS.getOffset() / 100);
+            position.size.width= position.size.width + (CONSTANTS.getOffset() / 100);
+            position.size.height = position.size.height + (CONSTANTS.getOffset() / 100);
 
             if (position.intersectsRect(screenCoordinate))
             {
@@ -369,12 +384,6 @@ Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const c
                 }
                 else if (name == CONSTANTS.tilemapInteractionObjectWalk)
                 {
-
-                    if (_debugNode == nullptr) {
-                            _debugNode = cocos2d::DrawNode::create();
-                            _debugNode->drawSolidRect(position.origin, position.size, cocos2d::Color4F::RED);
-                            _gameScene->addChild(_debugNode);
-                    }
                     return InteractionCollisionEnum::WALK;
                 }
                 return InteractionCollisionEnum::NO_INTERACTION;

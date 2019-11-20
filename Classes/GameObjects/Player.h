@@ -119,8 +119,6 @@ class Player : public GameObject
     int _attackTime;
     int _id;
     int _shoot;
-
-    cocos2d::DrawNode* _debugNode;
 };
 
 #endif  // GAMEOBJECTS_PLAYER_H_
