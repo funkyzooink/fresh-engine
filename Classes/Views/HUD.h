@@ -37,6 +37,7 @@ class HUD : public cocos2d::Layer
     HUD();
     CREATE_FUNC(HUD);
     void addLabels();
+    void setCustomButton(cocos2d::Sprite* sprite, const std::string& customButton);
 
     // Labels
     cocos2d::Label* _moneyLabel;

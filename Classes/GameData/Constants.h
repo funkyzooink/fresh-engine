@@ -49,10 +49,13 @@ class Constants
     const std::string audioFileType;  // mp3 or wav
 
     // icons
+    const std::string hudIconArrowDown;
+    const std::string hudIconArrowUp;
     const std::string hudIconCoin;
     const std::string hudIconHeart;
     const std::string hudIconEnemy;
     const std::string hudIconShoot;
+    const std::string hudIconSwitch;
 
     const std::string iconCloud;
     const std::string iconCrashCloud;

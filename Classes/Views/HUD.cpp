@@ -174,79 +174,52 @@ void HUD::setLife(const int life)
                                                        cocos2d::ScaleTo::create(0.05F, _iconScaleFactor), nullptr));
     }
 }
+void HUD::setCustomButton(cocos2d::Sprite* sprite, const std::string& customButton)
+{
+    if (customButton == CONSTANTS.buttonTypeAttack)
+    {
+        sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
+        sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeShoot)
+    {
+        sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
+        sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeDown)
+    {
+        sprite->setSpriteFrame(CONSTANTS.hudIconArrowDown);
+        sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeJump)
+    {
+        sprite->setSpriteFrame(CONSTANTS.hudIconArrowUp);
+        sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeSwitch)
+    {
+        sprite->setSpriteFrame(CONSTANTS.hudIconSwitch); //TODO
+        sprite->setVisible(true);
+    }
+    else
+    {
+        sprite->setVisible(false);
+    }
+}
 void HUD::setCustomButton1(const std::string& customButton)
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
+    setCustomButton(_touchArea3Sprite, customButton);
 
-    // TODO get from json
-    if (customButton == CONSTANTS.buttonTypeAttack)
-    {
-        _touchArea3Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
-        _touchArea3Sprite->setVisible(true);
-    }
-    else if (customButton == CONSTANTS.buttonTypeShoot)
-    {
-        _touchArea3Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
-        _touchArea3Sprite->setVisible(true);
-    }
-    else if (customButton == CONSTANTS.buttonTypeDown)
-    {
-        _touchArea3Sprite->setSpriteFrame(CONSTANTS.iconArrow);
-        _touchArea3Sprite->setVisible(true);
-    }
-    else if (customButton == CONSTANTS.buttonTypeJump)
-    {
-        _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow);
-        _touchArea4Sprite->setVisible(true);
-    }
-    else if (customButton == CONSTANTS.buttonTypeSwitch)
-    {
-        _touchArea3Sprite->setSpriteFrame(CONSTANTS.iconArrow); //TODO
-        _touchArea3Sprite->setVisible(true);
-    }
-    else
-    {
-        _touchArea3Sprite->setVisible(false);
-    }
 #endif
 }
 
-void HUD::setCustomButton2(const std::string& customButton) // TODO same as above
+void HUD::setCustomButton2(const std::string& customButton)
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
-
-    // TODO get from json
-    if (customButton == CONSTANTS.buttonTypeAttack)
-    {
-        _touchArea4Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
-        _touchArea4Sprite->setVisible(true);
-    }
-    else if (customButton == CONSTANTS.buttonTypeShoot)
-    {
-        _touchArea4Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
-        _touchArea4Sprite->setVisible(true);
-    }
-    else if (customButton == CONSTANTS.buttonTypeDown)
-    {
-        _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow);
-        _touchArea4Sprite->setVisible(true);
-    }
-    else if (customButton == CONSTANTS.buttonTypeJump)
-    {
-        _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow);
-        _touchArea4Sprite->setVisible(true);
-    }
-    else if (customButton == CONSTANTS.buttonTypeSwitch)
-    {
-        _touchArea4Sprite->setSpriteFrame(CONSTANTS.iconArrow); //TODO
-        _touchArea4Sprite->setVisible(true);
-    }
-    else
-    {
-        _touchArea4Sprite->setVisible(false);
-    }
+    setCustomButton(_touchArea4Sprite, customButton);
 #endif
 }
 
