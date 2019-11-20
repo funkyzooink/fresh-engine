@@ -239,7 +239,7 @@ void Player::belowCollisionCallback(const CollisionTile& tile, const cocos2d::Re
                 cocos2d::Point(getDesiredPosition().x, getDesiredPosition().y + intersection.size.height));
             setVelocity(cocos2d::Point(getVelocity().x, 0.0));
             setOnGround(true);
-            // TODO check if code belwo applys to player
+            // TODO check if code below applies to player
             if (getJumpState() != GameObject::JumpStateEnum::NO_JUMP)
             {
                 setJumpState(GameObject::JumpStateEnum::BACK_ON_GROUND_JUMP);
