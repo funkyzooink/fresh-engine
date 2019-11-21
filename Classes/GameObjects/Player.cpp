@@ -173,6 +173,43 @@ void Player::collisionAttack()
         if (dynamic_cast<GameObject*>(gameObject)->shootOrAttackCollision(this))
             _gameScene->destroyGameObject(dynamic_cast<GameObject*>(gameObject));
     }
+
+    cocos2d::Rect collisionSource = getBoundingBox();
+    // make rectangle a little bigger in the Heading direction
+    if (getHeadingState() == HeadingStateEnum::RIGHT_HEADING) {
+        collisionSource.origin.x = collisionSource.origin.x + (CONSTANTS.getOffset() / 100);
+        collisionSource.origin.y = collisionSource.origin.y + (CONSTANTS.getOffset() / 100);
+        collisionSource.size.width= collisionSource.size.width + (CONSTANTS.getOffset() / 100);
+        collisionSource.size.height = collisionSource.size.height + (CONSTANTS.getOffset() / 100);
+    }
+    else if (getHeadingState() == HeadingStateEnum::LEFT_HEADING) {
+        collisionSource.origin.x = collisionSource.origin.x - (CONSTANTS.getOffset() / 100);
+        collisionSource.origin.y = collisionSource.origin.y - (CONSTANTS.getOffset() / 100);
+        collisionSource.size.width= collisionSource.size.width + (CONSTANTS.getOffset() / 100);
+        collisionSource.size.height = collisionSource.size.height + (CONSTANTS.getOffset() / 100);
+    }
+
+    auto interaction = checkInteractionObjectCollision(collisionSource);
+    if (interaction == InteractionCollisionEnum::DESTROY)
+    {
+        auto tiledMap = _gameScene->getTileMap();
+        const auto& mapTileSize = tiledMap->getTileSize();
+        const auto& mapSize = tiledMap->getMapSize();
+
+        if (getHeadingState() == HeadingStateEnum::RIGHT_HEADING) {
+            collisionSource.origin.x = collisionSource.origin.x + collisionSource.size.width;
+            collisionSource.origin.y = collisionSource.origin.y + collisionSource.size.height;
+        }
+        else if (getHeadingState() == HeadingStateEnum::LEFT_HEADING) {
+            collisionSource.origin.x = collisionSource.origin.x - collisionSource.size.width;
+            collisionSource.origin.y = collisionSource.origin.y + collisionSource.size.height;
+        }
+        cocos2d::Point gameObjectTilePosition = TileHelper::tileCoordinateForPosition(collisionSource.origin, mapSize, mapTileSize);
+//        float tileX = tile.tilePositionX;
+//        float tileY = tile.tilePositionY;
+//        auto tileCoordinate = cocos2d::Point(tileX, tileY);
+        destroyBlock(collisionSource.origin, gameObjectTilePosition);
+    }
 }
 
 void Player::collisionHazardTiles()
@@ -316,18 +353,21 @@ void Player::destroyBlock(const cocos2d::Point& screenCoordinate, const cocos2d:
     auto tiledMap = _gameScene->getTileMap();
     const auto& mapTileSize = tiledMap->getTileSize();
     cocos2d::TMXLayer* layer = tiledMap->getLayer(CONSTANTS.tilemapTileLayer);
+    auto tile = layer->getTileAt(tileCoordinate);
 
-    // when player hits through blocks and an enemy is above we need to fake a bullet to kill the enemy
-    Bullet* bullet = GAMECONFIG.getBulletObject("bullet")->clone(_gameScene);  // todo this only works when type "bullet"" exists!!!
-    bullet->setIsFriend(true);
-    bullet->setPosition(screenCoordinate);
-    bullet->setContentSize(mapTileSize);
-    bullet->setVisible(true);
-    bullet->setDisabled(false);
-    bullet->setContentSize(bullet->getContentSize() * 2.0F);  // increase collision size
-    bullet->collisionShoot();
-    layer->removeTileAt(tileCoordinate);
-    _gameScene->explodeGameObject(bullet);
+    if (tile != nullptr) {
+        // when player hits through blocks and an enemy is above we need to fake a bullet to kill the enemy
+        Bullet* bullet = GAMECONFIG.getBulletObject("bullet")->clone(_gameScene);  // todo this only works when type "bullet"" exists!!!
+        bullet->setIsFriend(true);
+        bullet->setPosition(screenCoordinate);
+        bullet->setContentSize(mapTileSize);
+        bullet->setVisible(true);
+        bullet->setDisabled(false);
+        bullet->setContentSize(bullet->getContentSize() * 2.0F);  // increase collision size
+        bullet->collisionShoot();
+        layer->removeTileAt(tileCoordinate);
+        _gameScene->explodeGameObject(bullet);
+    }
 }
 
 Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const cocos2d::Rect& screenCoordinate)
