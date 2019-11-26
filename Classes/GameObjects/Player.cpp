@@ -473,7 +473,7 @@ void Player::attack()
         }
         else
         {
-            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_RIGHT_ANIMATION, false);  // TODO flipX ?
+            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_RIGHT_ANIMATION, true);  // TODO flipX ninja?
         }
     }
 }
