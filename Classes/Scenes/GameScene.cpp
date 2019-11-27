@@ -715,7 +715,14 @@ void GameScene::initPlayer(Player* player, const cocos2d::Point& pPosition)
 {
     // TODO is there a better way
 
+    //TODO 4friends check if works with other games
+    auto life = GAMECONFIG.getGameplayConfig().playerMaxLife;
+    if (_player != nullptr)
+    {
+        life = _player->getLife();
+    }
     _player = player->clone(this);
+    _player->setLife(life);
     _player->setPosition(pPosition + _player->getContentSize() / 2);
     _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     for (auto const& ammo : _player->getAmmoVector())
