@@ -176,16 +176,18 @@ void Player::collisionAttack()
 
     cocos2d::Rect collisionSource = getBoundingBox();
     // make rectangle a little bigger in the Heading direction
-    if (getHeadingState() == HeadingStateEnum::RIGHT_HEADING) {
+    if (getHeadingState() == HeadingStateEnum::RIGHT_HEADING)
+    {
         collisionSource.origin.x = collisionSource.origin.x + (CONSTANTS.getOffset() / 100);
         collisionSource.origin.y = collisionSource.origin.y + (CONSTANTS.getOffset() / 100);
-        collisionSource.size.width= collisionSource.size.width + (CONSTANTS.getOffset() / 100);
+        collisionSource.size.width = collisionSource.size.width + (CONSTANTS.getOffset() / 100);
         collisionSource.size.height = collisionSource.size.height + (CONSTANTS.getOffset() / 100);
     }
-    else if (getHeadingState() == HeadingStateEnum::LEFT_HEADING) {
+    else if (getHeadingState() == HeadingStateEnum::LEFT_HEADING)
+    {
         collisionSource.origin.x = collisionSource.origin.x - (CONSTANTS.getOffset() / 100);
         collisionSource.origin.y = collisionSource.origin.y - (CONSTANTS.getOffset() / 100);
-        collisionSource.size.width= collisionSource.size.width + (CONSTANTS.getOffset() / 100);
+        collisionSource.size.width = collisionSource.size.width + (CONSTANTS.getOffset() / 100);
         collisionSource.size.height = collisionSource.size.height + (CONSTANTS.getOffset() / 100);
     }
 
@@ -196,18 +198,21 @@ void Player::collisionAttack()
         const auto& mapTileSize = tiledMap->getTileSize();
         const auto& mapSize = tiledMap->getMapSize();
 
-        if (getHeadingState() == HeadingStateEnum::RIGHT_HEADING) {
+        if (getHeadingState() == HeadingStateEnum::RIGHT_HEADING)
+        {
             collisionSource.origin.x = collisionSource.origin.x + collisionSource.size.width;
             collisionSource.origin.y = collisionSource.origin.y + collisionSource.size.height;
         }
-        else if (getHeadingState() == HeadingStateEnum::LEFT_HEADING) {
+        else if (getHeadingState() == HeadingStateEnum::LEFT_HEADING)
+        {
             collisionSource.origin.x = collisionSource.origin.x - collisionSource.size.width;
             collisionSource.origin.y = collisionSource.origin.y + collisionSource.size.height;
         }
-        cocos2d::Point gameObjectTilePosition = TileHelper::tileCoordinateForPosition(collisionSource.origin, mapSize, mapTileSize);
-//        float tileX = tile.tilePositionX;
-//        float tileY = tile.tilePositionY;
-//        auto tileCoordinate = cocos2d::Point(tileX, tileY);
+        cocos2d::Point gameObjectTilePosition =
+            TileHelper::tileCoordinateForPosition(collisionSource.origin, mapSize, mapTileSize);
+        //        float tileX = tile.tilePositionX;
+        //        float tileY = tile.tilePositionY;
+        //        auto tileCoordinate = cocos2d::Point(tileX, tileY);
         destroyBlock(collisionSource.origin, gameObjectTilePosition);
     }
 }
@@ -355,9 +360,11 @@ void Player::destroyBlock(const cocos2d::Point& screenCoordinate, const cocos2d:
     cocos2d::TMXLayer* layer = tiledMap->getLayer(CONSTANTS.tilemapTileLayer);
     auto tile = layer->getTileAt(tileCoordinate);
 
-    if (tile != nullptr) {
+    if (tile != nullptr)
+    {
         // when player hits through blocks and an enemy is above we need to fake a bullet to kill the enemy
-        Bullet* bullet = GAMECONFIG.getBulletObject("bullet")->clone(_gameScene);  // todo this only works when type "bullet"" exists!!!
+        Bullet* bullet = GAMECONFIG.getBulletObject("bullet")->clone(_gameScene);  // todo this only works when type
+                                                                                   // "bullet"" exists!!!
         bullet->setIsFriend(true);
         bullet->setPosition(screenCoordinate);
         bullet->setContentSize(mapTileSize);
@@ -375,24 +382,23 @@ Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const c
     auto tiledMap = _gameScene->getTileMap();
     cocos2d::TMXObjectGroup* grp = tiledMap->getObjectGroup(CONSTANTS.tilemapInteractionObjectGroup);
 
-    if (//tile != nullptr && 
-    grp != nullptr)
+    if (  // tile != nullptr &&
+        grp != nullptr)
     {
         auto objects = grp->getObjects();
         for (auto& object : objects)
         {
-
-            auto properties = object.asValueMap(); // TODO paint this rectangle for debbuging
-            auto position =
-                cocos2d::Rect(properties.at("x").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
-                               properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
-                               properties.at("width").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
-                               properties.at("height").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor());
+            auto properties = object.asValueMap();  // TODO paint this rectangle for debbuging
+            auto position = cocos2d::Rect(
+                properties.at("x").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                properties.at("width").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                properties.at("height").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor());
 
             // make rectangle a little smaller so that tiles touching are not counted
             position.origin.x = position.origin.x + (CONSTANTS.getOffset() / 100);
             position.origin.y = position.origin.y + (CONSTANTS.getOffset() / 100);
-            position.size.width= position.size.width - (CONSTANTS.getOffset() / 100);
+            position.size.width = position.size.width - (CONSTANTS.getOffset() / 100);
             position.size.height = position.size.height - (CONSTANTS.getOffset() / 100);
 
             if (position.intersectsRect(screenCoordinate))
@@ -473,7 +479,8 @@ void Player::attack()
         }
         else
         {
-            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_RIGHT_ANIMATION, true);  // TODO flipX ninja?
+            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_RIGHT_ANIMATION,
+                                   true);  // TODO flipX ninja?
         }
     }
 }

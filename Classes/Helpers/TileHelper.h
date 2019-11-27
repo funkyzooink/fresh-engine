@@ -46,9 +46,10 @@ class TileHelper
      */
     static void simpleCollisionTile(GameObject* gameObject, cocos2d::TMXLayer* layer, cocos2d::Size mapSize,
                                     cocos2d::Size mapTileSize, float scale);
-    
+
     static cocos2d::Point tileCoordinateForPosition(const cocos2d::Point& position, const cocos2d::Size& mapSize,
                                                     const cocos2d::Size& mapTileSize);
+
   private:
     /**
      *  returns a vector containing neighbouring tiles
@@ -57,8 +58,6 @@ class TileHelper
                                                                     cocos2d::TMXLayer* layer,
                                                                     const cocos2d::Size& mapSize,
                                                                     const cocos2d::Size& mapTileSize);
-
-
 
   public:
     static const int tileBelow;

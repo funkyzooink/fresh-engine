@@ -198,7 +198,7 @@ void HUD::setCustomButton(cocos2d::Sprite* sprite, const std::string& customButt
     }
     else if (customButton == CONSTANTS.buttonTypeSwitch)
     {
-        sprite->setSpriteFrame(CONSTANTS.hudIconSwitch); //TODO
+        sprite->setSpriteFrame(CONSTANTS.hudIconSwitch);  // TODO
         sprite->setVisible(true);
     }
     else
