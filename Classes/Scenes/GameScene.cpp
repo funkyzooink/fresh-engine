@@ -715,7 +715,7 @@ void GameScene::initPlayer(Player* player, const cocos2d::Point& pPosition)
 {
     // TODO is there a better way
 
-    //TODO 4friends check if works with other games
+    // TODO 4friends check if works with other games
     auto life = GAMECONFIG.getGameplayConfig().playerMaxLife;
     if (_player != nullptr)
     {
