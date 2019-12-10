@@ -73,6 +73,7 @@ matrix:
         - libssl-dev
         - libgtk-3-dev
         - binutils
+        - appstreamcli
     sudo: required
     language: cpp
     compiler: clang
@@ -98,6 +99,7 @@ matrix:
     - chmod a+x appimagetool-x86_64.AppImage
     - mkdir 4friends.AppDir
     - cd 4friends.AppDir
+    - wget https://raw.githubusercontent.com/AppImage/AppImageKit/master/resources/AppRun
     - mv ../../examples/4friends/android/web_hi_res_512.png 4friends.png
     - mv ../../examples/4friends/4friends.desktop 4friends.desktop
     - mkdir usr
