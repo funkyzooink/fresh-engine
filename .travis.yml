@@ -73,7 +73,6 @@ matrix:
         - libssl-dev
         - libgtk-3-dev
         - binutils
-        - appstreamcli
     sudo: required
     language: cpp
     compiler: clang
