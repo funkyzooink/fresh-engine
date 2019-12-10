@@ -94,7 +94,18 @@ matrix:
     script:
     - make -j 16
     before_deploy:
-    - cd bin/
+    - wget "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+    - chmod a+x appimagetool-x86_64.AppImage
+    - mkdir 4friends.AppDir
+    - cd 4friends.AppDir
+    - mv ../../examples/4friends/android/web_hi_res_512 4friends.png
+    - mv ../../examples/4friends/4friends.desktop 4friends.desktop
+    - mkdir usr
+    - mv ../lib usr/lib
+    - mv ../bin/4friends bin
+    - cd .. 
+    - ./appimagetool-x86_64.AppImage 4friends.AppDir
+    # - cd bin/
     - touch ${TRAVIS_TAG}-linux.tar.gz .
     - tar --exclude=${TRAVIS_TAG}-linux.tar.gz -zcvf ${TRAVIS_TAG}-linux.tar.gz .
     - echo "deploying ${TRAVIS_TAG}-linux.tar.gz to GitHub releases"
