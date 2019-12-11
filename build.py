@@ -6,7 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
-import urllib
+import urllib2
 
 def terminal_output(text):
     print text
@@ -294,15 +294,25 @@ def ci_appimage():
 
         # get apprun file        
         url = 'https://raw.githubusercontent.com/AppImage/AppImageKit/master/resources/AppRun'
-        urllib.urlretrieve(url, dest + '/AppRun')
+        filedata = urllib2.urlopen(url)
+        datatowrite = filedata.read()
+        
+        with open(dest + '/AppRun', 'wb') as f:
+            f.write(datatowrite)
+
         os.chmod(dest + '/AppRun', 0o755)
 
         # create appimage
         url = 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
-        urllib.urlretrieve(url, 'appimagetool-x86_64.AppImage')
+        filedata = urllib2.urlopen(url)
+        datatowrite = filedata.read()
+        
+        with open('appimagetool-x86_64.AppImage', 'wb') as f:
+            f.write(datatowrite)
+            
         os.chmod('appimagetool-x86_64.AppImage', 0o755)
         os.environ["ARCH"] = "x86_64 "
-        subprocess.call(["appimagetool-x86_64.AppImage", dest])
+        subprocess.call(['appimagetool-x86_64.AppImage', dest])
 
         # create zip file
         tagname = os.environ["TRAVIS_TAG"]
