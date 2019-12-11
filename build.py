@@ -317,6 +317,10 @@ def ci_appimage():
         tagname = os.environ["TRAVIS_TAG"]
         shutil.make_archive(tagname + '-linux.zip', 'zip', dest)
 
+        dirs = os.listdir('.')
+        for file in dirs:
+            print file
+
 def ci_deploy(): # TODO for fastlane
 
     if os.environ.get('TRAVIS_TAG'):
