@@ -6,7 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
-import urllib2
+import urllib
 
 def terminal_output(text):
     print text
