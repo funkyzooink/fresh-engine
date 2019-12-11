@@ -94,7 +94,7 @@ matrix:
     script:
     - make -j 16
     before_deploy:
-    - python build.py --appimage
+    - python ../build.py --appimage
     - echo "deploying ${TRAVIS_TAG}-linux.zip to GitHub releases"
     deploy:
       provider: releases
