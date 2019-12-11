@@ -114,7 +114,7 @@ def copy_file(src, dest):
         terminal_output('copy files:' + src)
         shutil.copyfile(src, dest)
     else :
-        terminal_output('files doe not exist:' + src)
+        terminal_output('files does not exist:' + src)
 
 def set_android_values(path, app_name, bundle_id, version_name):
     manifestpath = path + '/app/AndroidManifest.xml'
@@ -241,42 +241,42 @@ def ci_appimage():
         path = dest + '/usr'
         create_directory(path)
         
-        src_path = '../../examples/'+ project_name + '/android/web_hi_res_512.png'
+        src_path = 'examples/'+ project_name + '/android/web_hi_res_512.png'
         dest_path = dest + '/' + project_name + '.png'
         copy_file(src_path, dest_path)
 
 
-        src_path = '../../examples/'+ project_name + '/'+ project_name + '.desktop'
+        src_path = 'examples/'+ project_name + '/'+ project_name + '.desktop'
         dest_path = dest + '/' + project_name + '.desktop'
         copy_file(src_path, dest_path)
 
         # bin files
-        src_path = 'bin/' + project_name
+        src_path = 'build/bin/' + project_name
         dest_path = dest + '/bin'
         copy_files(src_path, dest_path)
 
         # lib files
-        src_path = 'lib'
+        src_path = 'build/lib'
         dest_path = dest + '/usr/lib'
         copy_files(src_path, dest_path)
 
-        src_path = '../../cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmod.so'
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmod.so'
         dest_path = dest + '/usr/lib/libfmod.so'
         copy_file(src_path, dest_path)
 
-        src_path = '../../cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmod.so.6'
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmod.so.6'
         dest_path = dest + '/usr/lib/libfmod.so.6'
         copy_file(src_path, dest_path)
 
-        src_path = '../../cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
         dest_path = dest + '/usr/lib/libfmodL.so.6'
         copy_file(src_path, dest_path)
 
-        src_path = '../../cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
         dest_path = dest + '/usr/lib/libfmodL.so.6'
         copy_file(src_path, dest_path)
 
-        src_path = '../../cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
         dest_path = dest + '/usr/lib/libfmodL.so.6'
         copy_file(src_path, dest_path)
 
