@@ -267,7 +267,7 @@ def ci_appimage():
         bin_path = 'build/bin/' + project_name + '/' + project_name
         dest_path = dest + '/usr/lib'
         
-        subprocess.call('cpld.bash ' + bin_path + ' ' + dest_path, shell = True)
+        subprocess.call('./cpld.bash ' + bin_path + ' ' + dest_path, shell = True)
 
         # get apprun file        
         url = 'https://raw.githubusercontent.com/AppImage/AppImageKit/master/resources/AppRun'
