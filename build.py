@@ -315,7 +315,7 @@ def ci_appimage():
 
         # create zip file
         tagname = os.environ["TRAVIS_TAG"]
-        shutil.make_archive(tagname + '-linux.zip', 'zip', dest)
+        shutil.make_archive(tagname + '-linux', 'zip', dest)
 
         dirs = os.listdir('.')
         for file in dirs:
