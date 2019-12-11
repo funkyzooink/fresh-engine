@@ -245,7 +245,6 @@ def ci_appimage():
         dest_path = dest + '/' + project_name + '.png'
         copy_file(src_path, dest_path)
 
-
         src_path = 'examples/'+ project_name + '/'+ project_name + '.desktop'
         dest_path = dest + '/' + project_name + '.desktop'
         copy_file(src_path, dest_path)
@@ -316,7 +315,7 @@ def ci_appimage():
             
         os.chmod('appimagetool-x86_64.AppImage', 0o755)
         os.environ["ARCH"] = "x86_64 "
-        subprocess.call(['appimagetool-x86_64.AppImage', dest])
+        subprocess.call('appimagetool-x86_64.AppImage' + dest, shell = True)
 
         # create zip file
         tagname = os.environ["TRAVIS_TAG"]
