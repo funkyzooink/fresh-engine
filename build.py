@@ -311,11 +311,11 @@ def ci_appimage():
             
         os.chmod('appimagetool-x86_64.AppImage', 0o755)
         os.environ["ARCH"] = "x86_64 "
-        subprocess.call('appimagetool-x86_64.AppImage ' + dest, shell = True)
+        subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
 
         # create zip file
         tagname = os.environ["TRAVIS_TAG"]
-        shutil.make_archive(tagname + '-linux', 'zip', dest)
+        shutil.make_archive(tagname + '-linux', 'zip', project_name + '-x86_64.AppImage')
 
         dirs = os.listdir('.')
         for file in dirs:
