@@ -293,12 +293,12 @@ def ci_appimage():
 
         # create zip file
         tagname = os.environ["TRAVIS_TAG"]
-        os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
-        #shutil.make_archive(tagname + '-linux', 'zip', project_name + '-x86_64.AppImage')
+        src_path = project_name + '-x86_64.AppImage'
+        create_directory(tagname)
+        dest_path = tagname + '/' + project_name + '-x86_64.AppImage'
+        copy_files(src_path, dest_path)
+        shutil.make_archive(tagname + '-linux', 'zip', tagname)
 
-        dirs = os.listdir('.')
-        for file in dirs:
-            print file
 
 def ci_deploy(): # TODO for fastlane
 
