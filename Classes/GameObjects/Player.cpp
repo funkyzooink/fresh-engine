@@ -475,12 +475,12 @@ void Player::attack()
         // display attack
         if (getHeadingState() == LEFT_HEADING)
         {
-            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_LEFT_ANIMATION, false);
+            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_LEFT_ANIMATION, getFlipAnimationX());
         }
         else
         {
             checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_RIGHT_ANIMATION,
-                                   true);  // TODO flipX ninja?
+                                   getFlipAnimationX());  // TODO flipX ninja?
         }
     }
 }
