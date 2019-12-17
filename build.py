@@ -296,7 +296,7 @@ def ci_appimage():
         src_path = project_name + '-x86_64.AppImage'
         create_directory(tagname)
         dest_path = tagname + '/' + project_name + '-x86_64.AppImage'
-        copy_files(src_path, dest_path)
+        copy_file(src_path, dest_path)
         shutil.make_archive(tagname + '-linux', 'zip', tagname)
 
 
