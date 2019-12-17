@@ -253,6 +253,8 @@ def ci_appimage():
         src_path = 'build/bin/' + project_name
         dest_path = dest + '/bin'
         copy_files(src_path, dest_path)
+        os.symlink(dest_path, dest + '/AppRun')
+        os.chmod(dest + '/AppRun', 0o755)
 
         # lib files - this bash script copies all needed files
         url = 'https://raw.githubusercontent.com/hemanth/futhark/1e74bbf9af4df4baf7f916582370609663319644/cpld.bash'
@@ -269,16 +271,6 @@ def ci_appimage():
         
         subprocess.call('./cpld.bash ' + bin_path + ' ' + dest_path, shell = True)
 
-        # get apprun file        
-        url = 'https://raw.githubusercontent.com/AppImage/AppImageKit/master/resources/AppRun'
-        filedata = urllib2.urlopen(url)
-        datatowrite = filedata.read()
-        
-        with open(dest + '/AppRun', 'wb') as f:
-            f.write(datatowrite)
-
-        os.chmod(dest + '/AppRun', 0o755)
-
         # create appimage
         url = 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
         filedata = urllib2.urlopen(url)
@@ -291,13 +283,9 @@ def ci_appimage():
         os.environ["ARCH"] = "x86_64 "
         subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
 
-        # create zip file
+        # rename appimage file
         tagname = os.environ["TRAVIS_TAG"]
-        src_path = project_name + '-x86_64.AppImage'
-        create_directory(tagname)
-        dest_path = tagname + '/' + project_name + '-x86_64.AppImage'
-        copy_file(src_path, dest_path)
-        shutil.make_archive(tagname + '-linux', 'zip', dest)
+        os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
 
 def ci_deploy(): # TODO for fastlane
