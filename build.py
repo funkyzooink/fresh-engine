@@ -297,7 +297,7 @@ def ci_appimage():
         create_directory(tagname)
         dest_path = tagname + '/' + project_name + '-x86_64.AppImage'
         copy_file(src_path, dest_path)
-        shutil.make_archive(tagname + '-linux', 'zip', tagname)
+        shutil.make_archive(tagname + '-linux', 'zip', dest)
 
 
 def ci_deploy(): # TODO for fastlane
