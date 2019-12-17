@@ -253,7 +253,6 @@ def ci_appimage():
         src_path = 'build/bin/' + project_name
         dest_path = dest + '/bin'
         copy_files(src_path, dest_path)
-        os.symlink(dest_path, dest + '/AppRun')
 
         # lib files - this bash script copies all needed files
         url = 'https://raw.githubusercontent.com/hemanth/futhark/1e74bbf9af4df4baf7f916582370609663319644/cpld.bash'
@@ -269,6 +268,12 @@ def ci_appimage():
         dest_path = dest + '/usr/lib'
         
         subprocess.call('./cpld.bash ' + bin_path + ' ' + dest_path, shell = True)
+
+        # get apprun file        
+        src_path = 'AppRun'
+        dest_path = dest + '/AppRun'
+        copy_file(src_path, dest_path)
+        os.chmod(dest_path, 0o755)
 
         # create appimage
         url = 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
