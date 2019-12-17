@@ -254,7 +254,6 @@ def ci_appimage():
         dest_path = dest + '/bin'
         copy_files(src_path, dest_path)
         os.symlink(dest_path, dest + '/AppRun')
-        os.chmod(dest + '/AppRun', 0o755)
 
         # lib files - this bash script copies all needed files
         url = 'https://raw.githubusercontent.com/hemanth/futhark/1e74bbf9af4df4baf7f916582370609663319644/cpld.bash'
