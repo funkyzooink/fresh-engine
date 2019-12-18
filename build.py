@@ -269,10 +269,11 @@ def ci_appimage():
         
         subprocess.call('./cpld.bash ' + bin_path + ' ' + dest_path, shell = True)
 
-        # get apprun file        
-        src_path = 'AppRun'
+        # write apprun file        
         dest_path = dest + '/AppRun'
-        copy_file(src_path, dest_path)
+        apprun = open(dest_path, "w")
+        apprun.write("#!/bin/sh \n ./bin/" + project_name)
+        apprun.close()
         os.chmod(dest_path, 0o755)
 
         # create appimage
