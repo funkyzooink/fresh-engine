@@ -254,20 +254,42 @@ def ci_appimage():
         dest_path = dest + '/bin'
         copy_files(src_path, dest_path)
 
-        # lib files - this bash script copies all needed files
-        url = 'https://raw.githubusercontent.com/hemanth/futhark/1e74bbf9af4df4baf7f916582370609663319644/cpld.bash'
-        filedata = urllib2.urlopen(url)
-        datatowrite = filedata.read()
-        
-        with open('cpld.bash', 'wb') as f:
-            f.write(datatowrite)
-
-        os.chmod('cpld.bash', 0o755)
-
-        bin_path = 'build/bin/' + project_name + '/' + project_name
+        # lib files
+        src_path = 'build/lib'
         dest_path = dest + '/usr/lib'
-        
-        subprocess.call('./cpld.bash ' + bin_path + ' ' + dest_path, shell = True)
+        copy_files(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmod.so'
+        dest_path = dest + '/usr/lib/libfmod.so'
+        copy_file(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmod.so.6'
+        dest_path = dest + '/usr/lib/libfmod.so.6'
+        copy_file(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        dest_path = dest + '/usr/lib/libfmodL.so.6'
+        copy_file(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        dest_path = dest + '/usr/lib/libfmodL.so.6'
+        copy_file(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        dest_path = dest + '/usr/lib/libfmodL.so.6'
+        copy_file(src_path, dest_path)
+
+        src_path = '/usr/lib/libpng12.so.0'
+        dest_path = dest + '/usr/lib/libpng12.so.0'
+        copy_file(src_path, dest_path)
+
+        src_path = '/usr/lib/libcurl-gnutls.so.4'
+        dest_path = dest + '/usr/lib/libcurl-gnutls.so.4'
+        copy_file(src_path, dest_path)
+
+        src_path = '/usr/lib/libGLEW.so.1.13'
+        dest_path = dest + '/usr/lib/libGLEW.so.1.13'
+        copy_file(src_path, dest_path)
 
         # get apprun file        
         url = 'https://raw.githubusercontent.com/AppImage/AppImageKit/master/resources/AppRun'
