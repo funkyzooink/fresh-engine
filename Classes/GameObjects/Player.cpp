@@ -274,6 +274,7 @@ void Player::belowCollisionCallback(const CollisionTile& tile, const cocos2d::Re
         auto interaction = checkInteractionObjectCollision(collisionSource);
 
         if (interaction == InteractionCollisionEnum::NO_INTERACTION ||
+            interaction == InteractionCollisionEnum::DESTROY || // Do not fall through destroy blocks
             interaction == InteractionCollisionEnum::JUMP)  // in case of jump through do not fall down again
         {
             // tile is directly below character
