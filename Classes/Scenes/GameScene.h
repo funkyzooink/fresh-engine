@@ -101,6 +101,7 @@ class GameScene : public cocos2d::Layer
     void menuPauseCallback(cocos2d::Ref* pSender);  // Pause Button Callback
     void actionLeft();
     void actionRight();
+    void actionJump(bool move);
     void actionCustom(bool move, const std::string& customAction);
     void handleTouchArea(const std::string& touchType, bool move);
     void handleTouch(cocos2d::Touch* touch, bool move);

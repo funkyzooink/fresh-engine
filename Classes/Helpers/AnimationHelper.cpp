@@ -17,7 +17,8 @@ void AnimationHelper::levelinfoFadeInAnimation(cocos2d::Node* node1, cocos2d::No
 
     switch (GAMECONFIG.getLevelInfoPopupType())
     {
-        case 1: {
+        case 1:
+        {
             node1->runAction(cocos2d::Sequence::create(
                 cocos2d::MoveTo::create(
                     1.0F, cocos2d::Vec2(visibleSize.width / 2 - CONSTANTS.getOffset() * 2, node1->getPosition().y)),
@@ -28,7 +29,8 @@ void AnimationHelper::levelinfoFadeInAnimation(cocos2d::Node* node1, cocos2d::No
                 nullptr));
             break;
         }
-        default: {
+        default:
+        {
             auto position = node1->getPosition();
             node1->setPosition(position.x, visibleSize.height);
             node2->setVisible(true);
@@ -44,14 +46,16 @@ void AnimationHelper::levelInfoFadeOutAnimation(cocos2d::Node* node1, cocos2d::N
 
     switch (GAMECONFIG.getLevelInfoPopupType())
     {
-        case 1: {
+        case 1:
+        {
             node1->runAction(cocos2d::Sequence::create(
                 cocos2d::MoveTo::create(1.0F, cocos2d::Vec2(visibleSize.width, node1->getPosition().y)), nullptr));
             node2->runAction(cocos2d::Sequence::create(
                 cocos2d::MoveTo::create(1.5F, cocos2d::Vec2(-visibleSize.width, node2->getPosition().y)), nullptr));
             break;
         }
-        default: {
+        default:
+        {
             node2->setVisible(true);
             node1->runAction(cocos2d::Sequence::create(
                 cocos2d::MoveTo::create(1.5F, cocos2d::Vec2(node1->getPosition().x, -visibleSize.height)), nullptr));
@@ -72,13 +76,15 @@ void AnimationHelper::fadeIn(cocos2d::Node* from, cocos2d::Node* to)
         auto toPosition = cocos2d::Vec2(to->getPosition().x, 0.0);
         switch (GAMECONFIG.getMainSceneAnimation())
         {
-            case 1: {
+            case 1:
+            {
                 to->setPosition(toPosition.x, visibleSize.height);
                 to->runAction(cocos2d::Sequence::create(cocos2d::MoveTo::create(duration, toPosition), nullptr));
                 break;
             }
 
-            default: {
+            default:
+            {
                 to->setPosition(toPosition);
                 break;
             }
@@ -91,12 +97,14 @@ void AnimationHelper::fadeIn(cocos2d::Node* from, cocos2d::Node* to)
         auto fromPosition = cocos2d::Vec2(from->getPosition().x, -visibleSize.height);
         switch (GAMECONFIG.getMainSceneAnimation())
         {
-            case 1: {
+            case 1:
+            {
                 from->setPosition(0.0, 0.0);
                 from->runAction(cocos2d::Sequence::create(cocos2d::MoveTo::create(duration, fromPosition), nullptr));
                 break;
             }
-            default: {
+            default:
+            {
                 from->setPosition(fromPosition);
                 break;
             }
@@ -116,13 +124,15 @@ void AnimationHelper::fadeOut(cocos2d::Node* from, cocos2d::Node* to)
         auto toPosition = cocos2d::Vec2(to->getPosition().x, 0.0F);
         switch (GAMECONFIG.getMainSceneAnimation())
         {
-            case 1: {
+            case 1:
+            {
                 to->setPosition(toPosition.x, -visibleSize.height);
                 to->runAction(cocos2d::Sequence::create(cocos2d::MoveTo::create(duration, toPosition), nullptr));
                 break;
             }
 
-            default: {
+            default:
+            {
                 to->setPosition(toPosition);
                 break;
             }
@@ -135,13 +145,15 @@ void AnimationHelper::fadeOut(cocos2d::Node* from, cocos2d::Node* to)
         auto fromPosition = cocos2d::Vec2(from->getPosition().x, visibleSize.height);
         switch (GAMECONFIG.getMainSceneAnimation())
         {
-            case 1: {
+            case 1:
+            {
                 from->setPosition(0.0, 0.0);
                 from->runAction(cocos2d::Sequence::create(cocos2d::MoveTo::create(duration, fromPosition), nullptr));
                 break;
             }
 
-            default: {
+            default:
+            {
                 from->setPosition(fromPosition);
                 break;
             }

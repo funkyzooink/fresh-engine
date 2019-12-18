@@ -341,27 +341,32 @@ void GameScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 
     switch (keyCode)
     {
-        case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE: {
+        case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+        {
             menuPauseCallback(this);
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_A: {
+        case cocos2d::EventKeyboard::KeyCode::KEY_A:
+        {
             actionLeft();
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_D: {
+        case cocos2d::EventKeyboard::KeyCode::KEY_D:
+        {
             actionRight();
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_S: {
+        case cocos2d::EventKeyboard::KeyCode::KEY_S:
+        {
             actionCustom(false, _player->getCustomButton1());
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
-        case cocos2d::EventKeyboard::KeyCode::KEY_W: {
+        case cocos2d::EventKeyboard::KeyCode::KEY_W:
+        {
             actionCustom(false, _player->getCustomButton2());
             break;
         }
@@ -425,6 +430,28 @@ void GameScene::actionRight()
     _player->setMovementState(GameObject::MovementStateEnum::WALK_MOVEMENT);
 }
 
+void GameScene::actionJump(bool move)
+{
+    if (move)  // only run this action on touch down
+        return;
+
+    if (_player->getJumpState() == GameObject::JumpStateEnum::NO_JUMP)  // normal jump
+    {
+        _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_JUMP);
+        AudioPlayer::playFx(CONSTANTS.audioJump);
+    }
+    else if (_player->getJumpState() == GameObject::JumpStateEnum::JUMP)  // dbl jump
+    {
+        _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_DOUBLE_JUMP);
+        AudioPlayer::playFx(CONSTANTS.audioJump);
+
+        _crashCloudSprite->setPosition(_player->getPosition());
+        _crashCloudSprite->setVisible(true);
+        _crashCloudSprite->runAction(
+            cocos2d::Sequence::create(cocos2d::FadeIn::create(0.15F), cocos2d::FadeOut::create(0.15F), nullptr));
+    }
+}
+
 void GameScene::actionCustom(bool move, const std::string& additionalButton)
 {
     if (move)  // only run this action on touch down
@@ -444,21 +471,7 @@ void GameScene::actionCustom(bool move, const std::string& additionalButton)
     }
     else if (additionalButton == CONSTANTS.buttonTypeJump)
     {
-        if (_player->getJumpState() == GameObject::JumpStateEnum::NO_JUMP)  // normal jump
-        {
-            _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_JUMP);
-            AudioPlayer::playFx(CONSTANTS.audioJump);
-        }
-        else if (_player->getJumpState() == GameObject::JumpStateEnum::JUMP)  // dbl jump
-        {
-            _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_DOUBLE_JUMP);
-            AudioPlayer::playFx(CONSTANTS.audioJump);
-
-            _crashCloudSprite->setPosition(_player->getPosition());
-            _crashCloudSprite->setVisible(true);
-            _crashCloudSprite->runAction(
-                cocos2d::Sequence::create(cocos2d::FadeIn::create(0.15F), cocos2d::FadeOut::create(0.15F), nullptr));
-        }
+        actionJump(move);
     }
     else if (additionalButton == CONSTANTS.buttonTypeSwitch && _allowedPlayerTypes.size() > 0)
     {  // TODO error handling
@@ -496,21 +509,7 @@ void GameScene::handleTouchArea(const std::string& touchType, bool move)
     }
     else if (touchType == "jump")
     {
-        if (_player->getJumpState() == GameObject::JumpStateEnum::NO_JUMP)  // normal jump
-        {
-            _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_JUMP);
-            AudioPlayer::playFx(CONSTANTS.audioJump);
-        }
-        else if (_player->getJumpState() == GameObject::JumpStateEnum::JUMP)  // dbl jump
-        {
-            _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_DOUBLE_JUMP);
-            AudioPlayer::playFx(CONSTANTS.audioJump);
-
-            _crashCloudSprite->setPosition(_player->getPosition());
-            _crashCloudSprite->setVisible(true);
-            _crashCloudSprite->runAction(
-                cocos2d::Sequence::create(cocos2d::FadeIn::create(0.15F), cocos2d::FadeOut::create(0.15F), nullptr));
-        }
+        actionJump(move);
     }
 }
 
