@@ -269,12 +269,15 @@ def ci_appimage():
         
         subprocess.call('./cpld.bash ' + bin_path + ' ' + dest_path, shell = True)
 
-        # write apprun file        
-        dest_path = dest + '/AppRun'
-        apprun = open(dest_path, "w")
-        apprun.write("#!/bin/sh \n ./bin/" + project_name)
-        apprun.close()
-        os.chmod(dest_path, 0o755)
+        # get apprun file        
+        url = 'https://raw.githubusercontent.com/AppImage/AppImageKit/master/resources/AppRun'
+        filedata = urllib2.urlopen(url)
+        datatowrite = filedata.read()
+        
+        with open(dest + '/AppRun', 'wb') as f:
+            f.write(datatowrite)
+
+        os.chmod(dest + '/AppRun', 0o755)
 
         # create appimage
         url = 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
@@ -288,9 +291,13 @@ def ci_appimage():
         os.environ["ARCH"] = "x86_64 "
         subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
 
-        # rename appimage file
+        # create zip file
         tagname = os.environ["TRAVIS_TAG"]
-        os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
+        src_path = project_name + '-x86_64.AppImage'
+        create_directory(tagname)
+        dest_path = tagname + '/' + project_name + '-x86_64.AppImage'
+        copy_files(src_path, dest_path)
+        shutil.make_archive(tagname + '-linux', 'zip', tagname)
 
 
 def ci_deploy(): # TODO for fastlane
