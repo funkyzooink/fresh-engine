@@ -291,14 +291,9 @@ def ci_appimage():
         os.environ["ARCH"] = "x86_64 "
         subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
 
-        # create zip file
+        # rename appimage file
         tagname = os.environ["TRAVIS_TAG"]
-        src_path = project_name + '-x86_64.AppImage'
-        create_directory(tagname)
-        dest_path = tagname + '/' + project_name + '-x86_64.AppImage'
-        copy_files(src_path, dest_path)
-        shutil.make_archive(tagname + '-linux', 'zip', tagname)
-
+        os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
 def ci_deploy(): # TODO for fastlane
 
