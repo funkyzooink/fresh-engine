@@ -279,15 +279,15 @@ def ci_appimage():
         dest_path = dest + '/usr/lib/libfmodL.so.6'
         copy_file(src_path, dest_path)
 
-        src_path = '/usr/lib/libpng12.so.0'
+        src_path = '/usr/lib/x86_64-linux-gnu/libpng12.so.0'
         dest_path = dest + '/usr/lib/libpng12.so.0'
         copy_file(src_path, dest_path)
 
-        src_path = '/usr/lib/libcurl-gnutls.so.4'
+        src_path = '/usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4'
         dest_path = dest + '/usr/lib/libcurl-gnutls.so.4'
         copy_file(src_path, dest_path)
 
-        src_path = '/usr/lib/libGLEW.so.1.13'
+        src_path = '/usr/lib/x86_64-linux-gnu/libGLEW.so.1.13'
         dest_path = dest + '/usr/lib/libGLEW.so.1.13'
         copy_file(src_path, dest_path)
 
