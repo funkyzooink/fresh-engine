@@ -210,8 +210,10 @@ void HUD::setCustomButton1(const std::string& customButton)
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
-    setCustomButton(_touchArea3Sprite, customButton);
-
+    if (!customButton.empty())
+    {
+        setCustomButton(_touchArea3Sprite, customButton);
+    }
 #endif
 }
 
@@ -219,7 +221,10 @@ void HUD::setCustomButton2(const std::string& customButton)
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
-    setCustomButton(_touchArea4Sprite, customButton);
+    if (!customButton.empty())
+    {
+        setCustomButton(_touchArea4Sprite, customButton);
+    }
 #endif
 }
 
@@ -261,12 +266,26 @@ void HUD::initControls()
     _touchArea3Sprite->setOpacity(128);
     addChild(_touchArea3Sprite);
 
+    auto touchArea3 = GAMECONFIG.getControlConfig(CONSTANTS.touch3).sprite;
+    if (!touchArea3.empty())
+    {
+        _touchArea3Sprite->setSpriteFrame(touchArea3);
+        _touchArea3Sprite->setVisible(true);
+    }
+
     _touchArea4Sprite = cocos2d::Sprite::create();
     _touchArea4Sprite->setPosition(visibleSize.width * CONSTANTS.touchArea4 - CONSTANTS.getOffset() / 2,
                                    CONSTANTS.getOffset() / 2);
     _touchArea4Sprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     _touchArea4Sprite->setOpacity(128);
     addChild(_touchArea4Sprite);
+
+    auto touchArea4 = GAMECONFIG.getControlConfig(CONSTANTS.touch4).sprite;
+    if (!touchArea4.empty())
+    {
+        _touchArea4Sprite->setSpriteFrame(touchArea4);
+        _touchArea4Sprite->setVisible(true);
+    }
 
 #endif
 }

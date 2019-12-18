@@ -494,6 +494,24 @@ void GameScene::handleTouchArea(const std::string& touchType, bool move)
     {
         actionCustom(move, _player->getCustomButton2());
     }
+    else if (touchType == "jump")
+    {
+        if (_player->getJumpState() == GameObject::JumpStateEnum::NO_JUMP)  // normal jump
+        {
+            _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_JUMP);
+            AudioPlayer::playFx(CONSTANTS.audioJump);
+        }
+        else if (_player->getJumpState() == GameObject::JumpStateEnum::JUMP)  // dbl jump
+        {
+            _player->setJumpState(GameObject::JumpStateEnum::WANTS_TO_DOUBLE_JUMP);
+            AudioPlayer::playFx(CONSTANTS.audioJump);
+
+            _crashCloudSprite->setPosition(_player->getPosition());
+            _crashCloudSprite->setVisible(true);
+            _crashCloudSprite->runAction(
+                cocos2d::Sequence::create(cocos2d::FadeIn::create(0.15F), cocos2d::FadeOut::create(0.15F), nullptr));
+        }
+    }
 }
 
 void GameScene::handleTouch(cocos2d::Touch* touch, bool move)
