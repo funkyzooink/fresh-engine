@@ -24,6 +24,8 @@ HUD::HUD()
   , _touchArea4Sprite(nullptr)
   , _lifeCounter(0)
   , _iconScaleFactor(0.0)
+  , _touchArea3Custom(true)
+  , _touchArea4Custom(true)
 {
 }
 
@@ -210,7 +212,7 @@ void HUD::setCustomButton1(const std::string& customButton)
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
-    if (!customButton.empty())
+    if (_touchArea3Custom)
     {
         setCustomButton(_touchArea3Sprite, customButton);
     }
@@ -221,7 +223,7 @@ void HUD::setCustomButton2(const std::string& customButton)
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
     (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
-    if (!customButton.empty())
+    if (_touchArea4Custom)
     {
         setCustomButton(_touchArea4Sprite, customButton);
     }
@@ -271,6 +273,7 @@ void HUD::initControls()
     {
         _touchArea3Sprite->setSpriteFrame(touchArea3);
         _touchArea3Sprite->setVisible(true);
+        _touchArea3Custom = false;
     }
 
     _touchArea4Sprite = cocos2d::Sprite::create();
@@ -285,6 +288,7 @@ void HUD::initControls()
     {
         _touchArea4Sprite->setSpriteFrame(touchArea4);
         _touchArea4Sprite->setVisible(true);
+        _touchArea4Custom = false;
     }
 
 #endif

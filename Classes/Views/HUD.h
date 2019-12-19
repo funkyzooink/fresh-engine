@@ -54,6 +54,8 @@ class HUD : public cocos2d::Layer
     std::vector<cocos2d::Sprite*> _heartList;
     int _lifeCounter;
     float _iconScaleFactor;
+    bool _touchArea3Custom;
+    bool _touchArea4Custom;
 };
 
 #endif  // VIEWS_HUD_H_
