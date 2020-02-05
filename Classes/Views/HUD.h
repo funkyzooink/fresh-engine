@@ -21,7 +21,7 @@ class HUD : public cocos2d::Layer
     virtual ~HUD() override;
 
     virtual bool init() override;  // init
-    static HUD* createLayer(std::string coins, std::string enemies);
+    static HUD* createLayer();
 
     // set Labels
     void setEnemies(const std::string& message);
@@ -30,12 +30,14 @@ class HUD : public cocos2d::Layer
     void setLife(const int life);
     void initControls();  // init arrow up/down signs
 
-    void setAdditionalButton(const std::string& additionalButton);
+    void setCustomButton1(const std::string& customButton);
+    void setCustomButton2(const std::string& customButton);
 
   private:
     HUD();
     CREATE_FUNC(HUD);
-    void addLabels(const std::string& coins, const std::string& enemies);
+    void addLabels();
+    void setCustomButton(cocos2d::Sprite* sprite, const std::string& customButton);
 
     // Labels
     cocos2d::Label* _moneyLabel;
@@ -47,10 +49,13 @@ class HUD : public cocos2d::Layer
 
     // Touch control
     cocos2d::Sprite* _touchArea3Sprite;
+    cocos2d::Sprite* _touchArea4Sprite;
 
     std::vector<cocos2d::Sprite*> _heartList;
     int _lifeCounter;
     float _iconScaleFactor;
+    bool _touchArea3Custom;
+    bool _touchArea4Custom;
 };
 
 #endif  // VIEWS_HUD_H_

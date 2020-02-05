@@ -83,6 +83,10 @@ void GameScene::loadMap()
         }
     }
 
+    _hudLayer = HUD::createLayer();
+    _hudLayer->setLocalZOrder(CONSTANTS.LocalZOrderEnum::CONTROLS_Z_ORDER);
+    addChild(_hudLayer);
+
     initParallaxBackground();
 
     initTiledMap();
@@ -127,18 +131,22 @@ void GameScene::initTmxObjects()
 
         std::string name = properties.at("name").asString();
 
-        if (GAMECONFIG.isPlayerType(name))
+        if (GAMECONFIG.isPlayerEntry(name))  // TODO remove
         {
-            // TODO use upgradePlayer
-            _player = GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId())->clone(this);
-            for (auto const& ammo : _player->getAmmoVector())
+            // TODO use upgradePlayerForId
+            if (_player == nullptr)
             {
-                _cameraFollowNode->addChild(ammo);
+                initPlayer(GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId()), position);
             }
-
-            _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-            _player->setPosition(position + _player->getContentSize() / 2);
-            _cameraFollowNode->addChild(_player);
+        }
+        else if (GAMECONFIG.isPlayerType(name))
+        {
+            // TODO use upgradePlayerForId
+            if (_player == nullptr)
+            {
+                initPlayer(GAMECONFIG.getPlayerObjectForKey(name), position);
+            }
+            _allowedPlayerTypes.push_back(name);
         }
         else if (GAMECONFIG.isEnemyType(name))
         {
@@ -170,12 +178,8 @@ void GameScene::initTmxObjects()
     // hud
     auto enemies = Utility::numberToString(_enemyCounter) + "/" + Utility::numberToString(_enemyMaxCounter);
     auto money = Utility::numberToString(_moneyCounter) + "/" + Utility::numberToString(_moneyMaxCounter);
-
-    _hudLayer = HUD::createLayer(money, enemies);
-    _hudLayer->setLocalZOrder(CONSTANTS.LocalZOrderEnum::CONTROLS_Z_ORDER);
-    addChild(_hudLayer);
-
-    _hudLayer->setAdditionalButton(_player->getAdditionalButton());
+    _hudLayer->setEnemies(enemies);
+    _hudLayer->setCoins(money);
 }
 
 void GameScene::initParallaxBackground()
@@ -357,13 +361,13 @@ void GameScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
         case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
         case cocos2d::EventKeyboard::KeyCode::KEY_S:
         {
-            actionDown(false);
+            actionCustom(false, _player->getCustomButton1());
             break;
         }
         case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
         case cocos2d::EventKeyboard::KeyCode::KEY_W:
         {
-            actionUp(false);
+            actionCustom(false, _player->getCustomButton2());
             break;
         }
         default:
@@ -426,30 +430,7 @@ void GameScene::actionRight()
     _player->setMovementState(GameObject::MovementStateEnum::WALK_MOVEMENT);
 }
 
-void GameScene::actionDown(bool move)
-{
-    if (move)  // only run this action on touch down
-        return;
-
-    auto additionalButton = _player->getAdditionalButton();
-    if (additionalButton == CONSTANTS.buttonTypeAttack)
-    {
-        _player->attack();
-    }
-    else if (additionalButton == CONSTANTS.buttonTypeShoot)
-    {
-        _player->prepareToShoot();
-    }
-    else if (additionalButton == CONSTANTS.buttonTypeDown)
-    {
-        _player->setJumpState(GameObject::JumpStateEnum::FALLING_DOWN_JUMP);
-    }
-    else
-    {
-    }
-}
-
-void GameScene::actionUp(bool move)
+void GameScene::actionJump(bool move)
 {
     if (move)  // only run this action on touch down
         return;
@@ -471,6 +452,43 @@ void GameScene::actionUp(bool move)
     }
 }
 
+void GameScene::actionCustom(bool move, const std::string& additionalButton)
+{
+    if (move)  // only run this action on touch down
+        return;
+
+    if (additionalButton == CONSTANTS.buttonTypeAttack)
+    {
+        _player->attack();
+    }
+    else if (additionalButton == CONSTANTS.buttonTypeShoot)
+    {
+        _player->prepareToShoot();
+    }
+    else if (additionalButton == CONSTANTS.buttonTypeDown)
+    {
+        _player->setJumpState(GameObject::JumpStateEnum::FALLING_DOWN_JUMP);
+    }
+    else if (additionalButton == CONSTANTS.buttonTypeJump)
+    {
+        actionJump(move);
+    }
+    else if (additionalButton == CONSTANTS.buttonTypeSwitch && _allowedPlayerTypes.size() > 0)
+    {  // TODO error handling
+        auto result = std::find_if(_allowedPlayerTypes.begin(), _allowedPlayerTypes.end(),
+                                   [&](const auto& v) { return v == _player->getName(); });
+        auto next = std::next(result, 1);
+        if (next != _allowedPlayerTypes.end())
+        {
+            upgradePlayerForKey(*next);
+        }
+        else
+        {
+            upgradePlayerForKey(*_allowedPlayerTypes.begin());
+        }
+    }
+}
+
 void GameScene::handleTouchArea(const std::string& touchType, bool move)
 {
     if (touchType == "left")
@@ -481,13 +499,17 @@ void GameScene::handleTouchArea(const std::string& touchType, bool move)
     {
         actionRight();
     }
-    else if (touchType == "additional")
+    else if (touchType == "custom1")
     {
-        actionDown(move);
+        actionCustom(move, _player->getCustomButton1());
+    }
+    else if (touchType == "custom2")
+    {
+        actionCustom(move, _player->getCustomButton2());
     }
     else if (touchType == "jump")
     {
-        actionUp(move);
+        actionJump(move);
     }
 }
 
@@ -597,9 +619,10 @@ void GameScene::playerHitByEnemyCallback()  // TODO move to player class
     {
         _player->setHit(55);
 
-        if (!GAMECONFIG.getPlayerObject(_player->getId())->_upgrade.empty())  // player has an upgrade -> loose upgrad
+        if (!GAMECONFIG.getPlayerObjectForKey(_player->getName())->_upgrade.empty())  // player has an upgrade -> loose
+                                                                                      // upgrad
         {
-            upgradePlayer(0);  // TODO 0!
+            upgradePlayerForId(0);  // TODO 0!
         }
         else
         {
@@ -683,16 +706,41 @@ void GameScene::updateTutorial()
         }
     }
 }
-
-void GameScene::upgradePlayer(int playerId)
-{  // TODO is there a better way?
-    cocos2d::Point pPosition = _player->getPosition();
+void GameScene::upgradePlayerForKey(const std::string& playerKey)
+{
+    cocos2d::Point pPosition = _player->getPosition() - _player->getContentSize() / 2;  // TODO remove this workaround
     _cameraFollowNode->removeChild(_player);
 
-    auto playerConfig = GAMECONFIG.getPlayerObject(playerId);
     _player->setDisabled(true);
-    _player = playerConfig->clone(this);
-    _player->setPosition(pPosition);
+
+    auto player = GAMECONFIG.getPlayerObjectForKey(playerKey);
+    initPlayer(player, pPosition);
+}
+
+void GameScene::upgradePlayerForId(int playerId)
+{
+    cocos2d::Point pPosition = _player->getPosition() - _player->getContentSize() / 2;  // TODO remove this workaround
+    _cameraFollowNode->removeChild(_player);
+
+    _player->setDisabled(true);
+
+    auto player = GAMECONFIG.getPlayerObject(playerId);
+    initPlayer(player, pPosition);
+}
+
+void GameScene::initPlayer(Player* player, const cocos2d::Point& pPosition)
+{
+    // TODO is there a better way
+
+    // TODO 4friends check if works with other games
+    auto life = GAMECONFIG.getGameplayConfig().playerMaxLife;
+    if (_player != nullptr)
+    {
+        life = _player->getLife();
+    }
+    _player = player->clone(this);
+    _player->setLife(life);
+    _player->setPosition(pPosition + _player->getContentSize() / 2);
     _player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     for (auto const& ammo : _player->getAmmoVector())
     {
@@ -704,9 +752,9 @@ void GameScene::upgradePlayer(int playerId)
     _cameraFollowNode->runAction(cocos2d::Follow::create(_player, _tiledMap->getBoundingBox()));
     _player->runAction(AnimationHelper::blinkAnimation());
 
-    _hudLayer->setAdditionalButton(_player->getAdditionalButton());
+    _hudLayer->setCustomButton1(_player->getCustomButton1());
+    _hudLayer->setCustomButton2(_player->getCustomButton2());
 }
-
 // TODO new collision
 void GameScene::showCrashCloud()
 {

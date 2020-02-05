@@ -13,9 +13,19 @@ class Enemy;
 class Player : public GameObject
 {
   public:
+    enum class InteractionCollisionEnum
+    {
+        NO_INTERACTION,
+        DESTROY,
+        CLIMB,
+        JUMP,
+        WALK
+    };
+
     // MARK: cocos2dx inherited
-    static Player* create(const std::string& filepath, int id, float xSpeed, float ySpeed, bool canKillByJump,
-                          std::string additionalButton, std::vector<std::string> bulletTypes, bool flipAnimationX,
+    static Player* create(const std::string& name, const std::string& filepath, int id, float xSpeed, float ySpeed,
+                          const std::string& canKill, const std::string& customButton1,
+                          const std::string& customButton2, std::vector<std::string> bulletTypes, bool flipAnimationX,
                           std::string upgrade, std::map<AnimationHelper::AnimationTagEnum, std::string> animationMap);
     static Player* createWithSpriteFrameName(const std::string& spriteFrameName);
     virtual Player* clone(GameScene* gameScene) const override;
@@ -39,6 +49,16 @@ class Player : public GameObject
     virtual void belowCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection) override;
 
     /**
+     * leftCollisionCallback is called in case of a tile left of the GameObject
+     */
+    virtual void leftCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection) override;
+
+    /**
+     * rightCollisionCallback is called in case of a tile right of the GameObject
+     */
+    virtual void rightCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection) override;
+
+    /**
      * defaultCollisionCallback is called in case of a diagonal tile
      */
     virtual void defaultCollisionCallback(const CollisionTile& tile,
@@ -58,7 +78,7 @@ class Player : public GameObject
      * @param Point screenCoordinate  coordinate in screenspace
      * @param Point tileCoordinate  coordinate of tile
      */
-    bool checkInteractionObjectCollision(const cocos2d::Point& screenCoordinate, const cocos2d::Point& tileCoordinate);
+    InteractionCollisionEnum checkInteractionObjectCollision(const cocos2d::Rect& screenCoordinate);
     /**
      * attack
      *
@@ -91,8 +111,9 @@ class Player : public GameObject
     // MARK: variables
   private:
     Player();
-    CC_SYNTHESIZE(std::string, _additionalButton, AdditionalButton)
-    CC_SYNTHESIZE_READONLY(bool, _canKillByJump, CanKillByJump)
+    CC_SYNTHESIZE(std::string, _customButton1, CustomButton1)
+    CC_SYNTHESIZE(std::string, _customButton2, CustomButton2)
+    CC_SYNTHESIZE_READONLY(std::string, _canKill, CanKill)
     CC_SYNTHESIZE(int, _hit, Hit)
 
     int _attackTime;

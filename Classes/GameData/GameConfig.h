@@ -28,7 +28,7 @@ struct UpgradeActions
 {
     int life{};
     int money{};
-    int playerId{};
+    std::string playerName{};
     bool gameOver{};
     std::string audio;
 };
@@ -119,6 +119,14 @@ class GameConfig
     Player* getPlayerObject(int id);
 
     /**
+     * Get Player Object
+     *
+     * @param id
+     *
+     */
+    Player* getPlayerObjectForKey(const std::string& key);
+
+    /**
      * Get Enemy Object
      *
      * @param id
@@ -190,6 +198,7 @@ class GameConfig
     bool isBlockType(const std::string& key);
     bool isUpgradeType(const std::string& key);
     bool isPlayerType(const std::string& key);
+    bool isPlayerEntry(const std::string& key);
 
     SceneConfig* getMainSceneConfig();
     std::string getFont(const std::string& key);

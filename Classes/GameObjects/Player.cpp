@@ -21,19 +21,21 @@ funkyzooink@gmail.com
 
 // MARK: - create
 
-Player::Player() : _canKillByJump(false), _attackTime(-10), _hit(0), _id(0), _shoot(0)
+Player::Player() : _canKill("no"), _attackTime(-10), _hit(0), _id(0), _shoot(0)
 {
     _sleeping = false;
     setHeadingState(RIGHT_HEADING);
 }
 
-Player* Player::create(const std::string& idleIcon, int id, float xSpeed, float ySpeed, bool canKillByJump,
-                       std::string additionalButton, std::vector<std::string> bulletTypes, bool flipAnimationX,
-                       std::string upgrade, std::map<AnimationHelper::AnimationTagEnum, std::string> animationEnumMap)
+Player* Player::create(const std::string& name, const std::string& idleIcon, int id, float xSpeed, float ySpeed,
+                       const std::string& canKill, const std::string& customButton1, const std::string& customButton2,
+                       std::vector<std::string> bulletTypes, bool flipAnimationX, std::string upgrade,
+                       std::map<AnimationHelper::AnimationTagEnum, std::string> animationEnumMap)
 {
     Player* sprite = createWithSpriteFrameName(idleIcon);
     sprite->_animationEnumMap = std::move(animationEnumMap);
 
+    sprite->_name = name;
     sprite->_idleIcon = idleIcon;
     sprite->_id = id;  // TODO remove
     sprite->_upgrade = std::move(upgrade);
@@ -45,19 +47,20 @@ Player* Player::create(const std::string& idleIcon, int id, float xSpeed, float 
 
     sprite->_ammoVector.clear();
 
-    sprite->_canKillByJump = canKillByJump;
+    sprite->_canKill = canKill;
     sprite->_flipAnimationX = flipAnimationX;
     sprite->setLife(GAMECONFIG.getGameplayConfig().playerMaxLife);
 
-    sprite->_additionalButton = std::move(additionalButton);
+    sprite->_customButton1 = std::move(customButton1);
+    sprite->_customButton2 = std::move(customButton2);
 
     sprite->_bulletTypes = std::move(bulletTypes);
     return sprite;
 }
 Player* Player::clone(GameScene* gameScene) const
 {
-    auto player = Player::create(_idleIcon, _id, _xSpeed, _ySpeed, _canKillByJump, _additionalButton, _bulletTypes,
-                                 _flipAnimationX, _upgrade, _animationEnumMap);
+    auto player = Player::create(_name, _idleIcon, _id, _xSpeed, _ySpeed, _canKill, _customButton1, _customButton2,
+                                 _bulletTypes, _flipAnimationX, _upgrade, _animationEnumMap);
     for (auto& bulletName : _bulletTypes)
     {
         player->addAmmo(bulletName, gameScene, true);
@@ -170,6 +173,48 @@ void Player::collisionAttack()
         if (dynamic_cast<GameObject*>(gameObject)->shootOrAttackCollision(this))
             _gameScene->destroyGameObject(dynamic_cast<GameObject*>(gameObject));
     }
+
+    cocos2d::Rect collisionSource = getBoundingBox();
+    // make rectangle a little bigger in the Heading direction
+    if (getHeadingState() == HeadingStateEnum::RIGHT_HEADING)
+    {
+        collisionSource.origin.x = collisionSource.origin.x + (CONSTANTS.getOffset() / 100);
+        collisionSource.origin.y = collisionSource.origin.y + (CONSTANTS.getOffset() / 100);
+        collisionSource.size.width = collisionSource.size.width + (CONSTANTS.getOffset() / 100);
+        collisionSource.size.height = collisionSource.size.height + (CONSTANTS.getOffset() / 100);
+    }
+    else if (getHeadingState() == HeadingStateEnum::LEFT_HEADING)
+    {
+        collisionSource.origin.x = collisionSource.origin.x - (CONSTANTS.getOffset() / 100);
+        collisionSource.origin.y = collisionSource.origin.y - (CONSTANTS.getOffset() / 100);
+        collisionSource.size.width = collisionSource.size.width + (CONSTANTS.getOffset() / 100);
+        collisionSource.size.height = collisionSource.size.height + (CONSTANTS.getOffset() / 100);
+    }
+
+    auto interaction = checkInteractionObjectCollision(collisionSource);
+    if (interaction == InteractionCollisionEnum::DESTROY)
+    {
+        auto tiledMap = _gameScene->getTileMap();
+        const auto& mapTileSize = tiledMap->getTileSize();
+        const auto& mapSize = tiledMap->getMapSize();
+
+        if (getHeadingState() == HeadingStateEnum::RIGHT_HEADING)
+        {
+            collisionSource.origin.x = collisionSource.origin.x + collisionSource.size.width;
+            collisionSource.origin.y = collisionSource.origin.y + collisionSource.size.height;
+        }
+        else if (getHeadingState() == HeadingStateEnum::LEFT_HEADING)
+        {
+            collisionSource.origin.x = collisionSource.origin.x - collisionSource.size.width;
+            collisionSource.origin.y = collisionSource.origin.y + collisionSource.size.height;
+        }
+        cocos2d::Point gameObjectTilePosition =
+            TileHelper::tileCoordinateForPosition(collisionSource.origin, mapSize, mapTileSize);
+        //        float tileX = tile.tilePositionX;
+        //        float tileY = tile.tilePositionY;
+        //        auto tileCoordinate = cocos2d::Point(tileX, tileY);
+        destroyBlock(collisionSource.origin, gameObjectTilePosition);
+    }
 }
 
 void Player::collisionHazardTiles()
@@ -185,15 +230,23 @@ void Player::collisionHazardTiles()
 
 void Player::aboveCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection)
 {
-    auto collisionSource = tile.tileRect.origin;
-    float tileX = tile.tilePositionX;
-    float tileY = tile.tilePositionY;
-    auto tileCoordinate = cocos2d::Point(tileX, tileY);
+    auto collisionSource = tile.tileRect;
 
-    if (!checkInteractionObjectCollision(collisionSource, tileCoordinate))  // TODO climb animation
+    auto interaction = checkInteractionObjectCollision(collisionSource);
+    if (interaction == InteractionCollisionEnum::DESTROY)
+    {
+        float tileX = tile.tilePositionX;
+        float tileY = tile.tilePositionY;
+        auto tileCoordinate = cocos2d::Point(tileX, tileY);
+        destroyBlock(collisionSource.origin, tileCoordinate);
+    }
+    else if (interaction == InteractionCollisionEnum::NO_INTERACTION)  // nothing
     {
         setDesiredPosition(cocos2d::Point(getDesiredPosition().x, getDesiredPosition().y - intersection.size.height));
         setVelocity(cocos2d::Point(getVelocity().x, 0.0));
+    }
+    else if (interaction == InteractionCollisionEnum::CLIMB)  // TODOshow climb animation
+    {
     }
 }
 void Player::belowCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection)
@@ -203,37 +256,67 @@ void Player::belowCollisionCallback(const CollisionTile& tile, const cocos2d::Re
     {
         _gameScene->showCrashCloud();
 
-        auto collisionSource = tile.tileRect.origin;
-        float tileX = tile.tilePositionX;
-        float tileY = tile.tilePositionY;
-        auto tileCoordinate = cocos2d::Point(tileX, tileY);
-        if (!checkInteractionObjectCollision(collisionSource, tileCoordinate) && canBreakFloor())
+        auto collisionSource = tile.tileRect;
+        auto interaction = checkInteractionObjectCollision(collisionSource);
+        // TODO ladder down
+        if (interaction == InteractionCollisionEnum::DESTROY && canBreakFloor())  // break though
         {
-            setDesiredPosition(
-                cocos2d::Point(getDesiredPosition().x, getDesiredPosition().y + intersection.size.height));
-            setVelocity(cocos2d::Point(getVelocity().x, 0.0));
-            setJumpState(GameObject::JumpStateEnum::NO_JUMP);
+            float tileX = tile.tilePositionX;
+            float tileY = tile.tilePositionY;
+            auto tileCoordinate = cocos2d::Point(tileX, tileY);
+            destroyBlock(collisionSource.origin, tileCoordinate);
         }
     }
     else if (getDesiredPosition().y < getPosition().y)  // TODO test if this
                                                         // always works
     {
-        // tile is directly below character
-        setDesiredPosition(cocos2d::Point(getDesiredPosition().x, getDesiredPosition().y + intersection.size.height));
-        setVelocity(cocos2d::Point(getVelocity().x, 0.0));
-        setOnGround(true);
-        // TODO check if code belwo applys to player
-        if (getJumpState() != GameObject::JumpStateEnum::NO_JUMP)
+        auto collisionSource = tile.tileRect;
+        auto interaction = checkInteractionObjectCollision(collisionSource);
+
+        if (interaction == InteractionCollisionEnum::NO_INTERACTION ||
+            interaction == InteractionCollisionEnum::DESTROY ||  // Do not fall through destroy blocks
+            interaction == InteractionCollisionEnum::JUMP)       // in case of jump through do not fall down again
         {
-            setJumpState(GameObject::JumpStateEnum::BACK_ON_GROUND_JUMP);
-        }
-        else
-        {
-            setJumpState(GameObject::JumpStateEnum::NO_JUMP);
+            // tile is directly below character
+            setDesiredPosition(
+                cocos2d::Point(getDesiredPosition().x, getDesiredPosition().y + intersection.size.height));
+            setVelocity(cocos2d::Point(getVelocity().x, 0.0));
+            setOnGround(true);
+            // TODO check if code below applies to player
+            if (getJumpState() != GameObject::JumpStateEnum::NO_JUMP)
+            {
+                setJumpState(GameObject::JumpStateEnum::BACK_ON_GROUND_JUMP);
+            }
+            else
+            {
+                setJumpState(GameObject::JumpStateEnum::NO_JUMP);
+            }
         }
     }
 }
+void Player::leftCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection)
+{  // if movableobject walks left stop him
+    auto collisionSource = tile.tileRect;
+    auto interaction = checkInteractionObjectCollision(collisionSource);
+    if (interaction != InteractionCollisionEnum::WALK && interaction != InteractionCollisionEnum::CLIMB)
+    {
+        setObstacle(GameObject::ObstacleStateEnum::LEFT_OBSTACLE);
+        if (getDesiredPosition().x < getPosition().x)
+            setDesiredPosition(cocos2d::Point(getPosition().x, getDesiredPosition().y));
+    }
+}
 
+void Player::rightCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection)
+{  // if movableobject walks right stop him
+    auto collisionSource = tile.tileRect;
+    auto interaction = checkInteractionObjectCollision(collisionSource);
+    if (interaction != InteractionCollisionEnum::WALK && interaction != InteractionCollisionEnum::CLIMB)
+    {
+        setObstacle(GameObject::ObstacleStateEnum::RIGHT_OBSTACLE);
+        if (getDesiredPosition().x > getPosition().x)
+            setDesiredPosition(cocos2d::Point(getPosition().x, getDesiredPosition().y));
+    }
+}
 void Player::defaultCollisionCallback(const CollisionTile& tile, const cocos2d::Rect& intersection)
 {
     auto tiledMap = _gameScene->getTileMap();
@@ -276,60 +359,73 @@ void Player::destroyBlock(const cocos2d::Point& screenCoordinate, const cocos2d:
     auto tiledMap = _gameScene->getTileMap();
     const auto& mapTileSize = tiledMap->getTileSize();
     cocos2d::TMXLayer* layer = tiledMap->getLayer(CONSTANTS.tilemapTileLayer);
+    auto tile = layer->getTileAt(tileCoordinate);
 
-    // when player hits through blocks and an enemy is above we need to fake a bullet to kill the enemy
-    Bullet* bullet = GAMECONFIG.getBulletObject("bullet")->clone(_gameScene);  // todo this only works when type
-    bullet->setIsFriend(true);
-    // "bullet"" exists!!!
-    bullet->setPosition(screenCoordinate);
-    bullet->setContentSize(mapTileSize);
-    bullet->setVisible(true);
-    bullet->setDisabled(false);
-    bullet->setContentSize(bullet->getContentSize() * 2.0F);  // increase collision size
-    bullet->collisionShoot();
-    layer->removeTileAt(tileCoordinate);
-    _gameScene->explodeGameObject(bullet);
+    if (tile != nullptr)
+    {
+        // when player hits through blocks and an enemy is above we need to fake a bullet to kill the enemy
+        Bullet* bullet = GAMECONFIG.getBulletObject("bullet")->clone(_gameScene);  // todo this only works when type
+                                                                                   // "bullet"" exists!!!
+        bullet->setIsFriend(true);
+        bullet->setPosition(screenCoordinate);
+        bullet->setContentSize(mapTileSize);
+        bullet->setVisible(true);
+        bullet->setDisabled(false);
+        bullet->setContentSize(bullet->getContentSize() * 2.0F);  // increase collision size
+        bullet->collisionShoot();
+        layer->removeTileAt(tileCoordinate);
+        _gameScene->explodeGameObject(bullet);
+    }
 }
 
-bool Player::checkInteractionObjectCollision(const cocos2d::Point& screenCoordinate,
-                                             const cocos2d::Point& tileCoordinate)
+Player::InteractionCollisionEnum Player::checkInteractionObjectCollision(const cocos2d::Rect& screenCoordinate)
 {
     auto tiledMap = _gameScene->getTileMap();
-    cocos2d::TMXLayer* layer = tiledMap->getLayer(CONSTANTS.tilemapTileLayer);
-    auto tile = layer->getTileAt(tileCoordinate);
     cocos2d::TMXObjectGroup* grp = tiledMap->getObjectGroup(CONSTANTS.tilemapInteractionObjectGroup);
 
-    if (tile != nullptr && grp != nullptr)
+    if (  // tile != nullptr &&
+        grp != nullptr)
     {
         auto objects = grp->getObjects();
         for (auto& object : objects)
         {
-            auto properties = object.asValueMap();
-            auto position =
-                cocos2d::Point(properties.at("x").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
-                               properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor());
+            auto properties = object.asValueMap();  // TODO paint this rectangle for debbuging
+            auto position = cocos2d::Rect(
+                properties.at("x").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                properties.at("width").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor(),
+                properties.at("height").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor());
 
-            if (position == screenCoordinate)
+            // make rectangle a little smaller so that tiles touching are not counted
+            position.origin.x = position.origin.x + (CONSTANTS.getOffset() / 100);
+            position.origin.y = position.origin.y + (CONSTANTS.getOffset() / 100);
+            position.size.width = position.size.width - (CONSTANTS.getOffset() / 100);
+            position.size.height = position.size.height - (CONSTANTS.getOffset() / 100);
+
+            if (position.intersectsRect(screenCoordinate))
             {
                 std::string name = properties.at("name").asString();
                 if (name == CONSTANTS.tilemapInteractionObjectDestroy)
                 {
-                    destroyBlock(screenCoordinate, tileCoordinate);
-                    return true;
+                    return InteractionCollisionEnum::DESTROY;
                 }
                 else if (name == CONSTANTS.tilemapInteractionObjectJump)
                 {
-                    return true;
+                    return InteractionCollisionEnum::JUMP;
                 }
                 else if (name == CONSTANTS.tilemapInteractionObjectClimb)
                 {
-                    return true;  // TODO animation
+                    return InteractionCollisionEnum::CLIMB;  // TODO animation
                 }
-                return false;
+                else if (name == CONSTANTS.tilemapInteractionObjectWalk)
+                {
+                    return InteractionCollisionEnum::WALK;
+                }
+                return InteractionCollisionEnum::NO_INTERACTION;
             }
         }
     }
-    return false;
+    return InteractionCollisionEnum::NO_INTERACTION;
 }
 // MARK: - helpers
 void Player::jumpFromObject()
@@ -380,11 +476,12 @@ void Player::attack()
         // display attack
         if (getHeadingState() == LEFT_HEADING)
         {
-            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_LEFT_ANIMATION, false);
+            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_LEFT_ANIMATION, getFlipAnimationX());
         }
         else
         {
-            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_RIGHT_ANIMATION, false);  // TODO flipX ?
+            checkAndStartAnimation(AnimationHelper::AnimationTagEnum::ATTACK_RIGHT_ANIMATION,
+                                   getFlipAnimationX());  // TODO flipX ninja?
         }
     }
 }
@@ -408,7 +505,7 @@ void Player::restore()
 
 bool Player::canBreakFloor()
 {
-    return _additionalButton == CONSTANTS.buttonTypeDown;
+    return _customButton1 == CONSTANTS.buttonTypeDown || _customButton2 == CONSTANTS.buttonTypeDown;
 }
 
 bool Player::canShoot()

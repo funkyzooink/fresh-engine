@@ -21,17 +21,20 @@ HUD::HUD()
   , _cashSprite(nullptr)
   , _enemySprite(nullptr)
   , _touchArea3Sprite(nullptr)
+  , _touchArea4Sprite(nullptr)
   , _lifeCounter(0)
   , _iconScaleFactor(0.0)
+  , _touchArea3Custom(true)
+  , _touchArea4Custom(true)
 {
 }
 
 HUD::~HUD() = default;
 
-HUD* HUD::createLayer(std::string coins, std::string enemies)
+HUD* HUD::createLayer()
 {
     HUD* hud = HUD::create();
-    hud->addLabels(std::move(coins), std::move(enemies));
+    hud->addLabels();
     hud->setColor(cocos2d::Color3B(0, 0, 0));
 
     hud->setContentSize(cocos2d::Size(800, 40));
@@ -48,7 +51,7 @@ bool HUD::init()
     return true;
 }
 
-void HUD::addLabels(const std::string& coins, const std::string& enemies)
+void HUD::addLabels()
 {
     auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
@@ -75,7 +78,7 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
     }
 
     // txt
-    _enemyLabel = Utility::addLabel(enemies, CONSTANTS.fontHud, CONSTANTS.getOffset() / 4, GAMECONFIG.getTextColor());
+    _enemyLabel = Utility::addLabel("00000", CONSTANTS.fontHud, CONSTANTS.getOffset() / 4, GAMECONFIG.getTextColor());
     _enemyLabel->setPosition(_heartList.at(0)->getPosition().x - _heartList.at(0)->getContentSize().width -
                                  _enemyLabel->getContentSize().width,
                              _timerLabel->getPosition().y);
@@ -84,13 +87,14 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
 
     _enemySprite = cocos2d::Sprite::createWithSpriteFrameName(CONSTANTS.hudIconEnemy);
     _enemySprite->setPosition(_enemyLabel->getPosition().x - _enemySprite->getContentSize().width * _iconScaleFactor,
-                              _timerLabel->getPosition().y + _enemySprite->getContentSize().height * 0.5 * _iconScaleFactor);
+                              _timerLabel->getPosition().y +
+                                  _enemySprite->getContentSize().height * 0.5 * _iconScaleFactor);
     _enemySprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     _enemySprite->setScale(_iconScaleFactor);
     addChild(_enemySprite);
 
     // money sign
-    _moneyLabel = Utility::addLabel(coins, CONSTANTS.fontHud, CONSTANTS.getOffset() / 4, GAMECONFIG.getTextColor());
+    _moneyLabel = Utility::addLabel("00000", CONSTANTS.fontHud, CONSTANTS.getOffset() / 4, GAMECONFIG.getTextColor());
     _moneyLabel->setPosition(_enemySprite->getPosition().x - _enemySprite->getContentSize().width -
                                  _moneyLabel->getContentSize().width,
                              _timerLabel->getPosition().y);
@@ -99,7 +103,8 @@ void HUD::addLabels(const std::string& coins, const std::string& enemies)
 
     _cashSprite = cocos2d::Sprite::createWithSpriteFrameName(CONSTANTS.hudIconCoin);
     _cashSprite->setPosition(_moneyLabel->getPosition().x - _cashSprite->getContentSize().width * _iconScaleFactor,
-                             _timerLabel->getPosition().y + _cashSprite->getContentSize().height * 0.5 * _iconScaleFactor);
+                             _timerLabel->getPosition().y +
+                                 _cashSprite->getContentSize().height * 0.5 * _iconScaleFactor);
     _cashSprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
     _cashSprite->setScale(_iconScaleFactor);
     addChild(_cashSprite);
@@ -171,33 +176,60 @@ void HUD::setLife(const int life)
                                                        cocos2d::ScaleTo::create(0.05F, _iconScaleFactor), nullptr));
     }
 }
-void HUD::setAdditionalButton(const std::string& additionalButton)
+void HUD::setCustomButton(cocos2d::Sprite* sprite, const std::string& customButton)
 {
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
-    (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
-
-    // TODO get from json
-    if (additionalButton == CONSTANTS.buttonTypeAttack)
+    if (customButton == CONSTANTS.buttonTypeAttack)
     {
-        _touchArea3Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
-        _touchArea3Sprite->setVisible(true);
+        sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
+        sprite->setVisible(true);
     }
-    else if (additionalButton == CONSTANTS.buttonTypeShoot)
+    else if (customButton == CONSTANTS.buttonTypeShoot)
     {
-        _touchArea3Sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
-        _touchArea3Sprite->setVisible(true);
+        sprite->setSpriteFrame(CONSTANTS.hudIconShoot);
+        sprite->setVisible(true);
     }
-    else if (additionalButton == CONSTANTS.buttonTypeDown)
+    else if (customButton == CONSTANTS.buttonTypeDown)
     {
-        _touchArea3Sprite->setSpriteFrame(CONSTANTS.iconArrow);
-        _touchArea3Sprite->setVisible(true);
+        sprite->setSpriteFrame(CONSTANTS.hudIconArrowDown);
+        sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeJump)
+    {
+        sprite->setSpriteFrame(CONSTANTS.hudIconArrowUp);
+        sprite->setVisible(true);
+    }
+    else if (customButton == CONSTANTS.buttonTypeSwitch)
+    {
+        sprite->setSpriteFrame(CONSTANTS.hudIconSwitch);  // TODO
+        sprite->setVisible(true);
     }
     else
     {
-        _touchArea3Sprite->setVisible(false);
+        sprite->setVisible(false);
+    }
+}
+void HUD::setCustomButton1(const std::string& customButton)
+{
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
+    (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
+    if (_touchArea3Custom)
+    {
+        setCustomButton(_touchArea3Sprite, customButton);
     }
 #endif
 }
+
+void HUD::setCustomButton2(const std::string& customButton)
+{
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
+    (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
+    if (_touchArea4Custom)
+    {
+        setCustomButton(_touchArea4Sprite, customButton);
+    }
+#endif
+}
+
 void HUD::initControls()
 {
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) &&                            \
@@ -228,7 +260,7 @@ void HUD::initControls()
         addChild(_touchArea2Sprite);
     }
 
-    // TODO currently touch Area 3 is reserved for Additional button - and it must be created
+    // TODO currently touch Area 3 and 4 are reserved for Custom buttons - and must be created
     _touchArea3Sprite = cocos2d::Sprite::create();
     _touchArea3Sprite->setPosition(visibleSize.width * CONSTANTS.touchArea3 - CONSTANTS.getOffset() / 2,
                                    CONSTANTS.getOffset() / 2);
@@ -236,15 +268,27 @@ void HUD::initControls()
     _touchArea3Sprite->setOpacity(128);
     addChild(_touchArea3Sprite);
 
+    auto touchArea3 = GAMECONFIG.getControlConfig(CONSTANTS.touch3).sprite;
+    if (!touchArea3.empty())
+    {
+        _touchArea3Sprite->setSpriteFrame(touchArea3);
+        _touchArea3Sprite->setVisible(true);
+        _touchArea3Custom = false;
+    }
+
+    _touchArea4Sprite = cocos2d::Sprite::create();
+    _touchArea4Sprite->setPosition(visibleSize.width * CONSTANTS.touchArea4 - CONSTANTS.getOffset() / 2,
+                                   CONSTANTS.getOffset() / 2);
+    _touchArea4Sprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
+    _touchArea4Sprite->setOpacity(128);
+    addChild(_touchArea4Sprite);
+
     auto touchArea4 = GAMECONFIG.getControlConfig(CONSTANTS.touch4).sprite;
     if (!touchArea4.empty())
     {
-        auto _touchArea4Sprite = cocos2d::Sprite::createWithSpriteFrameName(touchArea4);
-        _touchArea4Sprite->setPosition(visibleSize.width * CONSTANTS.touchArea4 - CONSTANTS.getOffset() / 2,
-                                       CONSTANTS.getOffset() / 2);
-        _touchArea4Sprite->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
-        _touchArea4Sprite->setOpacity(128);
-        addChild(_touchArea4Sprite);
+        _touchArea4Sprite->setSpriteFrame(touchArea4);
+        _touchArea4Sprite->setVisible(true);
+        _touchArea4Custom = false;
     }
 
 #endif

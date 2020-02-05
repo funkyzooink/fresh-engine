@@ -49,10 +49,13 @@ class Constants
     const std::string audioFileType;  // mp3 or wav
 
     // icons
+    const std::string hudIconArrowDown;
+    const std::string hudIconArrowUp;
     const std::string hudIconCoin;
     const std::string hudIconHeart;
     const std::string hudIconEnemy;
     const std::string hudIconShoot;
+    const std::string hudIconSwitch;
 
     const std::string iconCloud;
     const std::string iconCrashCloud;
@@ -112,6 +115,8 @@ class Constants
     const std::string buttonTypeAttack;
     const std::string buttonTypeShoot;
     const std::string buttonTypeDown;
+    const std::string buttonTypeJump;
+    const std::string buttonTypeSwitch;
 
     // MARK: Tile map
     const std::string tilemapTileLayer;               // tmx layer with normal tiles
@@ -123,6 +128,7 @@ class Constants
     const std::string tilemapInteractionObjectDestroy;
     const std::string tilemapInteractionObjectJump;
     const std::string tilemapInteractionObjectClimb;
+    const std::string tilemapInteractionObjectWalk;
 
     CC_SYNTHESIZE(std::string, _tileSizeIdentifier, TileSizeIdentifier);
 

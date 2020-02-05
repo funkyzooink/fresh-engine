@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
+import urllib2
 
 def terminal_output(text):
     print text
@@ -108,6 +109,13 @@ def copy_files(src, dest):
 
     terminal_output('Files copied to: %s' % dest)
 
+def copy_file(src, dest):
+    if os.path.exists(src): 
+        terminal_output('copy files:' + src)
+        shutil.copyfile(src, dest)
+    else :
+        terminal_output('files does not exist:' + src)
+
 def set_android_values(path, app_name, bundle_id, version_name):
     manifestpath = path + '/app/AndroidManifest.xml'
     replace_in_file(manifestpath, bundle_id, 'org.cocos2dx.hellocpp')
@@ -185,7 +193,7 @@ def clean_folders():
         terminal_output('Removed %s' % dest)
 
 def ci_build():
-    project_path = "examples/little-ninja/"
+    project_path = "examples/4friends/" # if not on tag use this as fallback CI build
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
@@ -200,6 +208,114 @@ def ci_build():
             project_path = "examples/4friends/"
 
     project_copy_helper(project_path, 'play')
+
+def create_directory(path):
+        try:
+            os.mkdir(path)
+        except OSError:
+            print ("Creation of the directory %s failed" % path)
+        else:
+            print ("Successfully created the directory %s " % path)
+
+def ci_appimage():
+
+    if os.environ.get('TRAVIS_TAG'):
+        tagname = os.environ["TRAVIS_TAG"]
+        project_name = "4friends" # if not on tag use this as fallback CI build 
+
+        if "little-ninja" in tagname:
+            project_name = "little-ninja"
+        elif "little-robot-adventure" in tagname:
+            project_name = "little-robot-adventure"
+        elif "the-dragon-kid" in tagname:
+            project_name = "the-dragon-kid"
+        elif "4friends" in tagname:
+            project_name = "4friends"
+        else :
+            sys.exit(0)
+
+        # create directories
+        dest = project_name + '.AppDir'
+        create_directory(dest)
+
+        path = dest + '/usr'
+        create_directory(path)
+        
+        src_path = 'examples/'+ project_name + '/android/web_hi_res_512.png'
+        dest_path = dest + '/' + project_name + '.png'
+        copy_file(src_path, dest_path)
+
+        src_path = 'examples/'+ project_name + '/'+ project_name + '.desktop'
+        dest_path = dest + '/' + project_name + '.desktop'
+        copy_file(src_path, dest_path)
+
+        # bin files
+        src_path = 'build/bin/' + project_name
+        dest_path = dest + '/bin'
+        copy_files(src_path, dest_path)
+
+        # lib files
+        src_path = 'build/lib'
+        dest_path = dest + '/usr/lib'
+        copy_files(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmod.so'
+        dest_path = dest + '/usr/lib/libfmod.so'
+        copy_file(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmod.so.6'
+        dest_path = dest + '/usr/lib/libfmod.so.6'
+        copy_file(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        dest_path = dest + '/usr/lib/libfmodL.so.6'
+        copy_file(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        dest_path = dest + '/usr/lib/libfmodL.so.6'
+        copy_file(src_path, dest_path)
+
+        src_path = 'cocos2d/external/linux-specific/fmod/prebuilt/64-bit/libfmodL.so'
+        dest_path = dest + '/usr/lib/libfmodL.so.6'
+        copy_file(src_path, dest_path)
+
+        src_path = '/usr/lib/x86_64-linux-gnu/libpng12.so.0'
+        dest_path = dest + '/usr/lib/libpng12.so.0'
+        copy_file(src_path, dest_path)
+
+        src_path = '/usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4'
+        dest_path = dest + '/usr/lib/libcurl-gnutls.so.4'
+        copy_file(src_path, dest_path)
+
+        src_path = '/usr/lib/x86_64-linux-gnu/libGLEW.so.1.13'
+        dest_path = dest + '/usr/lib/libGLEW.so.1.13'
+        copy_file(src_path, dest_path)
+
+        # get apprun file        
+        url = 'https://raw.githubusercontent.com/AppImage/AppImageKit/master/resources/AppRun'
+        filedata = urllib2.urlopen(url)
+        datatowrite = filedata.read()
+        
+        with open(dest + '/AppRun', 'wb') as f:
+            f.write(datatowrite)
+
+        os.chmod(dest + '/AppRun', 0o755)
+
+        # create appimage
+        url = 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
+        filedata = urllib2.urlopen(url)
+        datatowrite = filedata.read()
+        
+        with open('appimagetool-x86_64.AppImage', 'wb') as f:
+            f.write(datatowrite)
+            
+        os.chmod('appimagetool-x86_64.AppImage', 0o755)
+        os.environ["ARCH"] = "x86_64 "
+        subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
+
+        # rename appimage file
+        tagname = os.environ["TRAVIS_TAG"]
+        os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
 def ci_deploy(): # TODO for fastlane
 
@@ -234,7 +350,7 @@ def main(argv):
     config_file_path = ''
 
     try:
-      opts, args = getopt.getopt(argv,"p:a:m:n:tcrd",["platform=", "android-platform=", "build_type=", "config_file_path=", "template", "clean", "travis", "deploy"])
+      opts, args = getopt.getopt(argv,"p:a:m:n:tcrid",["platform=", "android-platform=", "build_type=", "config_file_path=", "template", "clean", "travis", "appimage", "deploy"])
     except getopt.GetoptError:
       terminal_output("Wrong argument specified")
       sys.exit(2)
@@ -244,6 +360,9 @@ def main(argv):
     for opt, arg in opts:
         if opt in ("-r", "--travis"):
             ci_build()
+            sys.exit(0)
+        elif opt in ("-i", "--appimage"):
+            ci_appimage()
             sys.exit(0)
         elif opt in ("-d", "--deploy"):
             ci_deploy()

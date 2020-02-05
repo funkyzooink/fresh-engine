@@ -219,6 +219,11 @@ void TileHelper::collisionTile(GameObject* gameObject, cocos2d::TMXLayer* layer,
 void TileHelper::simpleCollisionTile(GameObject* gameObject, cocos2d::TMXLayer* layer, cocos2d::Size mapSize,
                                      cocos2d::Size mapTileSize, float scale)
 {
+    if (layer == nullptr)
+    {  // if ther is e.g. no hazard layer
+        return;
+    }
+
     auto tileVector = TileHelper::getSurroundingTilesAtPosition(gameObject->getPosition(), layer, mapSize, mapTileSize);
     for (auto tile : tileVector)
     {

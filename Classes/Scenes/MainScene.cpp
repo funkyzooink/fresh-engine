@@ -124,6 +124,7 @@ cocos2d::Node* MainScene::createTiledBackground(const std::string& tiledMapPath)
     cocos2d::TMXObjectGroup* grp = tiledMap->getObjectGroup(CONSTANTS.tilemapGameObjectsGroup);
 
     auto objects = grp->getObjects();
+    bool playerAdded = false;
     for (auto& object : objects)
     {
         auto properties = object.asValueMap();
@@ -132,13 +133,14 @@ cocos2d::Node* MainScene::createTiledBackground(const std::string& tiledMapPath)
         position.y = properties.at("y").asInt() * cocos2d::Director::getInstance()->getContentScaleFactor();
 
         std::string name = properties.at("name").asString();
-        if (GAMECONFIG.isPlayerType(name))
+        if ((GAMECONFIG.isPlayerEntry(name) || GAMECONFIG.isPlayerType(name)) && !playerAdded)
         {
             auto player = GAMECONFIG.getPlayerObject(GAMEDATA.getPlayerId())->clone(nullptr);  // TODO nullptr check
             player->setPosition(position + player->getContentSize() / 2);
             player->setLocalZOrder(CONSTANTS.LocalZOrderEnum::PLAYER_Z_ORDER);
             player->startIdleAnimation();
             node->addChild(player);
+            playerAdded = true;
         }
     }
 
