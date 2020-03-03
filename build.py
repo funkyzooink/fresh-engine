@@ -97,6 +97,13 @@ def prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name):
     shutil.copyfile(src, dest)
     replace_in_file(dest, app_name.lower(), 'hellocpp')
 
+def run_ios_cmake():
+    dest = "build-ios"
+    create_directory(dest)
+    os.chdir(dest)
+    terminal_output('create ios project file')
+    subprocess.call(["cmake", "..",  "-GXcode", "-DCMAKE_SYSTEM_NAME=iOS", "-DCMAKE_OSX_SYSROOT=iphoneos"])
+
 def copy_files(src, dest):
     try:
         shutil.copytree(src, dest)
@@ -138,16 +145,6 @@ def set_android_values(path, app_name, bundle_id, version_name):
     replace_in_file(gradlepath, name, 'versionName \"1.0\"')
 
 def set_ios_values(path, app_name, bundle_id):
-    srcfolder = path + '/HelloCpp.xcodeproj'
-    destfolder = path + '/' + app_name + '.xcodeproj'
-    filepath = srcfolder + '/project.pbxproj'
-
-    # App name
-    replace_in_file(filepath, app_name, 'HelloCpp')
-    os.rename(srcfolder, destfolder)
-    terminal_output('App name set to: %s in folder: %s ' % (app_name, destfolder))
-
-    # bundle id
     infoplistpath = path + '/ios/Info.plist'
     replace_in_file(infoplistpath, bundle_id, 'org.cocos2dx.hellocpp')
     terminal_output('ios App bundleid set to: %s in folder: %s ' % (bundle_id, infoplistpath))
@@ -185,6 +182,11 @@ def clean_folders():
         terminal_output('Removed %s' % dest)
 
     dest = 'Resources'
+    if os.path.isdir(dest): 
+        shutil.rmtree(dest)
+        terminal_output('Removed %s' % dest)
+
+    dest = 'build-ios'
     if os.path.isdir(dest): 
         shutil.rmtree(dest)
         terminal_output('Removed %s' % dest)
@@ -339,6 +341,7 @@ def project_copy_helper(config_file_path, android_platform):
     prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name)
     copy_resources(config_file_path, android_platform)
     copy_color_plugin(config_file_path)
+    run_ios_cmake()
 
 def main(argv):
     platform = ''
