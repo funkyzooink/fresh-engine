@@ -137,9 +137,6 @@ def set_android_values(path, app_name, bundle_id, version_name):
     name = 'versionName \"' + version_name + '\"'
     replace_in_file(gradlepath, name, 'versionName \"1.0\"')
 
-    mkpath = path + '/app/jni/Android.mk'
-    replace_in_file(mkpath, app_name.lower(), 'hellocpp')
-
 def set_ios_values(path, app_name, bundle_id):
     srcfolder = path + '/HelloCpp.xcodeproj'
     destfolder = path + '/' + app_name + '.xcodeproj'
