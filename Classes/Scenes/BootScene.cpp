@@ -54,8 +54,6 @@ bool BootScene::init()
     GAMECONFIG.parseGameObjects();
     GAMEDATA.loadData();
 
-    AudioPlayer::preload();
-
     runAction(cocos2d::Sequence::create(cocos2d::DelayTime::create(3.0F),
                                         cocos2d::CallFuncN::create(CC_CALLBACK_1(BootScene::menuPlayCallback, this)),
                                         nullptr));

@@ -205,7 +205,6 @@ class GameConfig
     std::string getSprite(const std::string& key);
     std::string getAudio(const std::string& key);
 
-    std::map<std::string, std::string> getAudioMap();
     std::string getLocalizedString(std::string key);
 
     std::vector<SpriteResolutionConfig> getSpriteResolutions();
