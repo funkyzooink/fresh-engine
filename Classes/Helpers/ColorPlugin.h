@@ -13,7 +13,7 @@ namespace cocos2d
 class TMXTiledMap;
 class Node;
 class Size;
-class Color4F;
+struct Color4F;
 class Sprite;
 }  // namespace cocos2d
 

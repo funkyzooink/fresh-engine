@@ -28,11 +28,10 @@ funkyzooink@gmail.com
 // MARK: - create
 
 GameScene::GameScene()
-  : _worldID(0)
-  , _activePopup(false)
-  , _hudLayer(nullptr)
+  : _hudLayer(nullptr)
   , _backgroundNode(nullptr)
   , _player(nullptr)
+  , _activePopup(false)
   , _playerCrashRectangle(nullptr)
   , _tutorialInfoLabel(nullptr)
   , _cameraFollowNode(nullptr)
@@ -40,11 +39,13 @@ GameScene::GameScene()
   , _enemyHitSprite(nullptr)
   , _tiledMap(nullptr)
   , _gameTime(0)
+  , _worldID(0)
   , _enemyCounter(0)
   , _enemyMaxCounter(0)
   , _moneyCounter(0)
   , _moneyMaxCounter(0)
   , _tutorialInfoLabelIndex(0)
+  , _allowedPlayerTypes()
   , _levelID(0)
 {
 }
