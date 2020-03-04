@@ -285,6 +285,7 @@ def clean_folders():
         terminal_output('Removed %s' % dest)
 
 def ci_build(platforms):
+    global config_file_path
     config_file_path = "examples/little-ninja/" # if not on tag use this as fallback CI build
 
     if os.environ.get('TRAVIS_TAG'):
