@@ -106,14 +106,14 @@ matrix:
       file: "${TRAVIS_TAG}-linux.AppImage"
       on:
         tags: true
-    - os: osx
-      osx_image: xcode11.3
-      script:
-      - python build.py --travis --mac
-      - cd build-mac
-      - xcodebuild -configuration Release
-      before_deploy:
-      - python build.py --macimage
+  - os: osx
+    osx_image: xcode11.3
+    script:
+    - python build.py --travis --mac
+    - cd build-mac
+    - xcodebuild -configuration Release
+    before_deploy:
+    - python build.py --macimage
     deploy:
       provider: releases
       skip_cleanup: true
@@ -123,11 +123,11 @@ matrix:
       file: "${TRAVIS_TAG}.app"
       on:
         tags: true
-    - os: windows
-      script:
-      - python build.py --travis --windows
-      - cd build-windows
-      - cmake --build
+  - os: windows
+    script:
+    - python build.py --travis --windows
+    - cd build-windows
+    - cmake --build
 
 env:
   global:
