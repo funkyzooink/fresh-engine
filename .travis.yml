@@ -37,7 +37,7 @@ matrix:
     - export PATH=$PATH:$ANT_ROOT
     - printenv
     - cd ..
-    - python build.py --travis
+    - python build.py --travis --android
     - cd proj.android
     script:
     - gradlew assembleRelease
@@ -83,7 +83,7 @@ matrix:
     - python download-deps.py --remove-download=yes
     - printenv
     - cd ..
-    - python build.py --travis
+    - python build.py --travis --linux
     - mkdir build-linux
     - cd build-linux
     - |
@@ -106,6 +106,24 @@ matrix:
       file: "${TRAVIS_TAG}-linux.AppImage"
       on:
         tags: true
+    - os: osx
+      osx_image: xcode11.3
+      script:
+      - python build.py --travis --mac
+      - cd build-mac
+      - xcodebuild -configuration Release
+      before_deploy:
+      - python build.py --macimage
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      api_key:
+        secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
+      file_glob: true
+      file: "${TRAVIS_TAG}.app"
+      on:
+        tags: true
+
 env:
   global:
   - secure: X/vZVkr+URoSk2U3MZDUr/2n1LHJ2xzoYE21zcB37pW1XBKP/x+OfGMmODNkKEyezjv0l6K/yS0tjX5jvh3ycPAvEXak/xSrX30kpTSI2OJlpLQKMnkbDIVpvtxsdwEdfVh7x62hfbvU3aeyxq0qf48zXCp8izspPfv6QxwJHM6yI2Wqz0NsoLlsl1pdMSfHbao9TpDs60P1zTSNP0jlIHuMZsqpZq41T4QjDeqVMuHCS5cw06XAZXDqBJCI+SA5dzGCIyuI4EudbBooNWFbElpiXbCAMZSml9Uq3n+DT/HLya6sMcqrGnG0YVcS+kLTk3i49gReZ64tho3hnVGXwowi+3Q9nfBWlKGyV43sZZzJjb2tSyrg2rNRmzjlh+rOouRfMwTronl5pfVf5EqC6Hu6Glpyw1BAu47tT+dbOwm7SbquLgXUVYNEPllT53ENM0e1TxRRy6W2Xkfn1Sub/mvYqtf8sMw9mngjIcngZryyUgU30NJKDVVm5DsqkosHmiFOBnmYOuuaAqHdxgDgrnF9DqUVVgId6xmKjFI1tibr3DCmYVUNVpLUeJvs/rqPwc0rDULXCOOWHx4rFQT3Xf6UV4ll7zXkWO9lhiPueeTu1kRO5TWIMXhfp9k9nyN4iTCWPHMWmNRLSIGMvXvSOSIYEsEwEtqtRgEMitdlJ5w=
