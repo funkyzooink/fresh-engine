@@ -11,6 +11,7 @@ import urllib2
 BUILD_PATH_IOS = "build-ios"
 BUILD_PATH_MAC = "build-mac"
 BUILD_PATH_LINUX = "build-linux"
+BUILD_PATH_WINDOWS = "build-windows"
 
 app_name = ""
 config_file_path = ""
@@ -43,8 +44,11 @@ def setup_mac(config):
 
 def setup_linux(config):
     copy_linux_files()
-
     run_linux_cmake()
+
+def setup_windows():
+    copy_windows_files()
+    run_windows_cmake()
 
 def copy_color_plugin():
     # TODO this is only for LRA - refactor
@@ -145,6 +149,14 @@ def copy_mac_files(bundle_id):
     dest = dest + '/Images.xcassets'
     copy_files(src, dest)
 
+def copy_windows_files():
+    src = 'templates/proj.win32'
+    dest = 'proj.win32'
+    if os.path.isdir(dest): 
+        terminal_output('Workspace not clean')
+        sys.exit(2)
+    copy_files(src, dest)
+
 def copy_cmake():
     # cmake
     src = 'templates/CMakeLists.txt'
@@ -179,6 +191,16 @@ def run_linux_cmake():
     subprocess.call(["cmake", ".."])
 
     reset_root()
+
+def run_windows_cmake():
+    dest = BUILD_PATH_WINDOWS
+    create_directory(dest)
+    os.chdir(dest)
+    terminal_output('create windows project file')
+    subprocess.call(["cmake", "..", "-G\"Visual Studio 15 2017\"" "-Tv141"])
+
+    reset_root()
+
 def copy_files(src, dest):
     try:
         shutil.copytree(src, dest)
@@ -444,6 +466,8 @@ def project_copy_helper(platforms):
             setup_mac(config)
         elif platform is "linux":
             setup_linux(config)
+        elif platform is "windows":
+            setup_windows(config)
 
 def main(argv):
     global config_file_path
@@ -451,7 +475,7 @@ def main(argv):
     ci_build = None
 
     try:
-      opts, args = getopt.getopt(argv,"n:crd",["config_file_path=", "clean", "travis", "appimage", "macapp", "deploy", "android", "ios", "linux", "mac"])
+      opts, args = getopt.getopt(argv,"n:crd",["config_file_path=", "clean", "travis", "appimage", "macapp", "deploy", "android", "ios", "linux", "mac", "windows"])
     except getopt.GetoptError:
       terminal_output("Wrong argument specified")
       sys.exit(2)
@@ -479,6 +503,8 @@ def main(argv):
             platform.append("linux")
         elif opt in ("--mac"):
             platform.append("mac")
+        elif opt in ("--windows"):
+            platform.append("windows")
         elif opt in ("-n", "--config_file_path"):
             config_file_path = arg
 

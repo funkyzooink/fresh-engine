@@ -123,6 +123,11 @@ matrix:
       file: "${TRAVIS_TAG}.app"
       on:
         tags: true
+    - os: windows
+      script:
+      - python build.py --travis --windows
+      - cd build-windows
+      - cmake --build
 
 env:
   global:
