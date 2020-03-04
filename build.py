@@ -8,6 +8,10 @@ import subprocess
 import sys
 import urllib2
 
+BUILD_PATH_IOS = "build-ios"
+BUILD_PATH_MAC = "build-mac"
+BUILD_PATH_LINUX = "build-linux"
+
 def terminal_output(text):
     print text
 
@@ -48,6 +52,11 @@ def copy_resources(config_file_path, android_platform):
     #ios specific
     src = config_file_path + '/ios/Images.xcassets' #todo
     dest = 'proj.ios_mac/ios/Images.xcassets'
+    copy_files(src, dest)
+
+    #mac specific
+    src = config_file_path + '/mac/Images.xcassets' #todo
+    dest = 'proj.ios_mac/mac/Images.xcassets'
     copy_files(src, dest)
 
 def copy_templates():
@@ -95,14 +104,22 @@ def prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name):
     src = 'templates/CMakeLists.txt'
     dest = 'CMakeLists.txt'
     shutil.copyfile(src, dest)
-    replace_in_file(dest, app_name.lower(), 'hellocpp')
+    replace_in_file(dest, app_name, 'hellocpp')
 
 def run_ios_cmake():
-    dest = "build-ios"
+    dest = BUILD_PATH_IOS
     create_directory(dest)
     os.chdir(dest)
     terminal_output('create ios project file')
     subprocess.call(["cmake", "..",  "-GXcode", "-DCMAKE_SYSTEM_NAME=iOS", "-DCMAKE_OSX_SYSROOT=iphoneos"])
+
+def run_mac_cmake():
+    os.chdir("..") #todo
+    dest = BUILD_PATH_MAC
+    create_directory(dest)
+    os.chdir(dest)
+    terminal_output('create mac project file')
+    subprocess.call(["cmake", "..",  "-GXcode"])
 
 def copy_files(src, dest):
     try:
@@ -148,18 +165,17 @@ def set_ios_values(path, app_name, bundle_id):
     infoplistpath = path + '/ios/Info.plist'
     replace_in_file(infoplistpath, bundle_id, 'org.cocos2dx.hellocpp')
     terminal_output('ios App bundleid set to: %s in folder: %s ' % (bundle_id, infoplistpath))
-
-# TODO mac build, remove?
-    #infoplistpath = path + '/mac/Info.plist'
-    #replace_in_file(infoplistpath, bundle_id, 'org.cocos2dx.hellocpp')
-    #terminal_output('mac App bundleid set to: %s in folder: %s ' % (bundle_id, infoplistpath))
+    
+    infoplistpath = path + '/mac/Info.plist'
+    replace_in_file(infoplistpath, bundle_id, 'org.cocos2dx.hellocpp')
+    terminal_output('mac App bundleid set to: %s in folder: %s ' % (bundle_id, infoplistpath))
 
 def replace_in_file(filepath, new_value, old_value):
     with open (filepath, 'r') as file:
-        filedata = file.read()
+        filedata = file.read().decode("utf8")
         filedata = filedata.replace(old_value, new_value)
     with open (filepath, 'w') as file:
-        file.write(filedata)
+        file.write(filedata.encode("utf8"))
 
 def build(platform, build_type):
     terminal_output('building platform as %s %s: ' % (platform, build_type))
@@ -186,7 +202,12 @@ def clean_folders():
         shutil.rmtree(dest)
         terminal_output('Removed %s' % dest)
 
-    dest = 'build-ios'
+    dest = BUILD_PATH_IOS
+    if os.path.isdir(dest): 
+        shutil.rmtree(dest)
+        terminal_output('Removed %s' % dest)
+
+    dest = BUILD_PATH_MAC
     if os.path.isdir(dest): 
         shutil.rmtree(dest)
         terminal_output('Removed %s' % dest)
@@ -249,12 +270,12 @@ def ci_appimage():
         copy_file(src_path, dest_path)
 
         # bin files
-        src_path = 'build/bin/' + project_name
+        src_path = BUILD_PATH_LINUX + '/bin/' + project_name
         dest_path = dest + '/bin'
         copy_files(src_path, dest_path)
 
         # lib files
-        src_path = 'build/lib'
+        src_path = BUILD_PATH_LINUX + '/lib'
         dest_path = dest + '/usr/lib'
         copy_files(src_path, dest_path)
 
@@ -341,7 +362,6 @@ def project_copy_helper(config_file_path, android_platform):
     prepare_templates(app_name, android_bundle_id, ios_bundle_id, version_name)
     copy_resources(config_file_path, android_platform)
     copy_color_plugin(config_file_path)
-    run_ios_cmake()
 
 def main(argv):
     platform = ''
@@ -387,6 +407,9 @@ def main(argv):
         build(platform, build_type)
     elif config_file_path != "":
         project_copy_helper(config_file_path, android_platform)
+        # todo below only on request
+        run_ios_cmake()
+        run_mac_cmake() 
     else :  
         terminal_output('Missing Arguments: platform: %s, build_type %s, config_file_path %s' % (platform, build_type, config_file_path))
 
