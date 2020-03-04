@@ -126,6 +126,7 @@ matrix:
   - os: windows
     language: cpp
     script:
+    - choco upgrade cmake
     - python build.py --travis --windows
     - cd build-windows
     - cmake --build
