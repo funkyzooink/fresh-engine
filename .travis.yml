@@ -109,8 +109,10 @@ matrix:
     osx_image: xcode11.3
     language: cpp
     script:
+    - ls 
     - python build.py --travis --mac
     - cd build-mac
+    - ls
     - xcodebuild -configuration Release
     before_deploy:
     - python build.py --macimage
