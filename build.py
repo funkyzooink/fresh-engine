@@ -285,7 +285,7 @@ def clean_folders():
         terminal_output('Removed %s' % dest)
 
 def ci_build(platforms):
-    config_file_path = "examples/4friends/" # if not on tag use this as fallback CI build
+    config_file_path = "examples/little-ninja/" # if not on tag use this as fallback CI build
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
@@ -313,7 +313,7 @@ def ci_appimage():
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
-        project_name = "4friends" # if not on tag use this as fallback CI build 
+        project_name = "little-ninja" # if not on tag use this as fallback CI build 
 
         if "little-ninja" in tagname:
             project_name = "little-ninja"
@@ -413,7 +413,7 @@ def ci_macimage():
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
-        project_name = "4friends" # if not on tag use this as fallback CI build 
+        project_name = "little-ninja" # if not on tag use this as fallback CI build 
 
         if "little-ninja" in tagname:
             project_name = "little-ninja"
@@ -487,7 +487,7 @@ def main(argv):
             ci_appimage()
             sys.exit(0)
         elif opt in ("--macapp"):
-            ci_macapp()
+            ci_macimage()
             sys.exit(0)
         elif opt in ("-d", "--deploy"):
             ci_deploy() #todo

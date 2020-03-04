@@ -108,6 +108,7 @@ matrix:
         tags: true
   - os: osx
     osx_image: xcode11.3
+    language: cpp
     script:
     - python build.py --travis --mac
     - cd build-mac
@@ -124,6 +125,7 @@ matrix:
       on:
         tags: true
   - os: windows
+    language: cpp
     script:
     - python build.py --travis --windows
     - cd build-windows
