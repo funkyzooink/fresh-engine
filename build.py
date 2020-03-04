@@ -472,7 +472,7 @@ def project_copy_helper(platforms):
 def main(argv):
     global config_file_path
     platform = []
-    ci_build = None
+    build_ci = None
 
     try:
       opts, args = getopt.getopt(argv,"n:crd",["config_file_path=", "clean", "travis", "appimage", "macapp", "deploy", "android", "ios", "linux", "mac", "windows"])
@@ -482,7 +482,7 @@ def main(argv):
 
     for opt, arg in opts:
         if opt in ("-r", "--travis"):
-            ci_build = True
+            build_ci = True
         elif opt in ("--appimage"):
             ci_appimage()
             sys.exit(0)
@@ -508,7 +508,7 @@ def main(argv):
         elif opt in ("-n", "--config_file_path"):
             config_file_path = arg
 
-    if ci_build:
+    if build_ci:
         ci_build(platform)
     elif config_file_path != "":
         project_copy_helper(platform)
