@@ -197,7 +197,7 @@ def run_windows_cmake():
     create_directory(dest)
     os.chdir(dest)
     terminal_output('create windows project file')
-    subprocess.call(["cmake", "..", "-G" "Visual Studio 15 2017 " "-Tv141"])
+    subprocess.call(["cmake", "..", "-GVisual Studio 15 2017 "])
 
     reset_root()
 
