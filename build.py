@@ -46,7 +46,7 @@ def setup_linux(config):
     copy_linux_files()
     run_linux_cmake()
 
-def setup_windows():
+def setup_windows(config):
     copy_windows_files()
     run_windows_cmake()
 
