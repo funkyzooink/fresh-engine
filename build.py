@@ -163,7 +163,7 @@ def copy_cmake():
     dest = 'CMakeLists.txt'
     shutil.copyfile(src, dest)
     short_app_name = app_name.replace(" ", "")  
-    replace_in_file(dest, short_app_name, 'hellocpp')
+    replace_in_file(dest, short_app_name.lower(), 'hellocpp') #TODO remove lower breaks android ci build
 
 def run_ios_cmake():
     dest = BUILD_PATH_IOS
@@ -197,7 +197,7 @@ def run_windows_cmake():
     create_directory(dest)
     os.chdir(dest)
     terminal_output('create windows project file')
-    subprocess.call(["cmake", "..", "-G\"Visual Studio 15 2017\"" "-Tv141"])
+    subprocess.call(["cmake", "..", "-G\"Visual Studio 15 2017 Win64\"" "-Tv141"])
 
     reset_root()
 
