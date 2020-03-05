@@ -133,7 +133,7 @@ matrix:
     install:
     - choco install python2
     - choco upgrade cmake
-    - refreshenv
+    - call RefreshEnv.cmd
     - printenv
     - cd cocos2d
     - python2 download-deps.py --remove-download=yes
