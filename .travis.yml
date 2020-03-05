@@ -107,10 +107,16 @@ matrix:
         tags: true
   - os: osx
     osx_image: xcode11.3
-    language: cpp
-    script:
+    language: cpp    
+    install:
+    - printenv
+    - cd cocos2d
+    - python download-deps.py --remove-download=yes
+    - python ./setup.py
+    - cd ..
     - python build.py --travis --mac
     - cd build-mac
+    script:
     - xcodebuild -configuration Release
     before_deploy:
     - python build.py --macimage
@@ -125,10 +131,17 @@ matrix:
         tags: true
   - os: windows
     language: cpp
-    script:
+    install:
+    - printenv
+    - cd cocos2d
+    - python download-deps.py --remove-download=yes
+    - python ./setup.py
+    - cd ..
     - choco upgrade cmake
     - python build.py --travis --windows
     - cd build-windows
+    script:
+
     - cmake .. -G"Visual Studio 15 2017" -Tv141
     - cmake --build
 
