@@ -43,7 +43,6 @@ def setup_mac(config):
 
 def setup_linux(config):
     copy_linux_files()
-
     run_linux_cmake()
 
 def copy_color_plugin():
@@ -151,7 +150,7 @@ def copy_cmake():
     dest = 'CMakeLists.txt'
     shutil.copyfile(src, dest)
     short_app_name = app_name.replace(" ", "")  
-    replace_in_file(dest, short_app_name, 'hellocpp')
+    replace_in_file(dest, short_app_name.lower(), 'hellocpp') #TODO remove lower breaks android ci build
 
 def run_ios_cmake():
     dest = BUILD_PATH_IOS
@@ -263,7 +262,9 @@ def clean_folders():
         terminal_output('Removed %s' % dest)
 
 def ci_build(platforms):
-    config_file_path = "examples/4friends/" # if not on tag use this as fallback CI build
+    terminal_output('Starting Ci Build')
+    global config_file_path
+    config_file_path = "examples/little-ninja/" # if not on tag use this as fallback CI build
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
@@ -291,7 +292,7 @@ def ci_appimage():
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
-        project_name = "4friends" # if not on tag use this as fallback CI build 
+        project_name = "little-ninja" # if not on tag use this as fallback CI build 
 
         if "little-ninja" in tagname:
             project_name = "little-ninja"
@@ -391,7 +392,7 @@ def ci_macimage():
 
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
-        project_name = "4friends" # if not on tag use this as fallback CI build 
+        project_name = "little-ninja" # if not on tag use this as fallback CI build 
 
         if "little-ninja" in tagname:
             project_name = "little-ninja"
@@ -436,6 +437,7 @@ def project_copy_helper(platforms):
     copy_color_plugin()
 
     for platform in platforms:
+        terminal_output('Copy files for platform: ' + platform)
         if platform is "android":
             setup_android(config)
         elif platform is "ios":
@@ -448,7 +450,7 @@ def project_copy_helper(platforms):
 def main(argv):
     global config_file_path
     platform = []
-    ci_build = None
+    build_ci = None
 
     try:
       opts, args = getopt.getopt(argv,"n:crd",["config_file_path=", "clean", "travis", "appimage", "macapp", "deploy", "android", "ios", "linux", "mac"])
@@ -457,20 +459,9 @@ def main(argv):
       sys.exit(2)
 
     for opt, arg in opts:
+        terminal_output("build argument: " + opt)
         if opt in ("-r", "--travis"):
-            ci_build = True
-        elif opt in ("--appimage"):
-            ci_appimage()
-            sys.exit(0)
-        elif opt in ("--macapp"):
-            ci_macapp()
-            sys.exit(0)
-        elif opt in ("-d", "--deploy"):
-            ci_deploy() #todo
-            sys.exit(0)
-        elif opt in ("-c", "--clean"):
-            clean_folders()
-            sys.exit(0)
+            build_ci = True
         elif opt in ("--android"):
             platform.append("android")
         elif opt in ("--ios"):
@@ -481,8 +472,20 @@ def main(argv):
             platform.append("mac")
         elif opt in ("-n", "--config_file_path"):
             config_file_path = arg
+        elif opt in ("--appimage"):
+            ci_appimage()
+            sys.exit(0)
+        elif opt in ("--macapp"):
+            ci_macimage()
+            sys.exit(0)
+        elif opt in ("-d", "--deploy"):
+            ci_deploy() #todo
+            sys.exit(0)
+        elif opt in ("-c", "--clean"):
+            clean_folders()
+            sys.exit(0)
 
-    if ci_build:
+    if build_ci:
         ci_build(platform)
     elif config_file_path != "":
         project_copy_helper(platform)
