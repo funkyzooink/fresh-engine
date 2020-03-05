@@ -134,8 +134,8 @@ matrix:
     install:
     - printenv
     - cd cocos2d
-    - python download-deps.py --remove-download=yes
-    - python ./setup.py
+    - python2 download-deps.py --remove-download=yes
+    - python2 ./setup.py
     - cd ..
     - choco upgrade cmake
     - python2 build.py --travis --windows
