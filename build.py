@@ -197,7 +197,7 @@ def run_windows_cmake():
     create_directory(dest)
     os.chdir(dest)
     terminal_output('create windows project file')
-    subprocess.call(["cmake", "..", "-GVisual Studio 15 2017 "])
+    #subprocess.call(["cmake", "..", "-GVisual Studio 15 2017 "]) #Todo did not work for CI 
 
     reset_root()
 
@@ -285,6 +285,7 @@ def clean_folders():
         terminal_output('Removed %s' % dest)
 
 def ci_build(platforms):
+    terminal_output('Starting Ci Build')
     global config_file_path
     config_file_path = "examples/little-ninja/" # if not on tag use this as fallback CI build
 
@@ -459,6 +460,7 @@ def project_copy_helper(platforms):
     copy_color_plugin()
 
     for platform in platforms:
+        terminal_output('Copy files for platform: ' + platform)
         if platform is "android":
             setup_android(config)
         elif platform is "ios":
@@ -482,20 +484,9 @@ def main(argv):
       sys.exit(2)
 
     for opt, arg in opts:
+        terminal_output("build argument: " + opt)
         if opt in ("-r", "--travis"):
             build_ci = True
-        elif opt in ("--appimage"):
-            ci_appimage()
-            sys.exit(0)
-        elif opt in ("--macapp"):
-            ci_macimage()
-            sys.exit(0)
-        elif opt in ("-d", "--deploy"):
-            ci_deploy() #todo
-            sys.exit(0)
-        elif opt in ("-c", "--clean"):
-            clean_folders()
-            sys.exit(0)
         elif opt in ("--android"):
             platform.append("android")
         elif opt in ("--ios"):
@@ -508,6 +499,18 @@ def main(argv):
             platform.append("windows")
         elif opt in ("-n", "--config_file_path"):
             config_file_path = arg
+        elif opt in ("--appimage"):
+            ci_appimage()
+            sys.exit(0)
+        elif opt in ("--macapp"):
+            ci_macimage()
+            sys.exit(0)
+        elif opt in ("-d", "--deploy"):
+            ci_deploy() #todo
+            sys.exit(0)
+        elif opt in ("-c", "--clean"):
+            clean_folders()
+            sys.exit(0)
 
     if build_ci:
         ci_build(platform)

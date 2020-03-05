@@ -109,10 +109,8 @@ matrix:
     osx_image: xcode11.3
     language: cpp
     script:
-    - ls 
     - python build.py --travis --mac
     - cd build-mac
-    - ls
     - xcodebuild -configuration Release
     before_deploy:
     - python build.py --macimage
@@ -131,6 +129,7 @@ matrix:
     - choco upgrade cmake
     - python build.py --travis --windows
     - cd build-windows
+    - cmake .. -G"Visual Studio 15 2017" -Tv141
     - cmake --build
 
 env:
