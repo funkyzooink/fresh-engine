@@ -138,7 +138,7 @@ matrix:
     - python ./setup.py
     - cd ..
     - choco upgrade cmake
-    - python build.py --travis --windows
+    - python2 build.py --travis --windows
     - cd build-windows
     script:
 
