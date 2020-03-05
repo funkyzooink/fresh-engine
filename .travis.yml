@@ -112,7 +112,6 @@ matrix:
     - printenv
     - cd cocos2d
     - python download-deps.py --remove-download=yes
-    - python ./setup.py
     - cd ..
     - python build.py --travis --mac
     - cd build-mac
@@ -135,7 +134,6 @@ matrix:
     - printenv
     - cd cocos2d
     - python2 download-deps.py --remove-download=yes
-    - python2 ./setup.py
     - cd ..
     - choco upgrade cmake
     - python2 build.py --travis --windows
