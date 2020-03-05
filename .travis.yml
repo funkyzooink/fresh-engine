@@ -136,16 +136,14 @@ matrix:
     # - cmd.exe //c "RefreshEnv.cmd & python2 -m pip"
     # - pip install PyOpenSSL
     # - printenv
-    # - cd cocos2d
-    # - cmd.exe //c "RefreshEnv.cmd & python2 download-deps.py --remove-download=yes"
-    # - cd ..
+    - cd cocos2d
+    - python2 download-deps.py --remove-download=yes
+    - cd ..
     - python2 build.py --travis --windows
     - cd build-windows
     script:
     - cmake .. -G"Visual Studio 15 2017" -Tv141
     - cmake --build"
-    after_script:
-    - echo C:/Users/travis/build/funkyzooink/fresh-engine/build-windows/CMakeFiles/CMakeOutput.log"
 
 env:
   global:
