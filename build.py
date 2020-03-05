@@ -195,11 +195,11 @@ def run_linux_cmake():
 def run_windows_cmake():
     dest = BUILD_PATH_WINDOWS
     create_directory(dest)
-    os.chdir(dest)
-    terminal_output('create windows project file')
+    # os.chdir(dest)
+    # terminal_output('create windows project file')
     #subprocess.call(["cmake", "..", "-GVisual Studio 15 2017 "]) #Todo did not work for CI 
 
-    reset_root()
+    # reset_root()
 
 def copy_files(src, dest):
     try:
