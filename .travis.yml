@@ -142,8 +142,8 @@ matrix:
     - python2 build.py --travis --windows
     - cd build-windows
     script:
-    - cmd.exe //c "RefreshEnv.cmd & cmake .. -GVisual Studio 15 2017 -Tv141"
-    - cmd.exe //c "RefreshEnv.cmd & cmake --build"
+    - cmake .. -GVisual Studio 15 2017 -Tv141
+    - cmake --build"
 
 env:
   global:
