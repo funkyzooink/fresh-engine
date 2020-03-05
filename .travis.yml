@@ -117,6 +117,7 @@ matrix:
     - cd build-mac
     script:
     - xcodebuild -configuration Release
+    - cd ..
     before_deploy:
     - python build.py --macimage
     deploy:
