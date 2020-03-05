@@ -131,7 +131,7 @@ matrix:
   - os: windows
     language: cpp
     install:
-    - choco install python2
+    # - choco install python2
     - choco upgrade cmake
     # - cmd.exe //c "RefreshEnv.cmd & python2 -m pip"
     # - pip install PyOpenSSL
@@ -142,9 +142,10 @@ matrix:
     - python2 build.py --travis --windows
     - cd build-windows
     script:
-    - cmake --version
     - cmake .. -G"Visual Studio 15 2017" -Tv141
     - cmake --build"
+    after_script:
+    - echo C:/Users/travis/build/funkyzooink/fresh-engine/build-windows/CMakeFiles/CMakeOutput.log"
 
 env:
   global:
