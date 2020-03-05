@@ -139,7 +139,7 @@ matrix:
     # - cd cocos2d
     # - cmd.exe //c "RefreshEnv.cmd & python2 download-deps.py --remove-download=yes"
     # - cd ..
-    - cmd.exe //c "RefreshEnv.cmd & python2 build.py --travis --windows"
+    - python2 build.py --travis --windows
     - cd build-windows
     script:
     - cmd.exe //c "RefreshEnv.cmd & cmake .. -GVisual Studio 15 2017 -Tv141"
