@@ -142,7 +142,8 @@ matrix:
     - python2 build.py --travis --windows
     - cd build-windows
     script:
-    - cmake .. -GVisual Studio 15 2017 -Tv141
+    - cmake --version
+    - cmake .. -G"Visual Studio 15 2017" -Tv141
     - cmake --build"
 
 env:
