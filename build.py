@@ -305,6 +305,8 @@ def ci_appimage():
         else :
             sys.exit(0)
 
+        short_app_name = app_name.replace(" ", "").lower()
+
         # create directories
         dest = project_name + '.AppDir'
         create_directory(dest)
@@ -321,7 +323,7 @@ def ci_appimage():
         copy_file(src_path, dest_path)
 
         # bin files
-        src_path = BUILD_PATH_LINUX + '/bin/' + project_name
+        src_path = BUILD_PATH_LINUX + '/bin/' + short_app_name
         dest_path = dest + '/bin'
         copy_files(src_path, dest_path)
 
@@ -385,9 +387,8 @@ def ci_appimage():
         subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
 
         # rename appimage file
-        short_app_name = app_name.replace(" ", "")  
         tagname = os.environ["TRAVIS_TAG"]
-        os.rename(short_app_name.lower() + '-x86_64.AppImage', tagname + '-linux.AppImage')
+        os.rename(short_app_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
 def ci_macimage():
 
@@ -407,7 +408,7 @@ def ci_macimage():
             sys.exit(0)
 
         appname = project_name + '.app'
-        src_path = 'bin/' + project_name + 'Release/' + appname
+        src_path = 'bin/' + project_name + '/Release/' + appname
         dest_path = '..'
         copy_file(src_path, dest_path)
         # rename app file
