@@ -388,32 +388,19 @@ def ci_appimage():
 
         # rename appimage file
         tagname = os.environ["TRAVIS_TAG"]
-        os.rename(short_app_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
+        os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
 def ci_macimage():
 
-    if os.environ.get('TRAVIS_TAG'):
-        tagname = os.environ["TRAVIS_TAG"]
-        project_name = "little-ninja" # if not on tag use this as fallback CI build 
+    short_app_name = app_name.replace(" ", "").lower()
 
-        if "little-ninja" in tagname:
-            project_name = "little-ninja"
-        elif "little-robot-adventure" in tagname:
-            project_name = "little-robot-adventure"
-        elif "the-dragon-kid" in tagname:
-            project_name = "the-dragon-kid"
-        elif "4friends" in tagname:
-            project_name = "4friends"
-        else :
-            sys.exit(0)
-
-        appname = project_name + '.app'
-        src_path = 'bin/' + project_name + '/Release/' + appname
-        dest_path = '..'
-        copy_file(src_path, dest_path)
-        # rename app file
-        tagname = os.environ["TRAVIS_TAG"]
-        os.rename(appname, tagname + '.app')
+    appname = short_app_name + '.app'
+    src_path = 'bin/' + short_app_name + '/Release/' + appname
+    dest_path = '..'
+    copy_file(src_path, dest_path)
+    # rename app file
+    tagname = os.environ["TRAVIS_TAG"]
+    os.rename(appname, tagname + '.app')
 
 def ci_deploy(): # TODO for fastlane
 
