@@ -317,7 +317,7 @@ def ci_build(platforms):
         elif "4friends" in tagname:
             config_file_path = "examples/4friends/"
 
-    project_copy_helper(platforms)
+    prepare_project_files(platforms)
 
 def create_directory(path):
         try:
@@ -449,8 +449,8 @@ def ci_macimage():
 
         appname = short_app_name + '.app'
         src_path = BUILD_PATH_MAC + '/bin/' + short_app_name + '/Release/' + appname
-        dest_path = '..'
-        copy_file(src_path, dest_path)
+        dest_path = '../' + appname
+        copy_folder(src_path, dest_path)
         # rename app file
         tagname = os.environ["TRAVIS_TAG"]
         os.rename(appname, tagname + '.app')
@@ -469,7 +469,7 @@ def ci_deploy(): # TODO for fastlane
         elif "4friends" in tagname:
             project_path = "examples/4friends/"
 
-def project_copy_helper(platforms):
+def prepare_project_files(platforms):
     global app_name
     config = json.loads(open(config_file_path + "/config.json").read())
     app_name = config['app_name']
@@ -530,7 +530,7 @@ def main(argv):
     if build_ci:
         ci_build(platform)
     elif config_file_path != "":
-        project_copy_helper(platform)
+        prepare_project_files(platform)
     else :  
         terminal_output('Missing Arguments: config_file_path %s' % (config_file_path))
 
