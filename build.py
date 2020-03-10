@@ -36,6 +36,15 @@ def reset_root():
     path = sys.path[0]
     os.chdir(path)
 
+# create directory
+def create_directory(path):
+        try:
+            os.mkdir(path)
+        except OSError:
+            terminal_output ("Creation of the directory %s failed" % path)
+        else:
+            terminal_output ("Successfully created the directory %s " % path)
+
 # replace old_value with new_value in filepath
 def replace_in_file(filepath, new_value, old_value):
     with open (filepath, 'r') as file:
@@ -242,7 +251,9 @@ def copy_cmake():
         short_app_name = app_name.replace(" ", "")  
         replace_in_file(dest, short_app_name.lower(), 'hellocpp') #TODO remove lower breaks android ci build
 
-
+#
+# android value helper
+#
 def set_android_values(path, bundle_id, version_name):
     manifestpath = path + '/app/AndroidManifest.xml'
     replace_in_file(manifestpath, bundle_id, 'org.cocos2dx.hellocpp')
@@ -264,6 +275,9 @@ def set_android_values(path, bundle_id, version_name):
     name = 'versionName \"' + version_name + '\"'
     replace_in_file(gradlepath, name, 'versionName \"1.0\"')
 
+#
+# workspace cleanup
+#
 def clean_folders():
     dest = 'proj.ios_mac'
     if os.path.isdir(dest): 
@@ -300,6 +314,9 @@ def clean_folders():
         shutil.rmtree(dest)
         terminal_output('Removed %s' % dest)
 
+#
+# ci
+#
 def ci_build(platforms):
     terminal_output('Starting Ci Build')
     global config_file_path
@@ -319,14 +336,9 @@ def ci_build(platforms):
 
     prepare_project_files(platforms)
 
-def create_directory(path):
-        try:
-            os.mkdir(path)
-        except OSError:
-            terminal_output ("Creation of the directory %s failed" % path)
-        else:
-            terminal_output ("Successfully created the directory %s " % path)
-
+#
+# ci - create linux appimage
+#
 def ci_appimage():
 
     if os.environ.get('TRAVIS_TAG'):
@@ -429,6 +441,9 @@ def ci_appimage():
         tagname = os.environ["TRAVIS_TAG"]
         os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
+#
+# ci - create mac app
+#
 def ci_macimage():
     if os.environ.get('TRAVIS_TAG'):
         tagname = os.environ["TRAVIS_TAG"]
@@ -454,21 +469,9 @@ def ci_macimage():
         # rename app file
         tagname = os.environ["TRAVIS_TAG"]
         os.rename(appname, tagname + '.app')
-
-def ci_deploy(): # TODO for fastlane
-
-    if os.environ.get('TRAVIS_TAG'):
-        tagname = os.environ["TRAVIS_TAG"]
-
-        if "little-ninja" in tagname:
-            project_path = "examples/little-ninja/"
-        elif "little-robot-adventure" in tagname:
-            project_path = "examples/little-robot-adventure/"
-        elif "the-dragon-kid" in tagname:
-            project_path = "examples/the-dragon-kid/"
-        elif "4friends" in tagname:
-            project_path = "examples/4friends/"
-
+#
+# copy project files
+#
 def prepare_project_files(platforms):
     global app_name
     config = json.loads(open(config_file_path + "/config.json").read())
@@ -488,14 +491,16 @@ def prepare_project_files(platforms):
             setup_mac(config)
         elif platform is "linux":
             setup_linux(config)
-
+#
+# main
+#
 def main(argv):
     global config_file_path
     platform = []
     build_ci = None
 
     try:
-      opts, args = getopt.getopt(argv,"n:crd",["config_file_path=", "clean", "travis", "appimage", "macapp", "deploy", "android", "ios", "linux", "mac"])
+      opts, args = getopt.getopt(argv,"n:cr",["config_file_path=", "clean", "travis", "appimage", "macapp", "android", "ios", "linux", "mac"])
     except getopt.GetoptError:
       terminal_output("Wrong argument specified", True)
       sys.exit(2)
@@ -519,9 +524,6 @@ def main(argv):
             sys.exit(0)
         elif opt in ("--macapp"):
             ci_macimage()
-            sys.exit(0)
-        elif opt in ("-d", "--deploy"):
-            ci_deploy() #todo
             sys.exit(0)
         elif opt in ("-c", "--clean"):
             clean_folders()
