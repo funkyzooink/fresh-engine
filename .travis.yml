@@ -119,7 +119,7 @@ matrix:
     - xcodebuild -configuration Release
     - cd ..
     before_deploy:
-    - python build.py --macimage
+    - python build.py --macapp
     deploy:
       provider: releases
       skip_cleanup: true

@@ -385,8 +385,9 @@ def ci_appimage():
         subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
 
         # rename appimage file
+        short_app_name = app_name.replace(" ", "")  
         tagname = os.environ["TRAVIS_TAG"]
-        os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
+        os.rename(short_app_name.lower() + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
 def ci_macimage():
 
