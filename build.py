@@ -449,7 +449,7 @@ def ci_macimage():
 
         appname = short_app_name + '.app'
         src_path = BUILD_PATH_MAC + '/bin/' + short_app_name + '/Release/' + appname
-        dest_path = '../' + appname
+        dest_path = appname
         copy_folder(src_path, dest_path)
         # rename app file
         tagname = os.environ["TRAVIS_TAG"]
