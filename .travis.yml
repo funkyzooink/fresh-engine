@@ -141,7 +141,7 @@ matrix:
     - choco upgrade cmake
     # - python2 --version
     - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
-    - python2 -m pip pyopenssl
+    - python2 -m pip install pyopenssl
     - pip install PyOpenSSL
     - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
     # - printenv
