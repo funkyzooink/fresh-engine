@@ -1,7 +1,9 @@
 # funky fresh engine
+[![Build Status](https://api.travis-ci.com/funkyzooink/fresh-engine.svg?branch=master)](https://travis-ci.com/github/funkyzooink/fresh-engine)
+
 fresh engine is a platformer engine build on top of cocos2dx.
 
-curently Android, iOS, Linux and MAC are supported
+currently Android, iOS, Linux and MAC are supported
 
 [see here for some demo projects](https://funkyzooink.github.io/projects/)
 

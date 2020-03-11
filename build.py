@@ -16,6 +16,7 @@ COLOR_ENDC = '\033[0m'
 BUILD_PATH_IOS = "build-ios"
 BUILD_PATH_MAC = "build-mac"
 BUILD_PATH_LINUX = "build-linux"
+BUILD_PATH_WINDOWS = "build-windows"
 
 # global variables
 app_name = ""
@@ -100,6 +101,9 @@ def setup_linux(config):
     copy_linux_files()
     run_linux_cmake()
 
+def setup_windows(config):
+    copy_windows_files()
+    run_windows_cmake()
 #
 # platform copy helpers
 #
@@ -189,7 +193,14 @@ def copy_mac_files(bundle_id):
     src = config_file_path + '/mac/Images.xcassets' #todo
     dest = dest + '/Images.xcassets'
     copy_folder(src, dest)
-
+    
+def copy_windows_files():
+    src = 'templates/proj.win32'
+    dest = 'proj.win32'
+    if os.path.isdir(dest): 
+        terminal_output('Workspace not clean')
+        sys.exit(2)
+    copy_folder(src, dest)
 # 
 # platform cmake runs
 #
@@ -221,6 +232,14 @@ def run_linux_cmake():
 
     reset_root()
 
+def run_windows_cmake():
+    dest = BUILD_PATH_WINDOWS
+    create_directory(dest)
+    # os.chdir(dest)
+    # terminal_output('create windows project file')
+    #subprocess.call(["cmake", "..", "-GVisual Studio 15 2017 "]) #Todo did not work for CI 
+
+    # reset_root()
 #
 # resource copy helpers
 #
@@ -443,7 +462,6 @@ def ci_appimage():
         subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
 
         # rename appimage file
-        tagname = os.environ["TRAVIS_TAG"]
         os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
 #
@@ -472,8 +490,37 @@ def ci_macimage():
         dest_path = appname
         copy_folder(src_path, dest_path)
         # rename app file
-        tagname = os.environ["TRAVIS_TAG"]
         os.rename(appname, tagname + '.app')
+
+#
+# ci - create windows
+#
+#fresh-engine\build-windows\bin\littleninja\Debug\littleninja.exe
+def ci_windows():
+    if os.environ.get('TRAVIS_TAG'):
+        tagname = os.environ["TRAVIS_TAG"]
+        project_name = "little-ninja" # if not on tag use this as fallback CI build 
+
+        if "little-ninja" in tagname:
+            project_name = "little-ninja"
+        elif "little-robot-adventure" in tagname:
+            project_name = "little-robot-adventure"
+        elif "the-dragon-kid" in tagname:
+            project_name = "the-dragon-kid"
+        elif "4friends" in tagname:
+            project_name = "4friends"
+        else :
+            sys.exit(0)
+
+        short_app_name = project_name.replace("-", "").lower()
+
+        appname = short_app_name + '.exe'
+        src_path = BUILD_PATH_WINDOWS + '/bin/' + short_app_name + '/Release/' + appname
+        dest_path = appname
+        copy_folder(src_path, dest_path)
+        # rename app file
+        os.rename(appname, tagname + '.exe')
+
 #
 # copy project files
 #
@@ -496,6 +543,8 @@ def prepare_project_files(platforms):
             setup_mac(config)
         elif platform is "linux":
             setup_linux(config)
+        elif platform is "windows":
+            setup_windows(config)
 #
 # main
 #
@@ -505,7 +554,7 @@ def main(argv):
     build_ci = None
 
     try:
-      opts, args = getopt.getopt(argv,"n:cr",["config_file_path=", "clean", "travis", "appimage", "macapp", "android", "ios", "linux", "mac"])
+      opts, args = getopt.getopt(argv,"n:cr",["config_file_path=", "clean", "travis", "appimage", "macapp", "windowsexe", "android", "ios", "linux", "mac", "windows"])
     except getopt.GetoptError:
       terminal_output("Wrong argument specified", True)
       sys.exit(2)
@@ -522,6 +571,8 @@ def main(argv):
             platform.append("linux")
         elif opt in ("--mac"):
             platform.append("mac")
+        elif opt in ("--windows"):
+            platform.append("windows")
         elif opt in ("-n", "--config_file_path"):
             config_file_path = arg
         elif opt in ("--appimage"):
@@ -529,6 +580,9 @@ def main(argv):
             sys.exit(0)
         elif opt in ("--macapp"):
             ci_macimage()
+            sys.exit(0)
+        elif opt in ("--windowsexe"):
+            ci_windows()
             sys.exit(0)
         elif opt in ("-c", "--clean"):
             clean_workspace()
