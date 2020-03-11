@@ -278,7 +278,12 @@ def set_android_values(path, bundle_id, version_name):
 #
 # workspace cleanup
 #
-def clean_folders():
+def clean_workspace():
+    dest = 'CMakeLists.txt'
+    if os.path.exists(dest): 
+        os.remove(dest)
+        terminal_output('Removed %s' % dest)
+
     dest = 'proj.ios_mac'
     if os.path.isdir(dest): 
         shutil.rmtree(dest)
@@ -526,7 +531,7 @@ def main(argv):
             ci_macimage()
             sys.exit(0)
         elif opt in ("-c", "--clean"):
-            clean_folders()
+            clean_workspace()
             sys.exit(0)
 
     if build_ci:
