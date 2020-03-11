@@ -462,7 +462,6 @@ def ci_appimage():
         subprocess.call('./appimagetool-x86_64.AppImage ' + dest, shell = True)
 
         # rename appimage file
-        tagname = os.environ["TRAVIS_TAG"]
         os.rename(project_name + '-x86_64.AppImage', tagname + '-linux.AppImage')
 
 #
@@ -491,8 +490,37 @@ def ci_macimage():
         dest_path = appname
         copy_folder(src_path, dest_path)
         # rename app file
-        tagname = os.environ["TRAVIS_TAG"]
         os.rename(appname, tagname + '.app')
+
+#
+# ci - create windows
+#
+#fresh-engine\build-windows\bin\littleninja\Debug\littleninja.exe
+def ci_windows():
+    if os.environ.get('TRAVIS_TAG'):
+        tagname = os.environ["TRAVIS_TAG"]
+        project_name = "little-ninja" # if not on tag use this as fallback CI build 
+
+        if "little-ninja" in tagname:
+            project_name = "little-ninja"
+        elif "little-robot-adventure" in tagname:
+            project_name = "little-robot-adventure"
+        elif "the-dragon-kid" in tagname:
+            project_name = "the-dragon-kid"
+        elif "4friends" in tagname:
+            project_name = "4friends"
+        else :
+            sys.exit(0)
+
+        short_app_name = project_name.replace("-", "").lower()
+
+        appname = short_app_name + '.exe'
+        src_path = BUILD_PATH_WINDOWS + '/bin/' + short_app_name + '/Release/' + appname
+        dest_path = appname
+        copy_folder(src_path, dest_path)
+        # rename app file
+        os.rename(appname, tagname + '.exe')
+
 #
 # copy project files
 #
@@ -526,7 +554,7 @@ def main(argv):
     build_ci = None
 
     try:
-      opts, args = getopt.getopt(argv,"n:cr",["config_file_path=", "clean", "travis", "appimage", "macapp", "android", "ios", "linux", "mac", "windows"])
+      opts, args = getopt.getopt(argv,"n:cr",["config_file_path=", "clean", "travis", "appimage", "macapp", "windowsexe", "android", "ios", "linux", "mac", "windows"])
     except getopt.GetoptError:
       terminal_output("Wrong argument specified", True)
       sys.exit(2)
@@ -552,6 +580,9 @@ def main(argv):
             sys.exit(0)
         elif opt in ("--macapp"):
             ci_macimage()
+            sys.exit(0)
+        elif opt in ("--windowsexe"):
+            ci_windows()
             sys.exit(0)
         elif opt in ("-c", "--clean"):
             clean_workspace()

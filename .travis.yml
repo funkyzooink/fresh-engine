@@ -1,136 +1,135 @@
 matrix:
   include:
-  # - os: linux
-  #   language: android
-  #   git:
-  #     submodules: true
-  #   android:
-  #     components:
-  #     - tools
-  #     - platform-tools
-  #     - tools
-  #     - build-tools-28.0.3
-  #     - android-28
-  #   before_install:
-  #   - openssl aes-256-cbc -K $encrypted_aa4f50c1d028_key -iv $encrypted_aa4f50c1d028_iv
-  #     -in fz.keystore.enc -out fz.keystore -d
-  #   - echo y | sdkmanager "ndk-bundle"
-  #   - echo y | sdkmanager "cmake;3.10.2.4988404"
-  #   install:
-  #   - printenv
-  #   - echo `pwd`
-  #   - echo $NDK_ROOT
-  #   - export PATH=$PATH:$NDK_ROOT
-  #   - echo $PATH
-  #   - export NDK_ROOT=/usr/local/android-sdk/ndk-bundle
-  #   - export PATH=$PATH:$NDK_ROOT
-  #   - export ANDROID_SDK_ROOT=/usr/local/android-sdk
-  #   - export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
-  #   - cd cocos2d
-  #   - python download-deps.py --remove-download=yes
-  #   - python ./setup.py
-  #   - export COCOS_CONSOLE_ROOT=`pwd`/tools/cocos2d-console/bin
-  #   - export PATH=$PATH:$COCOS_CONSOLE_ROOT
-  #   - export COCOS_TEMPLATES_ROOT=`pwd`/templates
-  #   - export PATH=$PATH:$COCOS_TEMPLATES_ROOT
-  #   - export ANT_ROOT=/usr/share/ant/bin
-  #   - export PATH=$PATH:$ANT_ROOT
-  #   - printenv
-  #   - cd ..
-  #   - python build.py --travis --android
-  #   - cd proj.android
-  #   script:
-  #   - gradlew assembleRelease
-  #   before_deploy:
-  #   - cd app/build/outputs/apk/release
-  #   - export RELEASE_APK_FILE=$(ls *.apk)
-  #   - echo "deploying $RELEASE_APK_FILE to GitHub releases"
-  #   deploy:
-  #     provider: releases
-  #     skip_cleanup: true
-  #     api_key:
-  #       secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
-  #     file_glob: true
-  #     file: "${RELEASE_APK_FILE}"
-  #     on:
-  #       tags: true
-  # - os: linux
-  #   dist: xenial
-  #   addons:
-  #     apt:
-  #       packages:
-  #       - libx11-dev
-  #       - libxmu-dev
-  #       - libglu1-mesa-dev
-  #       - libgl2ps-dev
-  #       - libxi-dev
-  #       - libzip-dev
-  #       - libpng12-dev
-  #       - libcurl4-gnutls-dev
-  #       - libfontconfig1-dev
-  #       - libsqlite3-dev
-  #       - libglew-dev
-  #       - libssl-dev
-  #       - libgtk-3-dev
-  #       - binutils
-  #   sudo: required
-  #   language: cpp
-  #   compiler: clang
-  #   git:
-  #     submodules: true
-  #   install:
-  #   - cd cocos2d
-  #   - python download-deps.py --remove-download=yes
-  #   - printenv
-  #   - cd ..
-  #   - python build.py --travis --linux
-  #   - cd build-linux
-  #   - |
-  #     CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.tar.gz"
-  #     mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
-  #   - cmake/bin/cmake --version
-  #   - cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release ..
-  #   script:
-  #   - make -j 16
-  #   before_deploy:
-  #   - cd ..
-  #   - python build.py --appimage
-  #   - echo "deploying ${TRAVIS_TAG}-linux.zip to GitHub releases"
-  #   deploy:
-  #     provider: releases
-  #     skip_cleanup: true
-  #     api_key:
-  #       secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
-  #     file_glob: true
-  #     file: "${TRAVIS_TAG}-linux.AppImage"
-  #     on:
-  #       tags: true
-  # - os: osx
-  #   osx_image: xcode11.3
-  #   language: cpp    
-  #   install:
-  #   - printenv
-  #   - cd cocos2d
-  #   - python download-deps.py --remove-download=yes
-  #   - cd ..
-  #   - python build.py --travis --mac
-  #   - cd build-mac
-  #   script:
-  #   - xcodebuild -configuration Release
-  #   - cd ..
-  #   before_deploy:
-  #   - python build.py --macapp
-  #   - tar -zcf ${TRAVIS_TAG}.tar.gz ${TRAVIS_TAG}.app
-
-  #   deploy:
-  #     provider: releases
-  #     skip_cleanup: true
-  #     api_key:
-  #       secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
-  #     file_glob: true
-  #     file: "${TRAVIS_TAG}.tar.gz"
-  #     on:
-  #       tags: true
+  - os: linux
+    language: android
+    git:
+      submodules: true
+    android:
+      components:
+      - tools
+      - platform-tools
+      - tools
+      - build-tools-28.0.3
+      - android-28
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_aa4f50c1d028_key -iv $encrypted_aa4f50c1d028_iv
+      -in fz.keystore.enc -out fz.keystore -d
+    - echo y | sdkmanager "ndk-bundle"
+    - echo y | sdkmanager "cmake;3.10.2.4988404"
+    install:
+    - printenv
+    - echo `pwd`
+    - echo $NDK_ROOT
+    - export PATH=$PATH:$NDK_ROOT
+    - echo $PATH
+    - export NDK_ROOT=/usr/local/android-sdk/ndk-bundle
+    - export PATH=$PATH:$NDK_ROOT
+    - export ANDROID_SDK_ROOT=/usr/local/android-sdk
+    - export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
+    - cd cocos2d
+    - python download-deps.py --remove-download=yes
+    - python ./setup.py
+    - export COCOS_CONSOLE_ROOT=`pwd`/tools/cocos2d-console/bin
+    - export PATH=$PATH:$COCOS_CONSOLE_ROOT
+    - export COCOS_TEMPLATES_ROOT=`pwd`/templates
+    - export PATH=$PATH:$COCOS_TEMPLATES_ROOT
+    - export ANT_ROOT=/usr/share/ant/bin
+    - export PATH=$PATH:$ANT_ROOT
+    - printenv
+    - cd ..
+    - python build.py --travis --android
+    - cd proj.android
+    script:
+    - gradlew assembleRelease
+    before_deploy:
+    - cd app/build/outputs/apk/release
+    - export RELEASE_APK_FILE=$(ls *.apk)
+    - echo "deploying $RELEASE_APK_FILE to GitHub releases"
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      api_key:
+        secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
+      file_glob: true
+      file: "${RELEASE_APK_FILE}"
+      on:
+        tags: true
+  - os: linux
+    dist: xenial
+    addons:
+      apt:
+        packages:
+        - libx11-dev
+        - libxmu-dev
+        - libglu1-mesa-dev
+        - libgl2ps-dev
+        - libxi-dev
+        - libzip-dev
+        - libpng12-dev
+        - libcurl4-gnutls-dev
+        - libfontconfig1-dev
+        - libsqlite3-dev
+        - libglew-dev
+        - libssl-dev
+        - libgtk-3-dev
+        - binutils
+    sudo: required
+    language: cpp
+    compiler: clang
+    git:
+      submodules: true
+    install:
+    - cd cocos2d
+    - python download-deps.py --remove-download=yes
+    - printenv
+    - cd ..
+    - python build.py --travis --linux
+    - cd build-linux
+    - |
+      CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.tar.gz"
+      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+    - cmake/bin/cmake --version
+    - cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release ..
+    script:
+    - make -j 16
+    before_deploy:
+    - cd ..
+    - python build.py --appimage
+    - echo "deploying ${TRAVIS_TAG}-linux.zip to GitHub releases"
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      api_key:
+        secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
+      file_glob: true
+      file: "${TRAVIS_TAG}-linux.AppImage"
+      on:
+        tags: true
+  - os: osx
+    osx_image: xcode11.3
+    language: cpp    
+    install:
+    - printenv
+    - cd cocos2d
+    - python download-deps.py --remove-download=yes
+    - cd ..
+    - python build.py --travis --mac
+    - cd build-mac
+    script:
+    - xcodebuild -configuration Release
+    - cd ..
+    before_deploy:
+    - python build.py --macapp
+    - tar -zcf ${TRAVIS_TAG}.tar.gz ${TRAVIS_TAG}.app
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      api_key:
+        secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
+      file_glob: true
+      file: "${TRAVIS_TAG}.tar.gz"
+      on:
+        tags: true
   - os: windows
     language: cpp
     install:
@@ -142,7 +141,18 @@ matrix:
     - cd build-windows
     script:
     - cmake .. -G"Visual Studio 15 2017" -Tv141
-    - cmake --build .
+    - cmake --build . --config Release
+    before_deploy:
+    - python build.py --windowsexe
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      api_key:
+        secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
+      file_glob: true
+      file: "${TRAVIS_TAG}.exe"
+      on:
+        tags: true
 
 env:
   global:
