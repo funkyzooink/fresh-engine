@@ -20,7 +20,7 @@ funkyzooink@gmail.com
 
 // MARK: - create
 
-Bullet::Bullet() : _rotationAnimation(false), _isFriend(false), _lifeTimeMax(0), _lifeTime(0)
+Bullet::Bullet() : _rotationAnimation(false), _lifeTime(0), _isFriend(false), _lifeTimeMax(0), _audio("")
 {
     setHeadingState(LEFT_HEADING);
     setMovementState(WALK_MOVEMENT);

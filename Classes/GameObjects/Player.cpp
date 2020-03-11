@@ -21,7 +21,7 @@ funkyzooink@gmail.com
 
 // MARK: - create
 
-Player::Player() : _canKill("no"), _attackTime(-10), _hit(0), _id(0), _shoot(0)
+Player::Player() : _customButton1(""), _customButton2(""), _canKill("no"), _hit(0), _attackTime(-10), _id(0), _shoot(0)
 {
     _sleeping = false;
     setHeadingState(RIGHT_HEADING);
