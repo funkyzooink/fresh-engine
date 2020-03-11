@@ -200,7 +200,7 @@ def copy_windows_files():
     if os.path.isdir(dest): 
         terminal_output('Workspace not clean')
         sys.exit(2)
-    copy_files(src, dest)
+    copy_folder(src, dest)
 # 
 # platform cmake runs
 #
