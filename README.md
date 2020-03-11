@@ -1,5 +1,9 @@
 # funky fresh engine
-fresh engine is a platformer engine build on top of cocos2dx
+fresh engine is a platformer engine build on top of cocos2dx.
+
+curently Android, iOS, Linux and MAC are supported
+
+[see here for some demo projects](https://funkyzooink.github.io/projects/)
 
 
 # How to
@@ -21,19 +25,20 @@ fresh engine is a platformer engine build on top of cocos2dx
 
 4. create project files for one of the examples
 
+`fresh-engine\examples\`[4friends](https://github.com/funkyzooink/4friends)
+
 `fresh-engine\examples\`[little-ninja](https://github.com/funkyzooink/little-ninja)
 
 `fresh-engine\examples\`[little-robot-adventure](https://github.com/funkyzooink/little-robot-adventure)
 
 `fresh-engine\examples\`[the-dragon-kid](https://github.com/funkyzooink/the-dragon-kid)
 
-        fresh-engine $ python2 build.py -n examples/little-ninja/
+        fresh-engine $ python2 build.py -n examples/little-ninja/ --ios --android
 
-5a. compile using commandline
-
-        fresh-engine $ python2 build.py -p android
-
-5b. or open project files in android studio / xcode / qt creator (linux)
+5. open project files 
+- android studio: `proj.android`
+- xcode: `build-mac` / `build-ios`
+- linux: `build-linux`
 
 
 # Contributing to the Project
