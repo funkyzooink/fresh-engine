@@ -117,15 +117,18 @@ matrix:
   #   - cd build-mac
   #   script:
   #   - xcodebuild -configuration Release
+  #   - cd ..
   #   before_deploy:
-  #   - python build.py --macimage
+  #   - python build.py --macapp
+  #   - tar -zcf ${TRAVIS_TAG}.tar.gz ${TRAVIS_TAG}.app
+
   #   deploy:
   #     provider: releases
   #     skip_cleanup: true
   #     api_key:
   #       secure: nJzuzyz8hsx536AuzCaoa+OrYhsD28CUs6SV8ak1Um/6YyqngARCutmbQCPCEUC8+pjhICtKGgVy1n3znICtWMxNFGkFCR/sU5xZkDj1UV4UTqHgwVNi8WGNSCmLt/5ZIKXrmJSUXM9EXHYrvC5yaoxSIMiYWF1pYA114vrU8Jly7yQgMFiaXLXWniM/0GamWS/iTemJpS15kR5fD8b1WUCOHDRx4yomoqnWh3wiV+H18lfrFJiUs6mu/BdskPuSK5YBkLMBNdpMPWJRVvsz9a85olCp07MaTOdNog9KNWc/3vvrBDNxYVzPpKeIYmOU4bmZsLoSehjWqF+eptvsDwfZOJhGD8QV6Z7PnwgP2NAv/vxEOLNTSO3CHHuD/8wTD0Cj3JvfiNK4tQTkNW7nKo/q8R3bk+QSWXPJHrW4IZ1O+MmRk7JC1dGZN7/Vt0XHE1QRvPucm3DXp4VQptYQE06pOaW7iSrwxn22vuASWfx/7rphsJjcO/dTvLbMHgQnKMYEd6lKXKuBWT//HQNIn1Re46OOyVJFAaK4df9MV4OB64voF7+NKBe+fQfX5/8ckspHzqHNGGRPgCRx7uXdY/ybvsiENf4i0x93euWt1NUlwkH4UHYHdINgmbG4ZEDrpcyw5PLti0CfOc14axN5nse+DlNS6L8Lo+6Y5oWUicM=
   #     file_glob: true
-  #     file: "${TRAVIS_TAG}.app"
+  #     file: "${TRAVIS_TAG}.tar.gz"
   #     on:
   #       tags: true
   - os: windows
@@ -150,4 +153,3 @@ env:
   - secure: X/vZVkr+URoSk2U3MZDUr/2n1LHJ2xzoYE21zcB37pW1XBKP/x+OfGMmODNkKEyezjv0l6K/yS0tjX5jvh3ycPAvEXak/xSrX30kpTSI2OJlpLQKMnkbDIVpvtxsdwEdfVh7x62hfbvU3aeyxq0qf48zXCp8izspPfv6QxwJHM6yI2Wqz0NsoLlsl1pdMSfHbao9TpDs60P1zTSNP0jlIHuMZsqpZq41T4QjDeqVMuHCS5cw06XAZXDqBJCI+SA5dzGCIyuI4EudbBooNWFbElpiXbCAMZSml9Uq3n+DT/HLya6sMcqrGnG0YVcS+kLTk3i49gReZ64tho3hnVGXwowi+3Q9nfBWlKGyV43sZZzJjb2tSyrg2rNRmzjlh+rOouRfMwTronl5pfVf5EqC6Hu6Glpyw1BAu47tT+dbOwm7SbquLgXUVYNEPllT53ENM0e1TxRRy6W2Xkfn1Sub/mvYqtf8sMw9mngjIcngZryyUgU30NJKDVVm5DsqkosHmiFOBnmYOuuaAqHdxgDgrnF9DqUVVgId6xmKjFI1tibr3DCmYVUNVpLUeJvs/rqPwc0rDULXCOOWHx4rFQT3Xf6UV4ll7zXkWO9lhiPueeTu1kRO5TWIMXhfp9k9nyN4iTCWPHMWmNRLSIGMvXvSOSIYEsEwEtqtRgEMitdlJ5w=
   - secure: ob4dkKlUOEx7xNIiE7Oc/roBlIjXC3Dac32xuJ0dRFn3Dtq+KkNRrwmPbKHgq0XOMK3v2c1aYRqyBpMvx0and3kZ3KNqAi2nARc5ogvZi1xat/HaXFuzHpweoXKqt/2mi4h970kzHBIt1F6Bc8ksMsGAQ5Rn4iRTVr75qM3QNr9SklJrjsw5AjZCBw/Fd293mvaovSgqWmLP/rBv1eVFQgkJhsJYBzWpWVd4qIPXyHDKfvFjHL6WDlaaz50PbZ0rTmlg9h3VKeGQG+BlUIuBg5wJ6Tx5MNXMoc7Iix9SvY2b6JqUhwakVoulSHU3VXMH8wAl5WIYnnjGKwELcltkqyhKZy8LHU1QDEHeFsCaBOi8dY4Jajv+I3KD+dgxegntqDAO9iTeY99Zh8Y4Yql77qqnMFbjmC+MABF9mkEZsF/MAZcL6rvgsRqXqBr7WmlSdhdXLhVi2N5jeIJPSPN3d4Jq7HidGesGn7LFZarpYlWADeoxa3VHFBoWIpOjeYgyEifnGFDjByqca49vufAclts4jjCa0No8h95OrElekRiB7aAXod1m2IH3qcd7uK7UIfPuUD/b9UxO3wKAapoPcHEWidg9BWaNgetMcQFAnwi2Likr9DsTsL218F+jQrPZNbjEzjtC+kP+Nxw37xOsJZ1jkbvD5uKf3B7Xra0g07I=
   - secure: h6lHDjGJzM+uXNBlTcT0+smdhLqI+DkvHPJemJf/JBVaVddqCSqUPzvtLbsTwaZao2T8O/dM1deT9c5mzEqLsDIycZT8ZS9tCJiTTMc7SrAE/IJPMT4JHsmBk9a2+nquY+zxDKeQxRh0yy9CFojLuViMbzO3JdjhOerUS1QBTa9AHMjSp14vHcih6yw8QStvHQipeOsy5FZuDWan4Y/CUq2Jr7TnQ07rLnoyGlCYQA6CkAULhl0RRIuOPU/4jh9oLu/2DUMNzjU3c3wP66qv6ER/d0fuWwu6rJ+fph8tEbkoxZ5eFq5nxlXXuo0W5hrt2xPibLu2gMpmlVayolOMvEmdbn57RRs1lYBTRkn4mEmiIJyZay6d1cskVkHDiricI/Ol0mjDFW0ksizcrmE2VXek8l+jsq8yuoL7We/1utBjtWMre01B4P+tYYr+y2enfjmW2Vfm0LmrgnFjNJaEFpqd3D0g5Zw2MMyup4dDI2SUonptmIxF7fR+64Cbi8dvxEa+0BQd6VjS4TGZ9RfHowKznfHyuPJQHmIEFZChjH3X3aPokhLgGMpfkG/q1JniYk65ow6P/6PJbINndo7iT8hlpiREyHpwE7kfhmNJuTq+W/EDMKkNaFRKq8sTIXMzxiksRdtLRM6DuYSRnN+xOlGBkG7VmwD66Dh5kU0uXP4=
-
