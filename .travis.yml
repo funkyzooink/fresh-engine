@@ -134,16 +134,17 @@ matrix:
   - os: windows
     language: cpp
     env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
-    install:
+    before_install: 
     - echo python2 -V
     # - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
     # - choco install python2
+    - wget -qO- https://bootstrap.pypa.io/get-pip.py | python2
     - choco upgrade cmake
     # - python2 --version
-    - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
-    - python2 -m ensurepip 
+    # - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
+    # - python2 -m ensurepip 
     - python2 -m pip install pyopenssl
-    - pip install PyOpenSSL
+    install:
     - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
     # - printenv
     - cd cocos2d
