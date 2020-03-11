@@ -9,7 +9,7 @@ static def generateVersionCode() {
     return result.toInteger()
 }
 
-def majorVersion = replace
+def majorVersion = 0.1
 
 android {
     compileSdkVersion PROP_COMPILE_SDK_VERSION.toInteger()
@@ -24,30 +24,10 @@ android {
         versionName "${majorVersion}.${generateVersionCode()}"
 
         externalNativeBuild {
-            if (PROP_BUILD_TYPE == 'ndk-build') {
-                ndkBuild {
-                    targets 'MyGame'
-                    arguments 'NDK_TOOLCHAIN_VERSION=clang'
-                    arguments '-j' + Runtime.runtime.availableProcessors()
-
-                    def module_paths = [project.file("../../cocos2d").absolutePath,
-                                        project.file("../../cocos2d/cocos").absolutePath,
-                                        project.file("../../cocos2d/external").absolutePath]
-                    if (OperatingSystem.current().isWindows()) {
-                        module_paths = module_paths.collect {it.replaceAll('\\\\', '/')}
-                        arguments 'NDK_MODULE_PATH=' + module_paths.join(";")
-                    }
-                    else {
-                        arguments 'NDK_MODULE_PATH=' + module_paths.join(':')
-                    }
-                }
-            }
-            else if (PROP_BUILD_TYPE == 'cmake') {
-                cmake {
-                    targets 'MyGame'
-                    arguments "-DCMAKE_FIND_ROOT_PATH=", "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DANDROID_ARM_NEON=TRUE"
-                    cppFlags "-frtti -fexceptions -fsigned-char"
-                }
+            cmake {
+                targets 'MyGame'
+                arguments "-DCMAKE_FIND_ROOT_PATH=", "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DANDROID_ARM_NEON=TRUE"
+                cppFlags "-frtti -fexceptions -fsigned-char"
             }
         }
 
@@ -65,15 +45,8 @@ android {
     }
 
     externalNativeBuild {
-        if (PROP_BUILD_TYPE == 'ndk-build') {
-            ndkBuild {
-                path "jni/Android.mk"
-            }
-        }
-        else if (PROP_BUILD_TYPE == 'cmake') {
-            cmake {
-                path "../../CMakeLists.txt"
-            }
+        cmake {
+            path "../../CMakeLists.txt"
         }
     }
 
@@ -90,23 +63,12 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-
-            externalNativeBuild {
-                ndkBuild {
-                    arguments 'NDK_DEBUG=0'
-                }
-            }
         }
 
         debug {
             debuggable true
             jniDebuggable true
             renderscriptDebuggable true
-            externalNativeBuild {
-                ndkBuild {
-                    arguments 'NDK_DEBUG=1'
-                }
-            }
         }
     }
 
@@ -123,16 +85,22 @@ android {
 }
 
 android.applicationVariants.all { variant ->
-    // delete previous files first
-    delete "${buildDir}/intermediates/assets/${variant.dirName}"
+    def project_root_folder = "${projectDir}/../.."
+    def dest_assets_folder = "${projectDir}/assets"
 
-    variant.mergeAssets.doLast {
+    // delete previous files first
+    delete dest_assets_folder
+    def targetName = variant.name.capitalize()
+    def copyTaskName = "copy${targetName}ResourcesToAssets"
+    
+    tasks.register(copyTaskName) {
         copy {
             from "${buildDir}/../../../Resources"
             into "${buildDir}/intermediates/assets/${variant.dirName}"
             exclude "**/*.gz"
         }
     }
+    tasks.getByName("pre${targetName}Build").dependsOn copyTaskName
 }
 
 dependencies {

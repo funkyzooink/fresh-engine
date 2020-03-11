@@ -17,24 +17,28 @@ funkyzooink@gmail.com
 #include "cocos2d.h"
 
 GameObject::GameObject()
-  : _disabled(false)
-  , _sleeping(true)
-  , _jumpState(NO_JUMP)
+  : _jumpState(NO_JUMP)
   , _movementState(IDLE_MOVEMENT)
   , _lastGroundPosition(cocos2d::Point::ZERO)
   , _desiredPosition(cocos2d::Point::ZERO)
   , _velocity(cocos2d::Point::ZERO)
+  , _ammoVector()
   , _obstacle(NO_OBSTACLE)
-  , _canAttack(false)
   , _onGround(false)
+  , _canAttack(false)
+  , _idleIcon("")
+  , _disabled(false)
+  , _sleeping(true)
   , _flipAnimationX(false)
   , _xSpeed(0)
   , _ySpeed(0)
+  , _bulletTypes()
+  , _animationEnumMap()
+  , _gameScene(nullptr)
   , _heading(LEFT_HEADING)
   , _canJump(false)
   , _gravity(true)
   , _life(0)
-  , _gameScene(nullptr)
 {
     //	drawBoundingBox();
 }

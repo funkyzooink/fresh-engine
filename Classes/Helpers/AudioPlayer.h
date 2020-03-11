@@ -11,7 +11,6 @@ funkyzooink@gmail.com
 class AudioPlayer
 {
   public:
-    static void preload();
     static void playFx(const std::string& audio);
     static void playMenuMusic();
     static void playMusicForWorld(int world);
@@ -22,6 +21,8 @@ class AudioPlayer
 
   private:
     static void playMusic(const std::string& audio);
+
+    static int musicAudioID;
 };
 
 #endif  // HELPERS_AUDIOPLAYER_H_

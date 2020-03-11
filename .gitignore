@@ -12,6 +12,9 @@ CMakeLists.txt.user
 
 ## Build 
 build/
+build-ios/
+build-mac/
+build-linux/
 bin/
 .build/
 linux-build/

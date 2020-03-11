@@ -9,25 +9,16 @@ funkyzooink@gmail.com
 #include "../GameData/Gamedata.h"
 #include "UserDefaults.h"
 
-#include "SimpleAudioEngine.h"
+#include "AudioEngine.h"
 
-void AudioPlayer::preload()
-{
-    for (auto& item : GAMECONFIG.getAudioMap())
-    {
-        std::string filepath = item.second + CONSTANTS.audioFileType;
-        CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(filepath.c_str());
-    }
-    std::string musicFilepath = "audio/music_menu" + CONSTANTS.audioFileType;
-    CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic(musicFilepath.c_str());
-}
+int AudioPlayer::musicAudioID = -1;
 
 void AudioPlayer::playFx(const std::string& audio)
 {
     if (GAMEDATA.getAudioFxEnabled() && !audio.empty())
     {
         std::string filepath = GAMECONFIG.getAudio(audio) + CONSTANTS.audioFileType;
-        CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(filepath.c_str());
+        cocos2d::AudioEngine::play2d(filepath.c_str());
     }
 }
 
@@ -45,7 +36,7 @@ void AudioPlayer::stopMusic()
 {
     if (GAMEDATA.getMusicEnabled())
     {
-        CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic(false);
+        cocos2d::AudioEngine::stop(musicAudioID);
     }
 }
 
@@ -53,14 +44,14 @@ void AudioPlayer::pauseMusic()
 {
     if (GAMEDATA.getMusicEnabled())
     {
-        CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+        cocos2d::AudioEngine::pause(musicAudioID);
     }
 }
 void AudioPlayer::resumeMusic()
 {
     if (GAMEDATA.getMusicEnabled())
     {
-        CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+        cocos2d::AudioEngine::resume(musicAudioID);
     }
 }
 
@@ -68,8 +59,7 @@ void AudioPlayer::playMusic(const std::string& audio)
 {
     if (GAMEDATA.getMusicEnabled())
     {
-        CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(1.0F);
-        std::string filename = audio + CONSTANTS.audioFileType;
-        CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(filename.c_str(), true);
+        std::string filepath = audio + CONSTANTS.audioFileType;
+        musicAudioID = cocos2d::AudioEngine::play2d(filepath.c_str(), true);
     }
 }

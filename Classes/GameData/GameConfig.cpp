@@ -286,11 +286,6 @@ std::string GameConfig::getAudio(const std::string& key)
     return _audioFxMap[key];
 }
 
-std::map<std::string, std::string> GameConfig::getAudioMap()
-{
-    return _audioFxMap;
-}
-
 std::string GameConfig::getLocalizedString(std::string key)
 {
     if (_localizationDocument.HasMember(key.c_str()))
