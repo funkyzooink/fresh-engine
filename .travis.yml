@@ -142,7 +142,7 @@ matrix:
     - cd build-windows
     script:
     - cmake .. -G"Visual Studio 15 2017" -Tv141
-    - cmake --build
+    - cmake --build .
 
 env:
   global:
