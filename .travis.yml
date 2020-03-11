@@ -136,8 +136,6 @@ matrix:
     install:
     - cd cocos2d
     - wget https://github.com/cocos2d/cocos2d-x-3rd-party-libs-bin/archive/metal-support-22.zip -O metal-support-22.zip
-    # - curl --insecure https://github.com/cocos2d/cocos2d-x-3rd-party-libs-bin/archive/metal-support-22.zip -L -o metal-support-22.zip
-    - ls
     - python2 download-deps.py --remove-download=yes
     - cd ..
     - python2 build.py --travis --windows

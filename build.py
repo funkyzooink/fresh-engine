@@ -193,7 +193,14 @@ def copy_mac_files(bundle_id):
     src = config_file_path + '/mac/Images.xcassets' #todo
     dest = dest + '/Images.xcassets'
     copy_folder(src, dest)
-
+    
+def copy_windows_files():
+    src = 'templates/proj.win32'
+    dest = 'proj.win32'
+    if os.path.isdir(dest): 
+        terminal_output('Workspace not clean')
+        sys.exit(2)
+    copy_files(src, dest)
 # 
 # platform cmake runs
 #
