@@ -135,12 +135,13 @@ matrix:
     language: cpp
     env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
     install:
-    # - python2 --version
+    - echo python2 -V
     # - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
-    - choco install python2
+    # - choco install python2
     - choco upgrade cmake
     # - python2 --version
     - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
+    - python2 -m ensurepip 
     - python2 -m pip install pyopenssl
     - pip install PyOpenSSL
     - python2 -c 'import ssl; print ssl.OPENSSL_VERSION;'
