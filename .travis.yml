@@ -135,7 +135,7 @@ matrix:
     language: cpp
     install:
     - cd cocos2d
-    - curl -s https://github.com/cocos2d/cocos2d-x-3rd-party-libs-bin/archive/metal-support-22.zip
+    - curl https://github.com/cocos2d/cocos2d-x-3rd-party-libs-bin/archive/metal-support-22.zip --output metal-support-22.zip
     - ls
     - python2 download-deps.py --remove-download=yes
     - cd ..
