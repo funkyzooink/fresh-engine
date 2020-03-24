@@ -519,7 +519,7 @@ def ci_windows():
         dest_path = appname
         copy_folder(src_path, dest_path)
         # rename app file
-        os.rename(appname, tagname + '.exe')
+        os.rename(appname, tagname + '-windows.exe')
 
 #
 # copy project files
