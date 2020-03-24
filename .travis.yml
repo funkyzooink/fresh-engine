@@ -143,6 +143,7 @@ matrix:
     - cmake .. -G"Visual Studio 15 2017" -Tv141
     - cmake --build . --config Release
     before_deploy:
+    - cd ..
     - python2 build.py --windowsexe
     deploy:
       provider: releases
