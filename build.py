@@ -517,7 +517,7 @@ def ci_windows():
         appname = short_app_name + '.exe'
         src_path = BUILD_PATH_WINDOWS + '/bin/' + short_app_name + '/Release/' + appname
         dest_path = appname
-        copy_folder(src_path, dest_path)
+        copy_file(src_path, dest_path)
         # rename app file
         os.rename(appname, tagname + '-windows.exe')
 
